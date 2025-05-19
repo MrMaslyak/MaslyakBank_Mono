@@ -64,7 +64,7 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<scope>runtime</scope>
+			<version>42.7.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -90,6 +90,15 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>me.paulschwarz</groupId>
+			<artifactId>spring-dotenv</artifactId>
+			<version>2.2.0</version>
 		</dependency>
 	</dependencies>
 
@@ -123,6 +132,21 @@
 					<skipTests>true</skipTests>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.liquibase</groupId>
+				<artifactId>liquibase-maven-plugin</artifactId>
+				<version>4.25.1</version>
+				<configuration>
+					<changeLogFile>src/main/resources/db/changelog/v1/tables-generated-changelog.xml</changeLogFile>
+					<outputChangeLogFile>src/main/resources/db/changelog/v1/tables-generated-changelog.xml</outputChangeLogFile>
+					<url>jdbc:postgresql://localhost:7777/postgres</url>
+					<username>Maslyak</username>
+					<password>LaLa27418182!</password>
+					<driver>org.postgresql.Driver</driver>
+				</configuration>
+			</plugin>
+
+
 		</plugins>
 	</build>
 
