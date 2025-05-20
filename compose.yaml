@@ -3,9 +3,9 @@ services:
     build: .
     container_name: maslyakbank_token
     environment:
-      SPRING_DATASOURCE_URL: ${DB_URL}
-      SPRING_DATASOURCE_USERNAME: ${DB_NAME}
-      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://maslyakbank_database:5432/postgres
+      SPRING_DATASOURCE_USERNAME: Maslyak
+      SPRING_DATASOURCE_PASSWORD: LaLa27418182!
     ports:
       - "1230:8080"
     networks:
