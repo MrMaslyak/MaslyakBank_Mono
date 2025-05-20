@@ -7,5 +7,6 @@
 
     <include file="tables-generated-changelog.xml" relativeToChangelogFile="true"/>
     <include file="column-deviceinfo-usertoken.xml" relativeToChangelogFile="true"/>
+    <include file="column-cardImage-cards.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
