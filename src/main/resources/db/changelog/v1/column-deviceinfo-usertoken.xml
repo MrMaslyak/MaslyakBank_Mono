@@ -4,6 +4,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
+
     <changeSet id="1000-1" author="Maslyak">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -13,6 +14,9 @@
         <addColumn tableName="user_token">
             <column name="device_info" type="VARCHAR"/>
         </addColumn>
+        <rollback>
+            <dropColumn tableName="user_token" columnName="device_info"/>
+        </rollback>
     </changeSet>
 
 </databaseChangeLog>

@@ -14,6 +14,10 @@
         <addColumn tableName="cards">
             <column name="card_image" type="bytea"/>
         </addColumn>
+        <rollback>
+            <dropColumn tableName="cards" columnName="card_image"/>
+        </rollback>
+
     </changeSet>
 
 </databaseChangeLog>
