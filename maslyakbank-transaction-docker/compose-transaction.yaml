@@ -1,0 +1,17 @@
+services:
+  spring_app:
+    build: .
+    container_name: maslyakbank_transaction
+    environment:
+      SPRING_DATASOURCE_URL: ${DB_URL}
+      SPRING_DATASOURCE_USERNAME: ${DB_NAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "1220:8080"
+    networks:
+      - MaslyakBankNetwork
+
+networks:
+  MaslyakBankNetwork:
+    external: true
+
