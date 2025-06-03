@@ -8,12 +8,16 @@
 		<version>3.4.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+	<modules>
+		<module>MaslyakBank_Token</module>
+		<module>MaslyakBank_Core</module>
+	</modules>
 	<groupId>com.example</groupId>
 	<artifactId>MaslyakBank_Mono</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<name>MaslyakBank_Token</name>
-	<description>MaslyakBank Token System </description>
+	<name>MaslyakBank_Mono</name>
+	<description>MaslyakBank_Mono</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -127,6 +131,8 @@
 			<artifactId>dotenv-java</artifactId>
 			<version>3.0.0</version>
 		</dependency>
+
+
 
 	</dependencies>
 

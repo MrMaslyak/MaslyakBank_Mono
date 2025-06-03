@@ -1,8 +1,8 @@
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+!MaslyakBank_Token/src/main/**/target/
+!MaslyakBank_Token/src/test/**/target/
 .env
 
 ### STS ###
@@ -27,8 +27,8 @@ target/
 /nbdist/
 /.nb-gradle/
 build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+!MaslyakBank_Token/src/main/**/build/
+!MaslyakBank_Token/src/test/**/build/
 
 ### VS Code ###
 .vscode/

@@ -1,6 +1,6 @@
 services:
   spring_app:
-    build: .
+    build: ../MaslyakBank_Token
     container_name: maslyakbank_account
     environment:
       SPRING_DATASOURCE_URL: ${DB_URL}
