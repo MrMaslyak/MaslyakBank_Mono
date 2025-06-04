@@ -1,0 +1,19 @@
+services:
+  spring_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: maslyakbank_account
+    environment:
+      SPRING_DATASOURCE_URL: ${DB_URL}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "1210:8080"
+    networks:
+      - MaslyakBankNetwork
+
+networks:
+  MaslyakBankNetwork:
+    external: true
+

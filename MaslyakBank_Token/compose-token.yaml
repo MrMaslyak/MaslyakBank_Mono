@@ -1,5 +1,8 @@
 services:
   spring_app:
+    build:
+        context: .
+        dockerfile: Dockerfile
     container_name: maslyakbank_token
     environment:
       SPRING_DATASOURCE_URL: ${DB_URL}

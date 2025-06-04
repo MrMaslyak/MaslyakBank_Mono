@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - include:
+      file: tables-generated-changelog.xml
+      relativeToChangelogFile: true
+
+  - include:
+      file: v1/main-changelog.xml
+      relativeToChangelogFile: true
