@@ -1,0 +1,322 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet author="Maslyak" id="1747685294183-1"  failOnError="true">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="users"/>
+            </not>
+        </preConditions>
+        <createTable tableName="users">
+            <column defaultValueComputed="uuid_generate_v4()" name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="users_pkey"/>
+            </column>
+            <column name="login" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password_salt" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone_number" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="Maslyak" id="1747685294183-2">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="profiles"/>
+            </not>
+        </preConditions>
+        <createTable tableName="profiles">
+            <column defaultValueComputed="uuid_generate_v4()" name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="profiles_pkey"/>
+            </column>
+            <column name="user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_name" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="VARCHAR"/>
+            <column name="avatar_url" type="TEXT"/>
+            <column name="bio" type="TEXT"/>
+            <column name="birth_day" type="date"/>
+            <column defaultValueBoolean="false" name="is_completed" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="Maslyak" id="1747685294183-3">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="user_token"/>
+            </not>
+        </preConditions>
+        <createTable tableName="user_token">
+            <column defaultValueComputed="uuid_generate_v4()" name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="user_token_pkey"/>
+            </column>
+            <column name="user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="token" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="is_valid" type="BOOLEAN"/>
+            <column defaultValueBoolean="false" name="is_expired" type="BOOLEAN"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="Maslyak" id="1747685294183-4">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="accounts"/>
+            </not>
+        </preConditions>
+        <createTable tableName="accounts">
+            <column defaultValueComputed="uuid_generate_v4()" name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="accounts_pkey"/>
+            </column>
+            <column name="user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="account_number" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="0.00" name="balance" type="numeric(15, 2)"/>
+            <column name="currency" type="VARCHAR(3)"/>
+            <column defaultValue="false" name="status" type="VARCHAR"/>
+            <column defaultValueBoolean="false" name="is_blocked" type="BOOLEAN"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="Maslyak" id="1747685294183-5">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="cards"/>
+            </not>
+        </preConditions>
+        <createTable tableName="cards">
+            <column defaultValueComputed="uuid_generate_v4()" name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="cards_pkey"/>
+            </column>
+            <column name="account_id" type="UUID"/>
+            <column name="card_number" type="VARCHAR(19)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expiry_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="is_expired" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cvv" type="CHAR(3)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="currency" type="VARCHAR(3)"/>
+            <column defaultValueBoolean="false" name="is_blocked" type="BOOLEAN"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="Maslyak" id="1747685294183-6">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="transactions"/>
+            </not>
+        </preConditions>
+        <createTable tableName="transactions">
+            <column defaultValueComputed="uuid_generate_v4()" name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="transactions_pkey"/>
+            </column>
+            <column name="transaction_type" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="from_account_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="to_account_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="amount" type="numeric(15, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="currency" type="VARCHAR(3)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PENDING" name="status" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="operation_time" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="Maslyak" id="1747685294183-7">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="transaction_details"/>
+            </not>
+        </preConditions>
+        <createTable tableName="transaction_details">
+            <column defaultValueComputed="uuid_generate_v4()" name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="transaction_details_pkey"/>
+            </column>
+            <column name="transaction_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="from_card_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="to_card_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="direction_type" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="operation_time" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="Maslyak" id="1747685294183-8">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <uniqueConstraintExists tableName="profiles"  constraintName="profiles_user_id_key"/>
+            </not>
+        </preConditions>
+        <addUniqueConstraint columnNames="user_id" constraintName="profiles_user_id_key" tableName="profiles"/>
+    </changeSet>
+
+    <changeSet author="Maslyak" id="1747685294183-9">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <uniqueConstraintExists tableName="accounts"  constraintName="accounts_account_number_key"/>
+            </not>
+        </preConditions>
+        <addUniqueConstraint columnNames="account_number" constraintName="accounts_account_number_key" tableName="accounts"/>
+    </changeSet>
+
+    <changeSet author="Maslyak" id="1747685294183-10">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <uniqueConstraintExists tableName="accounts"  constraintName="accounts_user_id_key"/>
+            </not>
+        </preConditions>
+        <addUniqueConstraint columnNames="user_id" constraintName="accounts_user_id_key" tableName="accounts"/>
+    </changeSet>
+
+    <changeSet author="Maslyak" id="1747685294183-11">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <uniqueConstraintExists tableName="cards"  constraintName="cards_card_number_key"/>
+            </not>
+        </preConditions>
+        <addUniqueConstraint columnNames="card_number" constraintName="cards_card_number_key" tableName="cards"/>
+    </changeSet>
+
+    <changeSet author="Maslyak" id="1747685294183-12">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="accounts_user_id_fkey" foreignKeyTableName="accounts"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="accounts" constraintName="accounts_user_id_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Maslyak" id="1747685294183-13">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="cards_account_id_fkey" foreignKeyTableName="cards"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="account_id" baseTableName="cards" constraintName="cards_account_id_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="accounts" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Maslyak" id="1747685294183-14">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="profiles_user_id_fkey" foreignKeyTableName="profiles"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="profiles" constraintName="profiles_user_id_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Maslyak" id="1747685294183-15">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="transaction_details_from_card_id_fkey" foreignKeyTableName="transaction_details"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="from_card_id" baseTableName="transaction_details" constraintName="transaction_details_from_card_id_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="cards" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Maslyak" id="1747685294183-16">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="transaction_details_to_card_id_fkey" foreignKeyTableName="transaction_details"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="to_card_id" baseTableName="transaction_details" constraintName="transaction_details_to_card_id_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="cards" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Maslyak" id="1747685294183-17">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="transaction_details_transaction_id_fkey" foreignKeyTableName="transaction_details"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="transaction_id" baseTableName="transaction_details" constraintName="transaction_details_transaction_id_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="transactions" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Maslyak" id="1747685294183-18">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="transactions_from_account_id_fkey" foreignKeyTableName="transactions"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="from_account_id" baseTableName="transactions" constraintName="transactions_from_account_id_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="accounts" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Maslyak" id="1747685294183-19">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="transactions_to_account_id_fkey" foreignKeyTableName="transactions"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="to_account_id" baseTableName="transactions" constraintName="transactions_to_account_id_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="accounts" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Maslyak" id="1747685294183-20">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="user_token_user_id_fkey" foreignKeyTableName="user_token"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_token" constraintName="user_token_user_id_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+</databaseChangeLog>
