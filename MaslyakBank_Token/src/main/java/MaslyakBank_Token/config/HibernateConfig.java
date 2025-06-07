@@ -13,24 +13,30 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-@PropertySource("classpath:/application_token.properties ")
+@PropertySource("classpath:/application_token.properties")
 public class HibernateConfig {
 
 
     @Value("${spring.datasource.url}")
     private String URL;
+
     @Value("${spring.datasource.username}")
     private String USER;
+
     @Value("${spring.datasource.password}")
-    private  String PASSWORD;
+    private String PASSWORD;
+
     @Value("${spring.datasource.driver-class-name}")
-    private  String DRIVER;
+    private String DRIVER;
+
     @Value("${spring.jpa.hibernate.ddl-auto}")
-    private  String DDL_AUTO;
+    private String DDL_AUTO;
+
     @Value("${spring.jpa.show-sql}")
-    private  String SHOW_SQL;
-    @Value("${spring.jpa.properties.hibernate.dialect}")
-    private  String DIALECT;
+    private String SHOW_SQL;
+
+    @Value("${spring.jpa.database-platform}")
+    private String DIALECT;
 
 
 
@@ -49,7 +55,6 @@ public class HibernateConfig {
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setDataSource(dataSource);
         factory.setPackagesToScan("MaslyakBank_Token.entity");
-        factory.setPersistenceUnitName("maslyakbank");
         factory.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         factory.setJpaProperties(getHibernateProperties());
         return factory;
@@ -57,9 +62,9 @@ public class HibernateConfig {
 
     private Properties getHibernateProperties() {
         Properties properties = new Properties();
-        properties.setProperty("hibernate.dialect",DDL_AUTO);
+        properties.setProperty("hibernate.dialect",DIALECT);
         properties.setProperty("hibernate.show_sql", SHOW_SQL);
-        properties.setProperty("hibernate.hbm2ddl.auto",DIALECT);
+        properties.setProperty("hibernate.hbm2ddl.auto",DDL_AUTO);
         return properties;
     }
 

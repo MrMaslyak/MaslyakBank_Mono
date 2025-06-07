@@ -1,14 +1,18 @@
 package MaslyakBank_Token.service;
 
 
+import MaslyakBank_Token.dao.UserTokenDAO;
+import MaslyakBank_Token.entity.UserTokenTable;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
 
 @Service
+@AllArgsConstructor
 public class TokenManagmentService {
 
-
+    private UserTokenDAO userTokenDAO;
 
     public StringBuilder createToken() {
         Random random = new Random();
@@ -18,6 +22,12 @@ public class TokenManagmentService {
         }
         return token;
     }
+
+    public UserTokenTable saveToken(UserTokenTable userToken) {
+        return userTokenDAO.saveToken(userToken);
+    }
+
+
 
 
 }

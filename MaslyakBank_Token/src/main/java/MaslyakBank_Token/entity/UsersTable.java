@@ -1,12 +1,10 @@
 package MaslyakBank_Token.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.UUID;
 
 
 @Data
@@ -15,8 +13,9 @@ import java.util.Date;
 public class UsersTable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Long id;
+    private UUID id;
 
     @Column(name = "login")
     private String login;
