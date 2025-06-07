@@ -2,6 +2,7 @@ package MaslyakBank_Core.controller;
 
 
 import MaslyakBank_Core.dto.RegistrationRequestDTO;
+import MaslyakBank_Core.entity.UsersTable;
 import MaslyakBank_Core.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +15,10 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/registration")
-    public RegistrationRequestDTO registration(@RequestHeader("login") String login,
-                                               @RequestHeader("email") String email,
-                                               @RequestHeader("password") String password,
-                                               @RequestHeader("phoneNumber") String phoneNumber) {
-        return userService.registration(login, email, password, phoneNumber);
+    public UsersTable registration(@RequestBody RegistrationRequestDTO dto) {
+        return userService.registration(dto.getLogin(), dto.getEmail(), dto.getPassword(), dto.getPhoneNumber());
     }
+
+
+
 }
