@@ -2,27 +2,22 @@ package MaslyakBank_Core.service;
 
 
 import MaslyakBank_Core.dao.UserDAO;
+import MaslyakBank_Core.dto.RegistrationRequestDTO;
 import MaslyakBank_Core.entity.UsersTable;
+import MaslyakBank_Core.mappers.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserDAO userDAO;
+    private final UserMapper userMapper;
 
-    public UsersTable registration(String login, String email, String password, String phoneNumber) {
-        UsersTable user = new UsersTable();
-        user.setLogin(login);
-        user.setEmail(email);
-        user.setPassword(password);
-        user.setPasswordSalt("salt");
-        user.setPhoneNumber(phoneNumber);
-        user.setCreatedAt(new Date());
-        user.setUpdatedAt(new Date());
+    public UsersTable registration(RegistrationRequestDTO dto) {
+        UsersTable user = userMapper.toEntity(dto);
         return userDAO.registrationUser(user);
     }
 }

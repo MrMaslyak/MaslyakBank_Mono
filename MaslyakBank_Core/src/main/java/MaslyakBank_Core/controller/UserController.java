@@ -16,7 +16,7 @@ public class UserController {
 
     @PostMapping("/registration")
     public UsersTable registration(@RequestBody RegistrationRequestDTO dto) {
-        return userService.registration(dto.getLogin(), dto.getEmail(), dto.getPassword(), dto.getPhoneNumber());
+        return userService.registration(dto);
     }
 
 
