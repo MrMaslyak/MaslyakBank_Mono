@@ -2,6 +2,7 @@ package MaslyakBank_Core.service;
 
 
 import MaslyakBank_Core.dao.UserDAO;
+import MaslyakBank_Core.dto.DeleteUsersDTO;
 import MaslyakBank_Core.dto.RegistrationRequestDTO;
 import MaslyakBank_Core.entity.UsersTable;
 import MaslyakBank_Core.mappers.UserMapper;
@@ -19,5 +20,9 @@ public class UserService {
     public UsersTable registration(RegistrationRequestDTO dto) {
         UsersTable user = userMapper.toEntity(dto);
         return userDAO.registrationUser(user);
+    }
+
+    public DeleteUsersDTO deleteUser(DeleteUsersDTO login) {
+        return userDAO.deleteUser(login);
     }
 }
