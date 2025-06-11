@@ -9,11 +9,11 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<modules>
-		<module>MaslyakBank_Token</module>
 		<module>MaslyakBank_Core</module>
 		<module>MaslyakBank_Account</module>
-		<module>MaslyakBank_Transaction</module>
 		<module>MaslyakBank_Infrastructure</module>
+		<module>MaslyakBank_Token</module>
+		<module>MaslyakBank_Transaction</module>
 	</modules>
 	<groupId>com.example</groupId>
 	<artifactId>MaslyakBank_Mono</artifactId>
@@ -34,7 +34,7 @@
 		<url/>
 	</scm>
 	<properties>
-		<java.version>21</java.version>
+		<java.version>21xx</java.version>
 	</properties>
 	<dependencies>
 

@@ -3,12 +3,15 @@ package MaslyakBank_Core.entity;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import lombok.Data;
+
 import java.util.Date;
 import java.util.UUID;
 
 
 @Table(name = "users")
 @Entity
+@Data
 public class UsersTable {
 
     @Id
