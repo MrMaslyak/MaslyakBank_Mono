@@ -44,9 +44,8 @@ services:
     networks:
       - MaslyakBankNetwork
     volumes:
-      - /path/to/local/dаta:/root/redis
-      - /path/to/local/redis.conf:/usr/local/etc/redis/redis.conf
-
+      - ./redis-data:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
 networks:
   MaslyakBankNetwork:
     external: true
