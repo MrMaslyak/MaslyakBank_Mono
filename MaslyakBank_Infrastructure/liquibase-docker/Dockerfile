@@ -1,24 +1,22 @@
-# Use OpenJDK base image
-FROM openjdk:17-jdk-slim
+FROM openjdk:17-slim
 
-# Set Liquibase version
-ENV LIQUIBASE_VERSION=4.25.1
+ENV LIQUIBASE_VERSION=4.32.0
 
-# Set working directory
-WORKDIR /opt/liquibase
+# Установим зависимости
+RUN apt-get update && \
+    apt-get install -y curl unzip bash && \
+    rm -rf /var/lib/apt/lists/*
 
-# Install curl, unzip, and dependencies
-RUN apt-get update && apt-get install -y curl unzip && \
-    curl -L -o liquibase.tar.gz https://github.com/liquibase/liquibase/releases/download/v${LIQUIBASE_VERSION}/liquibase-${LIQUIBASE_VERSION}.tar.gz && \
-    tar -xvzf liquibase.tar.gz --strip-components=1 && \
-    rm liquibase.tar.gz && \
-    ln -s /opt/liquibase/liquibase /usr/local/bin/liquibase && \
-    chmod +x /opt/liquibase/liquibase && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+# Установка Liquibase
+RUN curl -L -o /tmp/liquibase.zip https://github.com/liquibase/liquibase/releases/download/v${LIQUIBASE_VERSION}/liquibase-${LIQUIBASE_VERSION}.zip && \
+    unzip /tmp/liquibase.zip -d /opt/liquibase && \
+    rm /tmp/liquibase.zip && \
+    chmod +x /opt/liquibase/liquibase
 
-# Optionally copy your changelogs and JDBC drivers
-# COPY ./changelog /liquibase/changelog
-# COPY ./drivers/postgresql.jar /opt/liquibase/lib/
+ENV PATH="/opt/liquibase:${PATH}"
 
-# Default command (can be overridden)
-ENTRYPOINT ["liquibase"]
+# Рабочая директория
+WORKDIR /liquibase
+
+# Просто оставим его "живым"
+CMD ["tail", "-f", "/dev/null"]
