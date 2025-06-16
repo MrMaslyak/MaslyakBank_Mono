@@ -16,7 +16,7 @@ RUN curl -L -o /tmp/liquibase.zip https://github.com/liquibase/liquibase/release
 ENV PATH="/opt/liquibase:${PATH}"
 
 # Рабочая директория
-WORKDIR /liquibase
+WORKDIR /liquibase-docker
 
 # Просто оставим его "живым"
 CMD ["tail", "-f", "/dev/null"]

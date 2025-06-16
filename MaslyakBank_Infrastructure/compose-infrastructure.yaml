@@ -32,7 +32,7 @@ services:
     networks:
       - MaslyakBankNetwork
     volumes:
-      - ./liquibase-docker:/liquibase
+      - ./liquibase-docker:/liquibase-docker
     stdin_open: true
     tty: true
 
