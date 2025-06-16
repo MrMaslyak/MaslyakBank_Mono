@@ -20,6 +20,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>MaslyakBank_Mono</name>
 	<description>MaslyakBank_Mono</description>
+	<packaging>pom</packaging>
 	<url/>
 	<licenses>
 		<license/>
