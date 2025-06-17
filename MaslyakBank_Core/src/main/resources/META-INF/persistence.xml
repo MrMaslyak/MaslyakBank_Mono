@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence" version="3.0">
+    <persistence-unit name="liquibase-hibernate">
+        <class>com.example.MaslyakBank_Core.entity.UsersTable</class>
+        <!-- Добавь остальные entity-классы вручную -->
+
+        <properties>
+            <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://db:5432/postgres"/>
+            <property name="jakarta.persistence.jdbc.user" value="Maslyak"/>
+            <property name="jakarta.persistence.jdbc.password" value="LaLa27418182!"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+            <property name="hibernate.physical_naming_strategy"
+                      value="org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy"/>
+        </properties>
+    </persistence-unit>
+</persistence>
