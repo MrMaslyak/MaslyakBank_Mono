@@ -18,7 +18,6 @@ RUN curl -L -o /tmp/liquibase.zip https://github.com/liquibase/liquibase/release
 # Создание папки lib для зависимостей
 RUN mkdir -p /opt/liquibase/lib
 
-# КЛЮЧЕВАЯ ПРОБЛЕМА: Нужны ТОЧНЫЕ версии Spring из Spring Boot 3.4.5
 # Spring Framework 6.1.16 используется в Spring Boot 3.4.5
 RUN curl --fail -L -o /opt/liquibase/lib/spring-core-6.1.16.jar https://repo1.maven.org/maven2/org/springframework/spring-core/6.1.16/spring-core-6.1.16.jar
 RUN curl --fail -L -o /opt/liquibase/lib/spring-context-6.1.16.jar https://repo1.maven.org/maven2/org/springframework/spring-context/6.1.16/spring-context-6.1.16.jar
@@ -53,8 +52,13 @@ RUN curl --fail -L -o /opt/liquibase/lib/liquibase-hibernate6-4.25.0.jar https:/
 # PostgreSQL драйвер (версия из pom)
 RUN curl --fail -L -o /opt/liquibase/lib/postgresql-42.7.2.jar https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.2/postgresql-42.7.2.jar
 
-# Поддержка для рефлексии в Java 21
 RUN curl --fail -L -o /opt/liquibase/lib/objenesis-3.4.jar https://repo1.maven.org/maven2/org/objenesis/objenesis/3.4/objenesis-3.4.jar
+
+
+RUN curl --fail -L -o /opt/liquibase/lib/tx-6.1.16.jar https://repo1.maven.org/maven2/org/springframework/spring-tx/6.1.16/spring-tx-6.1.16.jar
+RUN curl --fail -L -o /opt/liquibase/lib/jdbc-6.1.16.jar https://repo1.maven.org/maven2/org/springframework/spring-jdbc/6.1.16/spring-jdbc-6.1.16.jar
+RUN curl --fail -L -o /opt/liquibase/lib/spring-orm-6.1.16.jar https://repo1.maven.org/maven2/org/springframework/spring-orm/6.1.16/spring-orm-6.1.16.jar
+RUN curl --fail -L -o /opt/liquibase/lib/commons-logging-1.2.jar https://repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.jar
 
 # Копирование jar с entity-классами
 COPY target/MaslyakBank_Core-0.0.1-SNAPSHOT.jar /opt/liquibase/lib/

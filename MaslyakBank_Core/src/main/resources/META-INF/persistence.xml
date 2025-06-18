@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence xmlns="https://jakarta.ee/xml/ns/persistence" version="3.0">
     <persistence-unit name="liquibase-hibernate">
-        <class>com.example.MaslyakBank_Core.entity.UsersTable</class>
-        <!-- Добавь остальные entity-классы вручную -->
-
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <class>MaslyakBank_Core.entity.UsersTable</class>
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://db:5432/postgres"/>
