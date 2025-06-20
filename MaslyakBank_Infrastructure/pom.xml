@@ -6,12 +6,12 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.4.5</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
 	<groupId>com.example</groupId>
 	<artifactId>MaslyakBank_Infrastructure</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 	<name>MaslyakBank_Infrastructure</name>
 	<description>MaslyakBank_Infrastructure</description>
 
@@ -76,6 +76,23 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.example</groupId>
+			<artifactId>MaslyakBank_Token</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.example</groupId>
+			<artifactId>MaslyakBank_Account</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.example</groupId>
+			<artifactId>Transaction</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 
 	</dependencies>
 
@@ -99,8 +116,32 @@
 									<artifactId>MaslyakBank_Core</artifactId>
 									<version>0.0.1-SNAPSHOT</version>
 									<type>jar</type>
-									<outputDirectory>../MaslyakBank_Core/target/copied-libs</outputDirectory>
+									<outputDirectory>target/libs</outputDirectory>
 									<destFileName>MaslyakBank_Core-0.0.1-SNAPSHOT.jar</destFileName>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.example</groupId>
+									<artifactId>MaslyakBank_Token</artifactId>
+									<version>0.0.1-SNAPSHOT</version>
+									<type>jar</type>
+									<outputDirectory>target/libs</outputDirectory>
+									<destFileName>MaslyakBank_Token-0.0.1-SNAPSHOT.jar</destFileName>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.example</groupId>
+									<artifactId>MaslyakBank_Account</artifactId>
+									<version>0.0.1-SNAPSHOT</version>
+									<type>jar</type>
+									<outputDirectory>target/libs</outputDirectory>
+									<destFileName>MaslyakBank_Account-0.0.1-SNAPSHOT.jar</destFileName>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.example</groupId>
+									<artifactId>Transaction</artifactId>
+									<version>0.0.1-SNAPSHOT</version>
+									<type>jar</type>
+									<outputDirectory>target/libs</outputDirectory>
+									<destFileName>Transaction-0.0.1-SNAPSHOT.jar</destFileName>
 								</artifactItem>
 							</artifactItems>
 						</configuration>

@@ -1,133 +1,133 @@
 databaseChangeLog:
 - changeSet:
-    id: 1750320648738-1
+    id: 1750412121840-1
     author: root (generated)
     changes:
     - dropForeignKeyConstraint:
         baseTableName: accounts
         constraintName: accounts_user_id_fkey
 - changeSet:
-    id: 1750320648738-2
+    id: 1750412121840-2
     author: root (generated)
     changes:
     - dropForeignKeyConstraint:
         baseTableName: cards
         constraintName: cards_account_id_fkey
 - changeSet:
-    id: 1750320648738-3
+    id: 1750412121840-3
     author: root (generated)
     changes:
     - dropForeignKeyConstraint:
         baseTableName: profiles
         constraintName: profiles_user_id_fkey
 - changeSet:
-    id: 1750320648738-4
+    id: 1750412121840-4
     author: root (generated)
     changes:
     - dropForeignKeyConstraint:
         baseTableName: transaction_details
         constraintName: transaction_details_from_card_id_fkey
 - changeSet:
-    id: 1750320648738-5
+    id: 1750412121840-5
     author: root (generated)
     changes:
     - dropForeignKeyConstraint:
         baseTableName: transaction_details
         constraintName: transaction_details_to_card_id_fkey
 - changeSet:
-    id: 1750320648738-6
+    id: 1750412121840-6
     author: root (generated)
     changes:
     - dropForeignKeyConstraint:
         baseTableName: transaction_details
         constraintName: transaction_details_transaction_id_fkey
 - changeSet:
-    id: 1750320648738-7
+    id: 1750412121840-7
     author: root (generated)
     changes:
     - dropForeignKeyConstraint:
         baseTableName: transactions
         constraintName: transactions_from_account_id_fkey
 - changeSet:
-    id: 1750320648738-8
+    id: 1750412121840-8
     author: root (generated)
     changes:
     - dropForeignKeyConstraint:
         baseTableName: transactions
         constraintName: transactions_to_account_id_fkey
 - changeSet:
-    id: 1750320648738-9
+    id: 1750412121840-9
     author: root (generated)
     changes:
     - dropForeignKeyConstraint:
         baseTableName: user_token
         constraintName: user_token_user_id_fkey
 - changeSet:
-    id: 1750320648738-10
+    id: 1750412121840-10
     author: root (generated)
     changes:
     - dropUniqueConstraint:
         constraintName: accounts_account_number_key
         tableName: accounts
 - changeSet:
-    id: 1750320648738-11
+    id: 1750412121840-11
     author: root (generated)
     changes:
     - dropUniqueConstraint:
         constraintName: accounts_user_id_key
         tableName: accounts
 - changeSet:
-    id: 1750320648738-12
+    id: 1750412121840-12
     author: root (generated)
     changes:
     - dropUniqueConstraint:
         constraintName: cards_card_number_key
         tableName: cards
 - changeSet:
-    id: 1750320648738-13
+    id: 1750412121840-13
     author: root (generated)
     changes:
     - dropUniqueConstraint:
         constraintName: profiles_user_id_key
         tableName: profiles
 - changeSet:
-    id: 1750320648738-14
+    id: 1750412121840-14
     author: root (generated)
     changes:
     - dropTable:
         tableName: accounts
 - changeSet:
-    id: 1750320648738-15
+    id: 1750412121840-15
     author: root (generated)
     changes:
     - dropTable:
         tableName: cards
 - changeSet:
-    id: 1750320648738-16
+    id: 1750412121840-16
     author: root (generated)
     changes:
     - dropTable:
         tableName: profiles
 - changeSet:
-    id: 1750320648738-17
+    id: 1750412121840-17
     author: root (generated)
     changes:
     - dropTable:
         tableName: transaction_details
 - changeSet:
-    id: 1750320648738-18
+    id: 1750412121840-18
     author: root (generated)
     changes:
     - dropTable:
         tableName: transactions
 - changeSet:
-    id: 1750320648738-19
+    id: 1750412121840-19
     author: root (generated)
     changes:
     - dropTable:
         tableName: user_token
 - changeSet:
-    id: 1750320648738-20
+    id: 1750412121840-20
     author: root (generated)
     changes:
     - dropTable:

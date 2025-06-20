@@ -51,7 +51,6 @@ RUN curl --fail -L -o /opt/liquibase/lib/liquibase-hibernate6-4.25.0.jar https:/
 
 # PostgreSQL драйвер (версия из pom)
 RUN curl --fail -L -o /opt/liquibase/lib/postgresql-42.7.2.jar https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.2/postgresql-42.7.2.jar
-
 RUN curl --fail -L -o /opt/liquibase/lib/ч  objenesis-3.4.jar https://repo1.maven.org/maven2/org/objenesis/objenesis/3.4/objenesis-3.4.jar
 
 
@@ -61,7 +60,7 @@ RUN curl --fail -L -o /opt/liquibase/lib/spring-orm-6.1.16.jar https://repo1.mav
 RUN curl --fail -L -o /opt/liquibase/lib/commons-logging-1.2.jar https://repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.jar
 
 # Копирование jar с entity-классами
-COPY target/MaslyakBank_Infrastructure-0.0.1-SNAPSHOT.jar /opt/liquibase/lib/
+COPY target/libs/MaslyakBank_Core-0.0.1-SNAPSHOT.jar /opt/liquibase/lib/
 
 # Установка прав доступа
 RUN chmod +x /opt/liquibase/liquibase
