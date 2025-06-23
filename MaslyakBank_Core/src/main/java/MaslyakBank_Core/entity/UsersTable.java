@@ -8,9 +8,8 @@ import lombok.Data;
 import java.util.Date;
 import java.util.UUID;
 
-
-@Table(name = "users")
 @Entity
+@Table(name = "users")
 @Data
 public class UsersTable {
 
