@@ -61,6 +61,9 @@ RUN curl --fail -L -o /opt/liquibase/lib/commons-logging-1.2.jar https://repo1.m
 
 # Копирование jar с entity-классами
 COPY target/libs/MaslyakBank_Core-0.0.1-SNAPSHOT.jar /opt/liquibase/lib/
+COPY target/libs/MaslyakBank_Account-0.0.1-SNAPSHOT.jar /opt/liquibase/lib/
+COPY target/libs/MaslyakBank_Token-0.0.1-SNAPSHOT.jar /opt/liquibase/lib/
+COPY target/libs/Transaction-0.0.1-SNAPSHOT.jar /opt/liquibase/lib/
 
 # Установка прав доступа
 RUN chmod +x /opt/liquibase/liquibase
