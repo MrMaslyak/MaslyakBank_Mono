@@ -2,7 +2,7 @@ package MaslyakBank_Token.service;
 
 
 import MaslyakBank_Token.dao.UserTokenDAO;
-import MaslyakBank_Token.entity.UserTokenTable;
+import MaslyakBank_Token.entity.TokenTable;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +23,7 @@ public class TokenManagmentService {
         return token;
     }
 
-    public UserTokenTable saveToken(UserTokenTable userToken) {
+    public TokenTable saveToken(TokenTable userToken) {
         return userTokenDAO.saveToken(userToken);
     }
 

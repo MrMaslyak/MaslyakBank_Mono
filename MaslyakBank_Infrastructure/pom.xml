@@ -90,7 +90,7 @@
 
 		<dependency>
 			<groupId>com.example</groupId>
-			<artifactId>Transaction</artifactId>
+			<artifactId>MaslyakBank_Transaction</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 

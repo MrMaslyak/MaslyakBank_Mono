@@ -1,24 +1,26 @@
 package MaslyakBank_Token.entity;
 
 
+import entity.UsersTable;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @Entity
 @Table(name = "user_token")
-public class UserTokenTable {
+public class TokenTable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
-    private Long id;
+    private UUID id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UsersTable user;
 
@@ -26,10 +28,10 @@ public class UserTokenTable {
     private String token;
 
     @Column(name = "is_valid")
-    private Boolean isValid;
+    private boolean isValid;
 
     @Column(name = "is_expired")
-    private Boolean isExpired;
+    private boolean isExpired;
 
     @Column(name = "created_at")
     private Date createdAt;

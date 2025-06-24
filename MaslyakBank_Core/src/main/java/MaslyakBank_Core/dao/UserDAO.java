@@ -2,7 +2,7 @@ package MaslyakBank_Core.dao;
 
 
 import MaslyakBank_Core.dto.DeleteUsersDTO;
-import MaslyakBank_Core.entity.UsersTable;
+import entity.UsersTable;
 import lombok.AllArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

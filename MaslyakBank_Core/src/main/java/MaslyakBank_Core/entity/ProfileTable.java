@@ -1,5 +1,6 @@
 package MaslyakBank_Core.entity;
 
+import entity.UsersTable;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,9 +17,9 @@ public class ProfileTable {
     @Column(name = "id", nullable = false)
     private UUID id;
 
-    @Column(name = "user_id")
-    @OneToOne(cascade = CascadeType.ALL)
-    private UUID user_id;
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private UsersTable user;
 
     @Column(name = "first_name")
     private String firstName;
@@ -30,21 +31,21 @@ public class ProfileTable {
     private String city;
 
     @Column(name = "avatar_url")
-    private String avatar_url;
+    private String avatarUrl;
 
     @Column(name = "bio")
     private String bio;
 
     @Column(name = "birth_day")
-    private Date birth_day;
+    private Date birthDay;
 
     @Column(name = "is_completed")
-    private boolean is_completed;
+    private boolean isCompleted;
 
     @Column(name = "created_at")
-    private Date created_at;
+    private Date createdAt;
 
     @Column(name = "updated_at")
-    private Date updated_at;
+    private Date updatedAt;
 
 }

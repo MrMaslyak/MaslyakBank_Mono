@@ -1,7 +1,7 @@
 package MaslyakBank_Token.dao;
 
 
-import MaslyakBank_Token.entity.UserTokenTable;
+import MaslyakBank_Token.entity.TokenTable;
 import lombok.AllArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -14,7 +14,7 @@ public class UserTokenDAO {
 
     private final SessionFactory sessionFactory;
 
-    public UserTokenTable saveToken(UserTokenTable userToken) {
+    public TokenTable saveToken(TokenTable userToken) {
         Session session = null;
         Transaction transaction = null;
         try {

@@ -1,4 +1,4 @@
-package MaslyakBank_Account.config;
+package com.example.account.config;
 
 
 import org.springframework.beans.factory.annotation.Value;

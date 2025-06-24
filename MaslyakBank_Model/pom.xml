@@ -6,22 +6,14 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.4.5</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
-	<modules>
-		<module>MaslyakBank_Model</module>
-		<module>MaslyakBank_Account</module>
-		<module>MaslyakBank_Infrastructure</module>
-		<module>MaslyakBank_Token</module>
-		<module>MaslyakBank_Transaction</module>
-		<module>MaslyakBank_Core</module>
-	</modules>
 	<groupId>com.example</groupId>
-	<artifactId>MaslyakBank_Mono</artifactId>
+	<artifactId>MaslyakBank_Model</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>MaslyakBank_Mono</name>
-	<description>MaslyakBank_Mono</description>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
+	<name>MaslyakBank_Model</name>
+	<description>MaslyakBank_Model</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -36,7 +28,7 @@
 		<url/>
 	</scm>
 	<properties>
-		<java.version>21xx</java.version>
+		<java.version>21</java.version>
 	</properties>
 	<dependencies>
 
@@ -50,16 +42,9 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-orm</artifactId>
-		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -98,18 +83,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 			<version>3.4.5</version>
-		</dependency>
-		<dependency>
-			<groupId>org.liquibase</groupId>
-			<artifactId>liquibase-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>jakarta.annotation</groupId>
@@ -138,7 +114,6 @@
 			<artifactId>dotenv-java</artifactId>
 			<version>3.0.0</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct</artifactId>
@@ -152,16 +127,10 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.liquibase</groupId>
-			<artifactId>liquibase-core</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.liquibase.ext</groupId>
-			<artifactId>liquibase-hibernate5</artifactId>
-			<version>4.21.1</version> <!-- Совместимая версия -->
+			<artifactId>liquibase-hibernate6</artifactId>
+			<version>4.25.0</version>
 		</dependency>
-
-
 	</dependencies>
 
 	<build>
@@ -172,18 +141,6 @@
 				<version>3.0.0-M7</version>
 				<configuration>
 					<skipTests>true</skipTests>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
 				</configuration>
 			</plugin>
 			<plugin>

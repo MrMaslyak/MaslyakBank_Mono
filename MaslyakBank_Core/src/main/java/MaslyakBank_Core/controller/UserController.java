@@ -3,8 +3,8 @@ package MaslyakBank_Core.controller;
 
 import MaslyakBank_Core.dto.DeleteUsersDTO;
 import MaslyakBank_Core.dto.RegistrationRequestDTO;
-import MaslyakBank_Core.entity.UsersTable;
 import MaslyakBank_Core.service.UserService;
+import entity.UsersTable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

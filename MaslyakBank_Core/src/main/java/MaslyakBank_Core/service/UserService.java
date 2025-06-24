@@ -4,8 +4,8 @@ package MaslyakBank_Core.service;
 import MaslyakBank_Core.dao.UserDAO;
 import MaslyakBank_Core.dto.DeleteUsersDTO;
 import MaslyakBank_Core.dto.RegistrationRequestDTO;
-import MaslyakBank_Core.entity.UsersTable;
 import MaslyakBank_Core.mappers.UserMapper;
+import entity.UsersTable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package MaslyakBank_Core.entity;
+package entity;
 
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
@@ -30,7 +30,7 @@ public class UsersTable {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "phone_number")
+    @Column(name = "phone_number", length = 20)
     private String phoneNumber;
 
     @Column(name = "created_at")

@@ -2,7 +2,7 @@ package MaslyakBank_Core.mappers;
 
 
 import MaslyakBank_Core.dto.RegistrationRequestDTO;
-import MaslyakBank_Core.entity.UsersTable;
+import entity.UsersTable;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;

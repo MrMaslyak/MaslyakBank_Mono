@@ -1,4 +1,4 @@
-package MaslyakBank_Account;
+package com.example.account;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
