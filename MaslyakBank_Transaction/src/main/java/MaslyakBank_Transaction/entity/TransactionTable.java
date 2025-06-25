@@ -2,7 +2,9 @@ package MaslyakBank_Transaction.entity;
 
 
 
-import com.example.account.entity.AccountTable;
+
+
+import MaslyakBank_Account.entity.AccountTable;
 import enums.Currency;
 import enums.TransactionStatus;
 import jakarta.persistence.*;
