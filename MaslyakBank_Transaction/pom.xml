@@ -6,7 +6,7 @@
 		<groupId>com.example</groupId>
 		<artifactId>MaslyakBank_Mono</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
+		<relativePath>../pom.xml</relativePath> <!-- путь к родительскому pom.xml -->
 	</parent>
 	<groupId>com.example</groupId>
 	<artifactId>MaslyakBank_Transaction</artifactId>
