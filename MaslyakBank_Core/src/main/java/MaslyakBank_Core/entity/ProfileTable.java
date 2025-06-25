@@ -21,7 +21,6 @@ public class ProfileTable {
     @JoinColumn(name = "user_id")
     private UsersTable user;
 
-
     @Column(name = "first_name")
     private String firstName;
 

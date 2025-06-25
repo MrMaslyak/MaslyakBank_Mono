@@ -1,9 +1,6 @@
 package MaslyakBank_Transaction.entity;
 
 
-
-
-
 import MaslyakBank_Account.entity.AccountTable;
 import enums.Currency;
 import enums.TransactionStatus;
