@@ -1,5 +1,6 @@
 package entity;
 
+import enums.UserStatus;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -39,6 +40,8 @@ public class UsersTable {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
 
 }

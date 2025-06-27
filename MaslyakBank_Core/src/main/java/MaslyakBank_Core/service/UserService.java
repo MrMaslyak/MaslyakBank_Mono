@@ -6,6 +6,7 @@ import MaslyakBank_Core.dto.DeleteUsersDTO;
 import MaslyakBank_Core.dto.RegistrationRequestDTO;
 import MaslyakBank_Core.mappers.UserMapper;
 import entity.UsersTable;
+import enums.UserStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ public class UserService {
 
     public UsersTable registration(RegistrationRequestDTO dto) {
         UsersTable user = userMapper.toEntity(dto);
+        user.setStatus(UserStatus.REGISTERED);
         return userDAO.registrationUser(user);
     }
 
