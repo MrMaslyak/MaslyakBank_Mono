@@ -1,7 +1,7 @@
 package MaslyakBank_Core.service;
 
 
-import MaslyakBank_Core.dao.UserDAO;
+import MaslyakBank_Core.dao.UserSecurityDAO;
 import MaslyakBank_Core.dto.DeleteUsersDTO;
 import MaslyakBank_Core.dto.requests.LoginRequestDTO;
 import MaslyakBank_Core.dto.requests.RegistrationRequestDTO;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserDAO userDAO;
+    private final UserSecurityDAO userDAO;
     private final UserMapper userMapper;
 
     public ResponseDTO registration(RegistrationRequestDTO dto) {

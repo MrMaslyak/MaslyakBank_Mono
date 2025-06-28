@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @Repository
 @AllArgsConstructor
-public class UserDAO {
+public class UserSecurityDAO {
 
     private final SessionFactory sessionFactory;
 
@@ -39,26 +39,7 @@ public class UserDAO {
         }
     }
 
-    public UsersTable findById (UUID id){
-        Transaction   transaction = null;
-        Session  session = null;
-        try {
-            session = sessionFactory.openSession();
-            transaction = session.beginTransaction();
-            UsersTable user = session.find(UsersTable.class, id);
-            transaction.commit();
-            return user;
-        }catch (Exception e){
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw e;
-        }finally {
-            if (session != null) {
-                session.close();
-            }
-        }
-    }
+
 
     public DeleteUsersDTO deleteUser(DeleteUsersDTO dto) {
         Transaction   transaction = null;
@@ -88,25 +69,6 @@ public class UserDAO {
         }
     }
 
-    public void updateUser(UsersTable user) {
-        Transaction   transaction = null;
-        Session  session = null;
-        try {
-            session = sessionFactory.openSession();
-            transaction = session.beginTransaction();
-            session.merge(user);
-            transaction.commit();
-        }catch (Exception e){
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw e;
-        }finally {
-            if (session != null) {
-                session.close();
-            }
-        }
-    }
 
     public UsersTable login(LoginRequestDTO dto) {
         Transaction   transaction = null;

@@ -1,4 +1,4 @@
-package MaslyakBank_Account.config;
+package config;
 
 
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +13,7 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-@PropertySource("classpath:/application_account.properties")
+@PropertySource("classpath:/application_model.properties")
 public class HibernateConfig {
 
     @Value("${spring.datasource.url}")
@@ -52,7 +52,7 @@ public class HibernateConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setDataSource(dataSource);
-        factory.setPackagesToScan("MaslyakBank_Account.entity", "entity");
+        factory.setPackagesToScan("entity");
         factory.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         factory.setJpaProperties(getHibernateProperties());
         return factory;

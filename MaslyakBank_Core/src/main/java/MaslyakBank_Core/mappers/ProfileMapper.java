@@ -16,5 +16,5 @@ public interface ProfileMapper {
     @Mapping(target = "createdAt", expression = "java(new Date())")
     @Mapping(target = "updatedAt", expression = "java(new Date())")
     @Mapping(target = "completed", constant = "true")
-    ProfileTable toProfileTable(ProfileRequestDTO dto);
+    ProfileTable toEntity(ProfileRequestDTO dto);
 }
