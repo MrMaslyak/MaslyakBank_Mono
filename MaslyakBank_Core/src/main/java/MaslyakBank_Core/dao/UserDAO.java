@@ -2,6 +2,7 @@ package MaslyakBank_Core.dao;
 
 
 import MaslyakBank_Core.dto.DeleteUsersDTO;
+import MaslyakBank_Core.dto.requests.LoginRequestDTO;
 import entity.UsersTable;
 import lombok.AllArgsConstructor;
 import org.hibernate.Session;
@@ -87,4 +88,50 @@ public class UserDAO {
         }
     }
 
+    public void updateUser(UsersTable user) {
+        Transaction   transaction = null;
+        Session  session = null;
+        try {
+            session = sessionFactory.openSession();
+            transaction = session.beginTransaction();
+            session.merge(user);
+            transaction.commit();
+        }catch (Exception e){
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
+        }finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+    public UsersTable login(LoginRequestDTO dto) {
+        Transaction   transaction = null;
+        Session  session = null;
+        try {
+            session = sessionFactory.openSession();
+            transaction = session.beginTransaction();
+            UsersTable user = session.createQuery("FROM UsersTable WHERE email = :email AND password = :password AND login = :login", UsersTable.class)
+                    .setParameter("login", dto.getLogin())
+                    .setParameter("email", dto.getEmail())
+                    .setParameter("password", dto.getPassword())
+                    .getResultList()
+                    .stream().findFirst().orElse(null);
+            transaction.commit();
+            return user;
+        }catch (Exception e){
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
+        }finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+
+    }
 }

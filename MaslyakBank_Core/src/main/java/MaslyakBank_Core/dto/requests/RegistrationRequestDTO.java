@@ -1,4 +1,4 @@
-package MaslyakBank_Core.dto;
+package MaslyakBank_Core.dto.requests;
 
 
 import lombok.AllArgsConstructor;

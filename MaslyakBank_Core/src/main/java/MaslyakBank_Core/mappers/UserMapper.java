@@ -1,7 +1,7 @@
 package MaslyakBank_Core.mappers;
 
 
-import MaslyakBank_Core.dto.RegistrationRequestDTO;
+import MaslyakBank_Core.dto.requests.RegistrationRequestDTO;
 import entity.UsersTable;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

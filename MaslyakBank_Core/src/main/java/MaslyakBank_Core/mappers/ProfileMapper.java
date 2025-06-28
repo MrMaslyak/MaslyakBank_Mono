@@ -1,6 +1,6 @@
 package MaslyakBank_Core.mappers;
 
-import MaslyakBank_Core.dto.ProfileRequestDTO;
+import MaslyakBank_Core.dto.requests.ProfileRequestDTO;
 import MaslyakBank_Core.entity.ProfileTable;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

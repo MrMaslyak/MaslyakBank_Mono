@@ -1,6 +1,5 @@
-package MaslyakBank_Core.dto;
+package MaslyakBank_Core.dto.requests;
 
-import entity.UsersTable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -19,9 +18,6 @@ public class ProfileRequestDTO {
     private String city;
     private String avatarUrl;
     private String bio;
-    private String birthDay;
-
-    private Date createdAt;
-    private Date updatedAt;
+    private Date birthDay;
 
 }
