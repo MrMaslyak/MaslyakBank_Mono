@@ -12,5 +12,6 @@
     </changeSet>
     <include file="column-cardImage-cards.xml" relativeToChangelogFile="true"/>
     <include file="column-status-users.xml" relativeToChangelogFile="true"/>
+    <include file="column-type-cards.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

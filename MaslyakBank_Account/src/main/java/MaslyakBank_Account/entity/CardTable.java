@@ -1,6 +1,7 @@
 package MaslyakBank_Account.entity;
 
 
+import MaslyakBank_Account.enums.CardType;
 import enums.Currency;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -37,6 +38,9 @@ public class CardTable {
     @Enumerated(EnumType.STRING)
     @Column(name = "currency", length = 3, nullable = false)
     private Currency currency;
+
+    @Column(name = "card_type",  nullable = false)
+    private CardType cardType;
 
     @Column(name = "is_blocked", nullable = false)
     private boolean isBlocked;
