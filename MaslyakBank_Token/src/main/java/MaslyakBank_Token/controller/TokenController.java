@@ -2,10 +2,12 @@ package MaslyakBank_Token.controller;
 
 
 import MaslyakBank_Token.entity.TokenTable;
-import MaslyakBank_Token.service.TokenManagmentService;
+
+import MaslyakBank_Token.service.TokenService;
 import entity.UsersTable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,28 +15,15 @@ import java.util.Date;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/maslyakbank/tokenmanagment")
+@RequestMapping("/maslyakbank/tokenmanagment/token")
 public class TokenController {
 
-    private final TokenManagmentService tokenManagmentService;
+    private final TokenService tokenManagmentService;
 
-
-    @PostMapping("/create")
-    public StringBuilder createToken() {
-        return tokenManagmentService.createToken();
-    }
 
     @PostMapping("/save")
-    public void saveToken() {
-        TokenTable token = new TokenTable();
-        token.setToken(tokenManagmentService.createToken().toString());
-        token.setCreatedAt(new Date());
-        token.setUpdatedAt(new Date());
-        token.setValid(true);
-        token.setExpired(false);
-        token.setUser(new UsersTable());
-
-        tokenManagmentService.saveToken(token);
+    public void saveToken(@RequestBody UsersTable user) {
+        tokenManagmentService.saveToken(user);
     }
 
 

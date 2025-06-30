@@ -12,7 +12,7 @@ public class CardService {
 
     private final CardBuilder cardBuilder;
 
-    public CardTable createDefaultCardForAccount(AccountTable account) {
+    public CardTable createDefaultCard(AccountTable account) {
         return   cardBuilder
                 .withAccount(account)
                 .withDefaultCard()

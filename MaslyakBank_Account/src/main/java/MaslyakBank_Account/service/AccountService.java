@@ -9,9 +9,9 @@ import MaslyakBank_Account.mappers.AccountMapper;
 import dao.UserDAO;
 import entity.UsersTable;
 import enums.UserStatus;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -40,11 +40,10 @@ public class AccountService {
         userDAO.updateUser(user);
 
         return savedAccount;
-        //restTemplate между двумя сервисами
     }
 
     private void createCard(AccountTable account) {
-        CardTable cardDefault = cardService.createDefaultCardForAccount(account);
+        CardTable cardDefault = cardService.createDefaultCard(account);
         cardDAO.createCard(cardDefault);
     }
 }

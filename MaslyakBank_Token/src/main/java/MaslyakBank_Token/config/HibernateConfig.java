@@ -54,7 +54,7 @@ public class HibernateConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setDataSource(dataSource);
-        factory.setPackagesToScan("MaslyakBank_Token.entity");
+        factory.setPackagesToScan("MaslyakBank_Token.entity", "entity");
         factory.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         factory.setJpaProperties(getHibernateProperties());
         return factory;
