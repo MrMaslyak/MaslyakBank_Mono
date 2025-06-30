@@ -34,10 +34,10 @@ public class AccountService {
         }else {
             user.setStatus(UserStatus.PARTIALLY_COMPLETED);
         }
-        userDAO.updateUser(user);
 
         AccountTable savedAccount = accountDAO.saveAccount(account);
         createCard(savedAccount);
+        userDAO.updateUser(user);
 
         return savedAccount;
         //restTemplate между двумя сервисами
