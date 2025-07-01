@@ -1,6 +1,7 @@
 package MaslyakBank_Token.controller;
 
 
+import MaslyakBank_Token.dto.TokenRequestDTO;
 import MaslyakBank_Token.entity.TokenTable;
 
 import MaslyakBank_Token.service.TokenService;
@@ -22,8 +23,8 @@ public class TokenController {
 
 
     @PostMapping("/save")
-    public void saveToken(@RequestBody UsersTable user) {
-        tokenManagmentService.saveToken(user);
+    public void saveToken(@RequestBody TokenRequestDTO dto) {
+        tokenManagmentService.saveToken(dto);
     }
 
 

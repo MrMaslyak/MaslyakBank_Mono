@@ -2,7 +2,9 @@ package MaslyakBank_Token.service;
 
 
 import MaslyakBank_Token.dao.UserTokenDAO;
+import MaslyakBank_Token.dto.TokenRequestDTO;
 import MaslyakBank_Token.entity.TokenTable;
+import dao.UserDAO;
 import entity.UsersTable;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import java.util.Random;
 public class TokenService {
 
     private UserTokenDAO userTokenDAO;
+    private UserDAO userDAO;
 
     public StringBuilder createToken() {
         Random random = new Random();
@@ -25,7 +28,8 @@ public class TokenService {
         return token;
     }
 
-    public TokenTable saveToken(UsersTable user) {
+    public TokenTable saveToken(TokenRequestDTO dto) {
+        UsersTable user = userDAO.findById(dto.getUserId());
         TokenTable token = new TokenTable();
         token.setUser(user);
         token.setToken(createToken().toString());

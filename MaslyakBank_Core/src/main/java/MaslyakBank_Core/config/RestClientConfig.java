@@ -11,7 +11,7 @@ public class RestClientConfig {
     @Bean
     public RestClient tokenServiceRestClient() {
         return RestClient.builder()
-                .baseUrl("http://localhost:1230/maslyakbank/tokenmanagment/token")
+                .baseUrl("http://maslyakbank-token:8080/maslyakbank/tokenmanagment/token")
                 .build();
     }
 }
