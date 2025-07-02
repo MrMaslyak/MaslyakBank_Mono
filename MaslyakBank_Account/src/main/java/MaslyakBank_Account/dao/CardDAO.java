@@ -20,7 +20,7 @@ public class CardDAO {
         try {
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
-            session.persist(card);
+            session.merge(card);
             transaction.commit();
             return card;
         } catch (Exception e) {

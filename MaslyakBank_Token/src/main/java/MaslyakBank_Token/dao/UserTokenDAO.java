@@ -20,7 +20,7 @@ public class UserTokenDAO {
         try {
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
-            session.persist(userToken);
+            session.merge(userToken);
             transaction.commit();
             return userToken;
         } catch (Exception e) {

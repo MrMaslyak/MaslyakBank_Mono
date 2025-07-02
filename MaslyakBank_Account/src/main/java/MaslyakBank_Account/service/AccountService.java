@@ -9,9 +9,11 @@ import MaslyakBank_Account.mappers.AccountMapper;
 import dao.UserDAO;
 import entity.UsersTable;
 import enums.UserStatus;
+
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import system.VerificationUserStatus;
 
 @Service
 @AllArgsConstructor
@@ -22,6 +24,7 @@ public class AccountService {
     private final CardDAO cardDAO;
     private final UserDAO userDAO;
     private final CardService cardService;
+    private final VerificationUserStatus  verification;
 
 
     @Transactional
@@ -29,11 +32,9 @@ public class AccountService {
         UsersTable user = userDAO.findById(dto.getUserId());
         AccountTable account = accountMapper.toEntity(dto);
         account.setUser(user);
-        if (user.getStatus() == UserStatus.PARTIALLY_COMPLETED){
-            user.setStatus(UserStatus.COMPLETED);
-        }else {
-            user.setStatus(UserStatus.PARTIALLY_COMPLETED);
-        }
+
+
+        verification.checkStatus(user);
 
         AccountTable savedAccount = accountDAO.saveAccount(account);
         createCard(savedAccount);

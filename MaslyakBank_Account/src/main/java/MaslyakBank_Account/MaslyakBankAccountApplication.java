@@ -10,7 +10,8 @@ import org.springframework.context.annotation.PropertySource;
 @ComponentScan(basePackages = {
 		"MaslyakBank_Account",
 		"MaslyakBank_Model",
-		"dao"
+		"dao",
+		"system"
 })
 @PropertySource("classpath:/application_account.properties")
 @EntityScan({"MaslyakBank_Account.entity", "entity"})
