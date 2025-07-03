@@ -35,5 +35,29 @@ public class UserTokenDAO {
         }
     }
 
+    public TokenTable findByToken (String token){
+        Session session = null;
+        Transaction transaction = null;
+        try {
+            session = sessionFactory.openSession();
+            transaction = session.beginTransaction();
+            TokenTable result = session.createQuery(
+                            "FROM TokenTable WHERE token = :token", TokenTable.class)
+                    .setParameter("token", token)
+                    .uniqueResult();
+            transaction.commit();
+            return result;
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
 
 }

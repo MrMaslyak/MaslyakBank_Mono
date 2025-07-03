@@ -3,8 +3,10 @@ package MaslyakBank_Token.service;
 
 import MaslyakBank_Token.dao.UserTokenDAO;
 import MaslyakBank_Token.dto.TokenRequestDTO;
+import MaslyakBank_Token.dto.TokenValidationResponseDTO;
 import MaslyakBank_Token.entity.TokenTable;
 import MaslyakBank_Token.enums.TokenRole;
+import MaslyakBank_Token.enums.TokenStatus;
 import MaslyakBank_Token.system.TokenBuilder;
 import dao.UserDAO;
 import entity.UsersTable;
@@ -12,6 +14,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.Random;
 
 @Service
@@ -41,6 +44,22 @@ public class TokenService {
                 .token(tokenBuilder::createRegistToken)
                 .build();
         return userTokenDAO.saveToken(registToken);
+    }
+
+    public TokenValidationResponseDTO validateToken(String token) {
+        TokenTable tokenTable = userTokenDAO.findByToken(token);
+
+        if (tokenTable == null) {
+            return new TokenValidationResponseDTO(false, "Token not found");
+        }
+        if (tokenTable.getStatus() != TokenStatus.ACTIVE) {
+            return new TokenValidationResponseDTO(false, "Token is not active");
+        }
+        if (tokenTable.getRole() != TokenRole.REGISTRATION) {
+            return new TokenValidationResponseDTO(false, "Token has invalid role");
+        }
+
+        return new TokenValidationResponseDTO(true, "Token is valid");
     }
 
 
