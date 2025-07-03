@@ -4,6 +4,7 @@ package MaslyakBank_Token.service;
 import MaslyakBank_Token.dao.UserTokenDAO;
 import MaslyakBank_Token.dto.TokenRequestDTO;
 import MaslyakBank_Token.entity.TokenTable;
+import MaslyakBank_Token.enums.TokenRole;
 import MaslyakBank_Token.system.TokenBuilder;
 import dao.UserDAO;
 import entity.UsersTable;
@@ -22,13 +23,24 @@ public class TokenService {
     private TokenBuilder tokenBuilder;
 
 
-    public TokenTable saveToken(TokenRequestDTO dto) {
+    public TokenTable saveAuthToken(TokenRequestDTO dto) {
         UsersTable user = userDAO.findById(dto.getUserId());
-        TokenTable token = tokenBuilder
+        TokenTable authToken = tokenBuilder
                 .withUser(user)
-                .authToken()
+                .withRole(TokenRole.AUTH)
+                .token(tokenBuilder::createAuthToken)
                 .build();
-        return userTokenDAO.saveToken(token);
+        return userTokenDAO.saveToken(authToken);
+    }
+
+    public TokenTable saveRegistrationToken(TokenRequestDTO dto) {
+        UsersTable user = userDAO.findById(dto.getUserId());
+        TokenTable registToken = tokenBuilder
+                .withUser(user)
+                .withRole(TokenRole.REGISTRATION)
+                .token(tokenBuilder::createRegistToken)
+                .build();
+        return userTokenDAO.saveToken(registToken);
     }
 
 

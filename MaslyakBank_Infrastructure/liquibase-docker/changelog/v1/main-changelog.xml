@@ -13,5 +13,7 @@
     <include file="column-cardImage-cards.xml" relativeToChangelogFile="true"/>
     <include file="column-status-users.xml" relativeToChangelogFile="true"/>
     <include file="column-type-cards.xml" relativeToChangelogFile="true"/>
+    <include file="column-status-usertoken.xml" relativeToChangelogFile="true"/>
+    <include file="column-role-usertoken.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

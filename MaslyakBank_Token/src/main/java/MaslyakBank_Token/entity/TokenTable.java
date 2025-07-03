@@ -1,6 +1,8 @@
 package MaslyakBank_Token.entity;
 
 
+import MaslyakBank_Token.enums.TokenRole;
+import MaslyakBank_Token.enums.TokenStatus;
 import entity.UsersTable;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -32,6 +34,14 @@ public class TokenTable {
 
     @Column(name = "is_expired")
     private boolean isExpired;
+
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private TokenStatus status;
+
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private TokenRole role;
 
     @Column(name = "created_at")
     private Date createdAt;

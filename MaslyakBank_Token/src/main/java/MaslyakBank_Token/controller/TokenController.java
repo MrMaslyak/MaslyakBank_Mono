@@ -22,9 +22,14 @@ public class TokenController {
     private final TokenService tokenManagmentService;
 
 
-    @PostMapping("/save")
-    public void saveToken(@RequestBody TokenRequestDTO dto) {
-        tokenManagmentService.saveToken(dto);
+    @PostMapping("/auth/save")
+    public void saveAuthToken(@RequestBody TokenRequestDTO dto) {
+        tokenManagmentService.saveAuthToken(dto);
+    }
+
+    @PostMapping("/registration/save")
+    public void saveRegistrationToken(@RequestBody TokenRequestDTO dto) {
+        tokenManagmentService.saveRegistrationToken(dto);
     }
 
 

@@ -30,6 +30,9 @@ public class UserService {
         UsersTable user = userMapper.toEntity(dto);
         user.setStatus(UserStatus.REGISTERED);
         UsersTable savedUser = userDAO.registrationUser(user);
+
+        sendToken(user, "/registration/save");
+
         return new ResponseDTO("Registration", true, savedUser);
     }
 
@@ -48,15 +51,16 @@ public class UserService {
             return new ResponseDTO("Registration is not completed", false, user);
         }
 
-        sendToken(user);
+
+        sendToken(user, "/auth/save");
 
         return new ResponseDTO("Login", true, user);
     }
 
-    private void sendToken(UsersTable user) {
+    private void sendToken(UsersTable user, String uri) {
         TokenRequestDTO tokenDTO = new TokenRequestDTO(user.getId());
         tokenRestClient.post()
-                .uri("/save")
+                .uri(uri)
                 .body(tokenDTO)
                 .retrieve()
                 .toBodilessEntity();
