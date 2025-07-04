@@ -37,17 +37,24 @@ public class ProfileService {
     }
 
     private void validationToken(String token) {
-        TokenValidationResponseDTO response = tokenRestClient.post()
-                .uri("/validation")
-                .header("Maslyak-Token", token)
-                .retrieve()
-                .body(TokenValidationResponseDTO.class);
+        try {
+            TokenValidationResponseDTO response = tokenRestClient.post()
+                    .uri("/validation")
+                    .header("Maslyak-Token", token)
+                    .retrieve()
+                    .body(TokenValidationResponseDTO.class);
 
-        if (response == null || !response.isValid()) {
-            throw new RuntimeException("Token is not valid: " +
-                    (response != null ? response.getMessage() : "no response body"));
+            if (response == null || !response.isValid()) {
+                throw new RuntimeException("Token is not valid: " +
+                        (response != null ? response.getMessage() : "no response body"));
+            }
+
+        } catch (org.springframework.web.client.HttpClientErrorException ex) {
+            throw new RuntimeException("Token validation failed with status: " + ex.getStatusCode()
+                    + ", body: " + ex.getResponseBodyAsString());
         }
     }
+
 
 
 
