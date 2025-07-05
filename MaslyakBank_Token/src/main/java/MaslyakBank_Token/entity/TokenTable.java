@@ -26,7 +26,7 @@ public class TokenTable {
     @JoinColumn(name = "user_id", nullable = false)
     private UsersTable user;
 
-    @Column(name = "token")
+    @Column(name = "token",  unique = true, nullable = false)
     private String token;
 
     @Column(name = "is_valid")

@@ -10,8 +10,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ProfileRequestDTO {
 
-    private UUID userId;
-
     private String firstName;
     private String lastName;
 
