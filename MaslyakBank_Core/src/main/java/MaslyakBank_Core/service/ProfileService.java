@@ -2,11 +2,10 @@ package MaslyakBank_Core.service;
 
 import MaslyakBank_Core.dao.ProfileDAO;
 import MaslyakBank_Core.dto.requests.ProfileRequestDTO;
-import MaslyakBank_Core.dto.requests.TokenRequestDTO;
-import MaslyakBank_Core.dto.response.ResponseDTO;
 import MaslyakBank_Core.entity.ProfileTable;
 import MaslyakBank_Core.mappers.ProfileMapper;
 import dao.UserDAO;
+import dto.TokenRequestDTO;
 import entity.UsersTable;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

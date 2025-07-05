@@ -7,12 +7,14 @@ import MaslyakBank_Account.entity.AccountTable;
 import MaslyakBank_Account.entity.CardTable;
 import MaslyakBank_Account.mappers.AccountMapper;
 import dao.UserDAO;
+import dto.TokenRequestDTO;
 import entity.UsersTable;
-import enums.UserStatus;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClient;
 import system.VerificationUserStatus;
 
 @Service
@@ -25,11 +27,12 @@ public class AccountService {
     private final UserDAO userDAO;
     private final CardService cardService;
     private final VerificationUserStatus  verification;
+    private RestClient tokenRestClient;
 
 
     @Transactional
-    public AccountTable createAccount(AccountRequestDTO dto) {
-        UsersTable user = userDAO.findById(dto.getUserId());
+    public AccountTable createAccount(AccountRequestDTO dto, String token) {
+        UsersTable user = validationToken(token);
         AccountTable account = accountMapper.toEntity(dto);
         account.setUser(user);
 
@@ -46,5 +49,20 @@ public class AccountService {
     private void createCard(AccountTable account) {
         CardTable cardDefault = cardService.createDefaultCard(account);
         cardDAO.createCard(cardDefault);
+    }
+
+    private UsersTable validationToken(String token) {
+        try {
+            TokenRequestDTO dto = tokenRestClient.post()
+                    .uri("/validation")
+                    .header("Maslyak-Token", token)
+                    .retrieve()
+                    .body(TokenRequestDTO.class);
+
+            return userDAO.findById(dto.getUserId());
+
+        } catch (HttpClientErrorException ex) {
+            throw new RuntimeException("Token validation failed: " + ex.getResponseBodyAsString());
+        }
     }
 }

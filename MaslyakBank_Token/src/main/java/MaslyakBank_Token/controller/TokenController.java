@@ -1,9 +1,8 @@
 package MaslyakBank_Token.controller;
 
 
-import MaslyakBank_Token.dto.TokenRequestDTO;
-
 import MaslyakBank_Token.service.TokenService;
+import dto.TokenRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

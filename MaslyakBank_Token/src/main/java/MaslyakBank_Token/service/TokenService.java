@@ -2,19 +2,15 @@ package MaslyakBank_Token.service;
 
 
 import MaslyakBank_Token.dao.UserTokenDAO;
-import MaslyakBank_Token.dto.ResponseDTO;
-import MaslyakBank_Token.dto.TokenRequestDTO;
 import MaslyakBank_Token.entity.TokenTable;
 import MaslyakBank_Token.enums.TokenRole;
-import MaslyakBank_Token.enums.TokenStatus;
 import MaslyakBank_Token.system.TokenBuilder;
 import MaslyakBank_Token.system.TokenValidator;
 import dao.UserDAO;
+import dto.TokenRequestDTO;
 import entity.UsersTable;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 @AllArgsConstructor

@@ -11,7 +11,8 @@ import org.springframework.context.annotation.PropertySource;
 		"MaslyakBank_Core",
 		"MaslyakBank_Model",
 		"dao",
-		"system"
+		"system",
+		"dto"
 })
 @PropertySource("classpath:/application_core.properties")
 @EntityScan({"MaslyakBank_Core.entity", "entity"})
