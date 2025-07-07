@@ -59,6 +59,7 @@ public class AccountService {
                     .retrieve()
                     .body(TokenRequestDTO.class);
 
+            assert dto != null;
             return userDAO.findById(dto.getUserId());
 
         } catch (HttpClientErrorException ex) {
