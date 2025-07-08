@@ -19,3 +19,4 @@ public class ProfileController {
            return profileService.createProfile(dto, token);
         }
 }
+ч
