@@ -1,8 +1,8 @@
 package MaslyakBank_Token.controller;
 
 
+import MaslyakBank_Token.dto.JwtTokenRequestDTO;
 import MaslyakBank_Token.service.TokenService;
-import dto.TokenRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,21 +13,12 @@ public class TokenController {
 
     private final TokenService tokenManagmentService;
 
-
-    @PostMapping("/auth/save")
-    public void saveAuthToken(@RequestBody TokenRequestDTO dto) {
-        tokenManagmentService.saveAuthToken(dto);
+    @PostMapping("/create")
+    public String createToken(JwtTokenRequestDTO dto) {
+        return tokenManagmentService.getToken(dto);
     }
 
-    @PostMapping("/registration/save")
-    public void saveRegistrationToken(@RequestBody TokenRequestDTO dto) {
-        tokenManagmentService.saveRegistrationToken(dto);
-    }
 
-    @PostMapping("/validation")
-    public TokenRequestDTO validateToken(@RequestHeader("Maslyak-Token") String token) {
-        return tokenManagmentService.validateToken(token);
-    }
 
 
 }

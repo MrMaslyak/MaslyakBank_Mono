@@ -10,5 +10,5 @@ public class ResponseDTO {
 
     private String message;
     private boolean success;
-    private UsersTable user;
+    private String token;
 }

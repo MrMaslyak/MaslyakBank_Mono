@@ -10,6 +10,7 @@ import org.springframework.context.annotation.PropertySource;
 @ComponentScan(basePackages = {
 		"MaslyakBank_Core",
 		"MaslyakBank_Model",
+		"MaslyakBank_Token",
 		"dao",
 		"system",
 		"dto"

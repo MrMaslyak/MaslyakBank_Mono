@@ -2,11 +2,10 @@ package MaslyakBank_Core.controller;
 
 
 import MaslyakBank_Core.dto.DeleteUsersDTO;
-import MaslyakBank_Core.dto.requests.LoginRequestDTO;
+import MaslyakBank_Core.dto.requests.JwtTokenRequestDTO;
 import MaslyakBank_Core.dto.requests.RegistrationRequestDTO;
 import MaslyakBank_Core.dto.response.ResponseDTO;
 import MaslyakBank_Core.service.UserService;
-import entity.UsersTable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +18,8 @@ public class UserController {
 
     private final UserService userService;
 
+
+
     @PostMapping("/registration")
     public ResponseEntity<ResponseDTO> registration(@RequestBody RegistrationRequestDTO dto) {
         ResponseDTO response = userService.registration(dto);
@@ -26,14 +27,9 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseDTO> login(@RequestBody LoginRequestDTO dto) {
-        ResponseDTO response = userService.login(dto);
-
-        if (!response.isSuccess()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-        }
-
-        return ResponseEntity.ok(response);
+    public ResponseDTO login(@RequestBody JwtTokenRequestDTO dto) {
+        String token = userService.requestToken(dto);
+        return new ResponseDTO("Login successful", true, token);
     }
 
     @DeleteMapping("/delete")

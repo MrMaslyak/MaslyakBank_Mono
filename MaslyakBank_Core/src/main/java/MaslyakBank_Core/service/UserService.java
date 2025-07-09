@@ -3,11 +3,10 @@ package MaslyakBank_Core.service;
 
 import MaslyakBank_Core.dao.UserSecurityDAO;
 import MaslyakBank_Core.dto.DeleteUsersDTO;
-import MaslyakBank_Core.dto.requests.LoginRequestDTO;
+import MaslyakBank_Core.dto.requests.JwtTokenRequestDTO;
 import MaslyakBank_Core.dto.requests.RegistrationRequestDTO;
 import MaslyakBank_Core.dto.response.ResponseDTO;
 import MaslyakBank_Core.mappers.UserMapper;
-import dto.TokenRequestDTO;
 import entity.UsersTable;
 import enums.UserStatus;
 import lombok.AllArgsConstructor;
@@ -31,38 +30,19 @@ public class UserService {
         user.setStatus(UserStatus.REGISTERED);
         UsersTable savedUser = userDAO.registrationUser(user);
 
-        sendToken(user, "/registration/save");
-
-        return new ResponseDTO("Registration", true, savedUser);
+        return null;
     }
 
     public DeleteUsersDTO deleteUser(DeleteUsersDTO login) {
         return userDAO.deleteUser(login);
     }
 
-    public ResponseDTO login(LoginRequestDTO dto) {
-        UsersTable user = userDAO.login(dto);
-
-        if (user == null) {
-            return new ResponseDTO("User not found or credentials incorrect", false, null);
-        }
-
-        if (user.getStatus() != UserStatus.COMPLETED) {
-            return new ResponseDTO("Registration is not completed", false, user);
-        }
-
-
-        sendToken(user, "/auth/save");
-
-        return new ResponseDTO("Login", true, user);
-    }
-
-    private void sendToken(UsersTable user, String uri) {
-        TokenRequestDTO tokenDTO = new TokenRequestDTO(user.getId());
-        tokenRestClient.post()
-                .uri(uri)
-                .body(tokenDTO)
+    public String requestToken(JwtTokenRequestDTO  dto) {
+        return tokenRestClient.post()
+                .uri("/create")
+                .body(dto)
                 .retrieve()
-                .toBodilessEntity();
+                .body(String.class);
     }
+
 }

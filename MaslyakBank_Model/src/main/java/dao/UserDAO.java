@@ -36,6 +36,27 @@ public class UserDAO {
         }
     }
 
+    public UsersTable findByLogin (String login){
+        Transaction transaction = null;
+        Session session = null;
+        try {
+            session = sessionFactory.openSession();
+            transaction = session.beginTransaction();
+            UsersTable user = session.find(UsersTable.class, login);
+            transaction.commit();
+            return user;
+        }catch (Exception e){
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
+        }finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
     public void updateUser(UsersTable user) {
         Transaction   transaction = null;
         Session  session = null;

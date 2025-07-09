@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TokenValidationResponseDTO {
-
-    private boolean valid;
-    private String message;
+public class JwtTokenRequestDTO {
+    private String login;
+    private String password;
 }

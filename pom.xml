@@ -36,6 +36,7 @@
 
 	<properties>
 		<java.version>21</java.version>
+		<spring-security.version>6.5.1</spring-security.version>
 	</properties>
 
 	<dependencyManagement>
@@ -133,6 +134,33 @@
 			<artifactId>liquibase-hibernate6</artifactId>
 			<version>4.21.1</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+			<version> 3.5.0</version>
+		</dependency>
+
+		<!-- JWT -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>0.11.5</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>0.11.5</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>0.11.5</version>
+			<scope>runtime</scope>
+		</dependency>
+
+
 	</dependencies>
 
 	</dependencyManagement>

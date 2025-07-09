@@ -2,12 +2,12 @@ package MaslyakBank_Core.dto.requests;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-public class LoginRequestDTO {
-
+@NoArgsConstructor
+public class JwtTokenRequestDTO {
     private String login;
     private String password;
-
 }
