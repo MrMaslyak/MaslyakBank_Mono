@@ -1,6 +1,8 @@
 package MaslyakBank_Core.config;
 
 
+import jakarta.persistence.EntityManagerFactory;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -65,5 +67,6 @@ public class HibernateConfig {
         properties.setProperty("hibernate.hbm2ddl.auto",DDL_AUTO);
         return properties;
     }
+
 
 }

@@ -10,10 +10,13 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-@AllArgsConstructor
 public class UserDAO {
 
     private final SessionFactory sessionFactory;
+
+    public UserDAO(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     public UsersTable findById (UUID id){
         Transaction transaction = null;

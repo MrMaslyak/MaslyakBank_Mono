@@ -1,36 +1,54 @@
 package MaslyakBank_Token.system;
 
-import MaslyakBank_Token.service.security.CustomUserDetailsService;
+import MaslyakBank_Token.dao.UserTokenDAO;
+import MaslyakBank_Token.entity.TokenTable;
+import dao.UserDAO;
+import entity.UsersTable;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import java.security.Key;
 import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
 
-    @Value("${jwt.secret}")
-    private String secret;
-    private final CustomUserDetailsService userDetailsService;
+    private final Key secret = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private final UserTokenDAO userTokenDAO;
+    private final UserDAO userDAO;
 
 
     public String generateToken(Authentication authentication){
         String username = authentication.getName();
-        Date now = new Date();
-        Date expiry = new Date(now.getTime() + 86400000); //1 day
-        return Jwts.builder()
+
+        UsersTable user = userDAO.findByLogin(username);
+        if (user == null) {
+            throw new IllegalStateException("User not found when generating token");
+        }
+
+        String token = Jwts.builder()
                 .setSubject(username)
-                .setIssuedAt(now)
-                .setExpiration(expiry)
-                .signWith(SignatureAlgorithm.HS256, secret)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 86400000))
+                .signWith(secret, SignatureAlgorithm.HS256)
                 .compact();
+
+        TokenTable tokenTable = new TokenBuilder()
+                .withUser(user)
+                .token(token)
+                .build();
+
+        userTokenDAO.saveToken(tokenTable);
+
+        return token;
     }
+
 
     public String extractUsername(String token) {
         return Jwts.parser()

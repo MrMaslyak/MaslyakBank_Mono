@@ -21,14 +21,14 @@ public class UserController {
 
 
     @PostMapping("/registration")
-    public ResponseEntity<ResponseDTO> registration(@RequestBody RegistrationRequestDTO dto) {
-        ResponseDTO response = userService.registration(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    public ResponseDTO registration(@RequestBody RegistrationRequestDTO dto) {
+        String token = userService.requestRegistrationToken(dto);
+        return new ResponseDTO("Registration successful", true, token);
     }
 
     @PostMapping("/login")
     public ResponseDTO login(@RequestBody JwtTokenRequestDTO dto) {
-        String token = userService.requestToken(dto);
+        String token = userService.requestAuthToken(dto);
         return new ResponseDTO("Login successful", true, token);
     }
 

@@ -14,8 +14,8 @@ public class AccountController {
     private final AccountService accountService;
 
     @PostMapping("/create")
-    public AccountTable createAccount(@RequestBody AccountRequestDTO dto,  @RequestHeader("Maslyak-Token") String token) {
-        return accountService.createAccount(dto, token);
+    public AccountTable createAccount(@RequestBody AccountRequestDTO dto) {
+        return accountService.createAccount(dto);
     }
 
 }

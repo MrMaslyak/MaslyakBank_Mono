@@ -5,10 +5,8 @@ import MaslyakBank_Core.dao.UserSecurityDAO;
 import MaslyakBank_Core.dto.DeleteUsersDTO;
 import MaslyakBank_Core.dto.requests.JwtTokenRequestDTO;
 import MaslyakBank_Core.dto.requests.RegistrationRequestDTO;
-import MaslyakBank_Core.dto.response.ResponseDTO;
 import MaslyakBank_Core.mappers.UserMapper;
 import entity.UsersTable;
-import enums.UserStatus;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -25,21 +23,23 @@ public class UserService {
 
 
 
-    public ResponseDTO registration(RegistrationRequestDTO dto) {
+    public String requestRegistrationToken(RegistrationRequestDTO  dto) {
         UsersTable user = userMapper.toEntity(dto);
-        user.setStatus(UserStatus.REGISTERED);
-        UsersTable savedUser = userDAO.registrationUser(user);
-
-        return null;
+        userDAO.registrationUser(user);
+        return tokenRestClient.post()
+                .uri("/registration/create")
+                .body(dto)
+                .retrieve()
+                .body(String.class);
     }
 
     public DeleteUsersDTO deleteUser(DeleteUsersDTO login) {
         return userDAO.deleteUser(login);
     }
 
-    public String requestToken(JwtTokenRequestDTO  dto) {
+    public String requestAuthToken(JwtTokenRequestDTO  dto) {
         return tokenRestClient.post()
-                .uri("/create")
+                .uri("/auth/create")
                 .body(dto)
                 .retrieve()
                 .body(String.class);

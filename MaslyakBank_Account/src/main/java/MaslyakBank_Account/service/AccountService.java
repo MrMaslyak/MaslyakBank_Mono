@@ -31,8 +31,8 @@ public class AccountService {
 
 
     @Transactional
-    public AccountTable createAccount(AccountRequestDTO dto, String token) {
-        UsersTable user = validationToken(token);
+    public AccountTable createAccount(AccountRequestDTO dto) {
+        UsersTable user = userDAO.findById();
         AccountTable account = accountMapper.toEntity(dto);
         account.setUser(user);
 
