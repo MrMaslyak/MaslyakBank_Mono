@@ -28,7 +28,7 @@ public class UserService {
         userDAO.registrationUser(user);
         return tokenRestClient.post()
                 .uri("/registration/create")
-                .body(dto)
+                .body(dto.getLogin())
                 .retrieve()
                 .body(String.class);
     }

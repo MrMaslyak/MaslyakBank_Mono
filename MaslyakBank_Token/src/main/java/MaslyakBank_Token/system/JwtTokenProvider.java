@@ -9,7 +9,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -21,19 +20,11 @@ public class JwtTokenProvider {
 
     private final Key secret = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private final UserTokenDAO userTokenDAO;
-    private final UserDAO userDAO;
 
 
-    public String generateToken(Authentication authentication){
-        String username = authentication.getName();
-
-        UsersTable user = userDAO.findByLogin(username);
-        if (user == null) {
-            throw new IllegalStateException("User not found when generating token");
-        }
-
+    public String generateToken(UsersTable user){
         String token = Jwts.builder()
-                .setSubject(username)
+                .setSubject(user.getLogin())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 86400000))
                 .signWith(secret, SignatureAlgorithm.HS256)

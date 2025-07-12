@@ -1,7 +1,6 @@
 package dao;
 
 import entity.UsersTable;
-import lombok.AllArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -45,7 +44,10 @@ public class UserDAO {
         try {
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
-            UsersTable user = session.find(UsersTable.class, login);
+            UsersTable user = session
+                    .createQuery("FROM UsersTable WHERE login = :login", UsersTable.class)
+                    .setParameter("login", login)
+                    .uniqueResult();
             transaction.commit();
             return user;
         }catch (Exception e){

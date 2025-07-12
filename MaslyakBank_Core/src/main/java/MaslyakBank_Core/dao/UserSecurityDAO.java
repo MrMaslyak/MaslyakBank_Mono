@@ -3,7 +3,6 @@ package MaslyakBank_Core.dao;
 
 import MaslyakBank_Core.dto.DeleteUsersDTO;
 import MaslyakBank_Core.dto.requests.JwtTokenRequestDTO;
-import MaslyakBank_Core.dto.requests.LoginRequestDTO;
 import entity.UsersTable;
 import lombok.AllArgsConstructor;
 import org.hibernate.Session;
@@ -11,15 +10,13 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 
-import java.util.UUID;
-
 @Repository
 @AllArgsConstructor
 public class UserSecurityDAO {
 
     private final SessionFactory sessionFactory;
 
-    public UsersTable registrationUser(UsersTable user) {
+    public void registrationUser(UsersTable user) {
         Transaction  transaction = null;
         Session  session = null;
         try {
@@ -27,7 +24,6 @@ public class UserSecurityDAO {
             transaction = session.beginTransaction();
             session.persist(user);
             transaction.commit();
-            return user;
         }catch (Exception e){
             if (transaction != null) {
                 transaction.rollback();
