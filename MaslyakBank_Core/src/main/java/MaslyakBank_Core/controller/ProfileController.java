@@ -14,8 +14,7 @@ public class ProfileController {
     private final ProfileService profileService;
 
         @PostMapping("/create")
-        public ProfileTable createProfile(@RequestBody ProfileRequestDTO dto,
-                                          @RequestHeader ("Maslyak-Token") String token) {
-           return profileService.createProfile(dto, token);
+        public ProfileTable createProfile(@RequestBody ProfileRequestDTO dto) {
+           return profileService.createProfile(dto);
         }
 }

@@ -1,5 +1,3 @@
-package MaslyakBank_Core;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -8,20 +6,18 @@ import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {
-		"MaslyakBank_Core",
+		"MaslyakBank_Token",
 		"MaslyakBank_Model",
 		"MaslyakBank_SecurityKernel",
-		"MaslyakBank_SecurityKernel",
 		"dao",
-		"system",
 		"dto"
 })
-@PropertySource("classpath:/application_core.properties")
-@EntityScan({"MaslyakBank_Core.entity", "entity"})
-public class MaslyakBankCoreApplication {
+@PropertySource("classpath:/application_token.properties")
+@EntityScan({"entity", "entity"})
+public class MaslyakBankTokenApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MaslyakBankCoreApplication.class, args);
+		SpringApplication.run(MaslyakBankTokenApplication.class, args);
 	}
 
 }

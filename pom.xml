@@ -15,6 +15,7 @@
 		<module>MaslyakBank_Token</module>
 		<module>MaslyakBank_Transaction</module>
 		<module>MaslyakBank_Core</module>
+		<module>MaslyakBank_SecurityKernel</module>
 	</modules>
 	<groupId>com.example</groupId>
 	<artifactId>MaslyakBank_Mono</artifactId>

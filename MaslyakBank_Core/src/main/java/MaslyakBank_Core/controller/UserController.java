@@ -7,8 +7,6 @@ import MaslyakBank_Core.dto.requests.RegistrationRequestDTO;
 import MaslyakBank_Core.dto.response.ResponseDTO;
 import MaslyakBank_Core.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
