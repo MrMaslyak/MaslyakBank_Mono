@@ -1,5 +1,7 @@
 package MaslyakBank_Core.config;
 
+import filter.JwtAuthFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -9,18 +11,28 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final JwtAuthFilter jwtAuthFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
        return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("**").permitAll() // доступ без авторизации
+                        .requestMatchers(
+                                "/maslyakbank/tokenmanagment/token/registration",
+                                "/maslyakbank/tokenmanagment/token/registration/create",
+                                "/maslyakbank/user/registration",
+                                "/maslyakbank/user/delete"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
+               .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
     @Bean

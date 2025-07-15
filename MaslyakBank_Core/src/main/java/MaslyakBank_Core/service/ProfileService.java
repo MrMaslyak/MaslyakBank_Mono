@@ -19,14 +19,14 @@ public class ProfileService {
     private ProfileDAO profileDAO;
     private UserDAO userDAO;
     private ProfileMapper profileMapper;
-    private VerificationUserStatus verification;
+   // private VerificationUserStatus verification;
 
     public ProfileTable createProfile(ProfileRequestDTO dto){
         ProfileTable profile = profileMapper.toEntity(dto);
         UsersTable user = SecurityUtil.getCurrentUser();
         profile.setUser(user);
 
-        verification.checkStatus(user);
+       // verification.checkStatus(user);
 
         userDAO.updateUser(user);
         return profileDAO.saveProfile(profile);

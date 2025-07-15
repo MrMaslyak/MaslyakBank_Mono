@@ -1,8 +1,8 @@
 package service.security;
 
 
-import details.CustomUserDetails;
 import dao.UserDAO;
+import details.CustomUserDetails;
 import entity.UsersTable;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

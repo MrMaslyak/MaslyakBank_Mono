@@ -7,8 +7,10 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -24,6 +26,7 @@ public class JwtTokenGenerator {
 
     private Key secret;
     private final UserTokenDAO userTokenDAO;
+    private final AuthenticationManager authenticationManager;
 
 
     @PostConstruct
@@ -48,4 +51,6 @@ public class JwtTokenGenerator {
 
         return token;
     }
+
+
 }

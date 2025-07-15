@@ -16,8 +16,6 @@ public class UserController {
 
     private final UserService userService;
 
-
-
     @PostMapping("/registration")
     public ResponseDTO registration(@RequestBody RegistrationRequestDTO dto) {
         String token = userService.requestRegistrationToken(dto);

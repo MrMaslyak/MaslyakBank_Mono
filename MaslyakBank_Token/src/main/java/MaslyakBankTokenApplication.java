@@ -9,8 +9,16 @@ import org.springframework.context.annotation.PropertySource;
 		"MaslyakBank_Token",
 		"MaslyakBank_Model",
 		"MaslyakBank_SecurityKernel",
+		"util",
+		"service",
 		"dao",
-		"dto"
+		"dto",
+		"system",
+		"config",
+		"filter",
+		"mappers",
+		"controller",
+		"enums"
 })
 @PropertySource("classpath:/application_token.properties")
 @EntityScan({"entity", "entity"})
