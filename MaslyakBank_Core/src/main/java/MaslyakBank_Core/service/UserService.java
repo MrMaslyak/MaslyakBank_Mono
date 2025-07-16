@@ -7,6 +7,7 @@ import MaslyakBank_Core.dto.requests.JwtTokenRequestDTO;
 import MaslyakBank_Core.dto.requests.RegistrationRequestDTO;
 import MaslyakBank_Core.mappers.UserMapper;
 import entity.UsersTable;
+import enums.UserStatus;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -25,6 +26,7 @@ public class UserService {
 
     public String requestRegistrationToken(RegistrationRequestDTO  dto) {
         UsersTable user = userMapper.toEntity(dto);
+        user.setStatus(UserStatus.REGISTERED);
         userDAO.registrationUser(user);
         return tokenRestClient.post()
                 .uri("/registration/create")
