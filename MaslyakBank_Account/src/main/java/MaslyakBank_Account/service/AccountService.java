@@ -6,7 +6,6 @@ import MaslyakBank_Account.dto.AccountRequestDTO;
 import MaslyakBank_Account.entity.AccountTable;
 import MaslyakBank_Account.entity.CardTable;
 import MaslyakBank_Account.mappers.AccountMapper;
-import MaslyakBank_Account.system.util.SecurityUtil;
 import dao.UserDAO;
 import dto.TokenRequestDTO;
 import entity.UsersTable;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 import system.VerificationUserStatus;
+import util.SecurityUtil;
 
 @Service
 @AllArgsConstructor
@@ -29,7 +29,6 @@ public class AccountService {
     private final UserDAO userDAO;
     private final CardService cardService;
     private final VerificationUserStatus  verification;
-    private RestClient tokenRestClient;
 
 
     @Transactional
@@ -51,21 +50,5 @@ public class AccountService {
     private void createCard(AccountTable account) {
         CardTable cardDefault = cardService.createDefaultCard(account);
         cardDAO.createCard(cardDefault);
-    }
-
-    private UsersTable validationToken(String token) {
-        try {
-            TokenRequestDTO dto = tokenRestClient.post()
-                    .uri("/validation")
-                    .header("Maslyak-Token", token)
-                    .retrieve()
-                    .body(TokenRequestDTO.class);
-
-            assert dto != null;
-            return userDAO.findById(dto.getUserId());
-
-        } catch (HttpClientErrorException ex) {
-            throw new RuntimeException("Token validation failed: " + ex.getResponseBodyAsString());
-        }
     }
 }
