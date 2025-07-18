@@ -6,3 +6,7 @@ databaseChangeLog:
   - include:
       file: changelog/v1/main-changelog.xml
       relativeToChangelogFile: true
+
+  - include:
+      file: changelog/v2/main-changelog.xml
+      relativeToChangelogFile: true
