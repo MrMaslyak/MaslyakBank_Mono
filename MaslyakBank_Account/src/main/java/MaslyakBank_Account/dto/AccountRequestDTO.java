@@ -10,10 +10,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class AccountRequestDTO {
 
-    private String accountNumber;
-
-    private double balance;
-
     private Currency currency;
 
 }

@@ -6,16 +6,13 @@ import MaslyakBank_Account.dto.AccountRequestDTO;
 import MaslyakBank_Account.entity.AccountTable;
 import MaslyakBank_Account.entity.CardTable;
 import MaslyakBank_Account.mappers.AccountMapper;
+import MaslyakBank_Account.system.builder.AccountBuilder;
 import dao.UserDAO;
-import dto.TokenRequestDTO;
 import entity.UsersTable;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestClient;
 import system.VerificationUserStatus;
 import util.SecurityUtil;
 
@@ -29,6 +26,7 @@ public class AccountService {
     private final UserDAO userDAO;
     private final CardService cardService;
     private final VerificationUserStatus  verification;
+    private final AccountBuilder accountBuilder;
 
 
     @Transactional
@@ -36,7 +34,6 @@ public class AccountService {
         AccountTable account = accountMapper.toEntity(dto);
         UsersTable user = SecurityUtil.getCurrentUser();
         account.setUser(user);
-
 
         verification.checkStatus(user);
 

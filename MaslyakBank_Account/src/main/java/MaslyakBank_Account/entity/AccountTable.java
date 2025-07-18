@@ -1,6 +1,7 @@
 package MaslyakBank_Account.entity;
 
 
+import MaslyakBank_Account.enums.AccountType;
 import entity.UsersTable;
 import enums.AccountStatus;
 import enums.Currency;
@@ -46,5 +47,9 @@ public class AccountTable {
 
     @Column(name = "updated_at", nullable = false)
     private Date updatedAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type", nullable = false)
+    private AccountType type;
 
 }

@@ -1,9 +1,10 @@
-package MaslyakBank_Account.system;
+package MaslyakBank_Account.system.builder;
 
 import MaslyakBank_Account.entity.AccountTable;
 import MaslyakBank_Account.entity.CardTable;
 import MaslyakBank_Account.enums.BinCode;
 import MaslyakBank_Account.enums.CardType;
+import MaslyakBank_Account.system.CardNumberGeneration;
 import enums.Currency;
 import org.springframework.stereotype.Component;
 
