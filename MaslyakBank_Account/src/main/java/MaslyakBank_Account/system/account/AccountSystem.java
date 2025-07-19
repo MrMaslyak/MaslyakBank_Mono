@@ -28,7 +28,7 @@ public class AccountSystem {
         return iban.toFormattedString();
     }
 
-    private String generateNumber(){
+    private String generateNumber(){ //todo alhorithm
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 19; i++) {
             sb.append((int)(Math.random() * 10));

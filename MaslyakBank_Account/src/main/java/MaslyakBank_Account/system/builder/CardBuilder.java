@@ -1,5 +1,6 @@
 package MaslyakBank_Account.system.builder;
 
+import MaslyakBank_Account.dto.AccountRequestDTO;
 import MaslyakBank_Account.entity.AccountTable;
 import MaslyakBank_Account.entity.CardTable;
 import MaslyakBank_Account.enums.BinCode;
@@ -21,12 +22,19 @@ public class CardBuilder {
         return this;
     }
 
-    public CardBuilder withDefaultCard() {
+    public CardBuilder withСurrency(AccountTable account) {
+        if (account.getCurrency() == null) {
+            throw new IllegalStateException("Нельзя создать карту: у счёта не указана валюта.");
+        }
+        card.setCurrency(account.getCurrency());
+        return this;
+    }
+
+    public CardBuilder defaultCard() {
         card.setCardNumber(CardSystem.generateCardNumber(BinCode.PRIVAT_MASTER.getValue()));
         card.setCvv(String.valueOf((int)(Math.random() * 900 + 100)));
         card.setExpiryDate(java.sql.Date.valueOf(LocalDate.now().plusYears(3)));
         card.setCardType(CardType.DEBIT);
-        card.setCurrency(Currency.UAH);
         card.set_expired(false);
         card.setBlocked(false);
         card.setCreatedAt(new Date());
