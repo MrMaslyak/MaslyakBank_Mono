@@ -6,6 +6,7 @@ import MaslyakBank_Account.dto.AccountRequestDTO;
 import MaslyakBank_Account.entity.AccountTable;
 import MaslyakBank_Account.entity.CardTable;
 import MaslyakBank_Account.mappers.AccountMapper;
+import MaslyakBank_Account.system.account.AccountSystem;
 import MaslyakBank_Account.system.builder.AccountBuilder;
 import dao.UserDAO;
 import entity.UsersTable;
@@ -20,7 +21,6 @@ import util.SecurityUtil;
 @AllArgsConstructor
 public class AccountService {
 
-    private final AccountMapper accountMapper;
     private final AccountDAO accountDAO;
     private final CardDAO cardDAO;
     private final UserDAO userDAO;
@@ -31,11 +31,15 @@ public class AccountService {
 
     @Transactional
     public AccountTable createAccount(AccountRequestDTO dto) {
-        AccountTable account = accountMapper.toEntity(dto);
         UsersTable user = SecurityUtil.getCurrentUser();
-        account.setUser(user);
-
         verification.checkStatus(user);
+
+        AccountTable account = accountBuilder
+                .newAccount()
+                .withUser(user)
+                .defaultAccount(dto)
+                .build();
+
 
         AccountTable savedAccount = accountDAO.saveAccount(account);
         createCard(savedAccount);

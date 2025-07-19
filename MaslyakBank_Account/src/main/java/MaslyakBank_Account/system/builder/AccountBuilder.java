@@ -1,11 +1,13 @@
 package MaslyakBank_Account.system.builder;
 
+import MaslyakBank_Account.dto.AccountRequestDTO;
 import MaslyakBank_Account.entity.AccountTable;
 import MaslyakBank_Account.enums.AccountType;
-import MaslyakBank_Account.system.account.AccountNumberGeneration;
+import MaslyakBank_Account.system.account.AccountSystem;
 import entity.UsersTable;
 import enums.AccountStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -14,8 +16,14 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class AccountBuilder {
 
-    private final AccountTable account;
-    private AccountNumberGeneration accountNG;
+    @Autowired
+    private AccountSystem accountSystem;
+    private AccountTable account;
+
+    public AccountBuilder newAccount() {
+        this.account = new AccountTable();
+        return this;
+    }
 
     public AccountBuilder withUser(UsersTable user) {
         account.setUser(user);
@@ -23,18 +31,17 @@ public class AccountBuilder {
     }
 
 
-    public AccountBuilder DefaultAccount() {
-        account.setAccountNumber(accountNG.generateNumber());
+    public AccountBuilder defaultAccount(AccountRequestDTO dto) {
+        account.setAccountNumber(accountSystem.generateIBAN());
         account.setStatus(AccountStatus.OPENED);
         account.setType(AccountType.CURRENT);
+        account.setCurrency(dto.getCurrency());
         account.setBalance(0.0);
         account.setBlocked(false);
         account.setCreatedAt(new Date());
         account.setUpdatedAt(new Date());
         return this;
     }
-
-
 
     public AccountTable build() {
         return account;

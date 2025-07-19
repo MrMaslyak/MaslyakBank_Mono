@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import java.util.Random;
 
 @Component
-public class CardNumberGeneration {
+public class CardSystem {
 
 
     public static String generateCardNumber(String bin) {

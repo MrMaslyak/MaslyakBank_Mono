@@ -25,7 +25,7 @@ public class AccountTable {
     @JoinColumn(name = "user_id", nullable = false)
     private UsersTable user;
 
-    @Column(name = "account_number", length = 20, unique = true, nullable = false)
+    @Column(name = "account_number", length = 29, unique = true, nullable = false)
     private String accountNumber;
 
     @Column(name = "balance")
