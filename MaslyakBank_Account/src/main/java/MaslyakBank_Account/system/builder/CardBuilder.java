@@ -15,18 +15,16 @@ import java.util.Date;
 @Component
 public class CardBuilder {
 
-    private final CardTable card = new CardTable();
+    private  CardTable card;
 
-    public CardBuilder withAccount(AccountTable account) {
-        card.setAccount(account);
+
+    public CardBuilder newCard() {
+        this.card = new CardTable();
         return this;
     }
 
-    public CardBuilder withСurrency(AccountTable account) {
-        if (account.getCurrency() == null) {
-            throw new IllegalStateException("Нельзя создать карту: у счёта не указана валюта.");
-        }
-        card.setCurrency(account.getCurrency());
+    public CardBuilder withAccount(AccountTable account) {
+        card.setAccount(account);
         return this;
     }
 

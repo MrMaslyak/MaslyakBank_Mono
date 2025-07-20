@@ -35,10 +35,6 @@ public class CardTable {
     @Column(name = "cvv", length = 3, nullable = false)
     private String cvv;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "currency", length = 3, nullable = false)
-    private Currency currency;
-
     @Column(name = "card_type",  nullable = false)
     private CardType cardType;
 

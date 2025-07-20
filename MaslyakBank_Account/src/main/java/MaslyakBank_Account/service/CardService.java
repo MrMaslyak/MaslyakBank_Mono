@@ -14,8 +14,8 @@ public class CardService {
 
     public CardTable createDefaultCard(AccountTable account) {
         return   cardBuilder
+                .newCard()
                 .withAccount(account)
-                .withСurrency(account)
                 .defaultCard()
                 .build();
     }
