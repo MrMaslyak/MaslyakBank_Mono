@@ -6,6 +6,11 @@ import org.apache.logging.log4j.Logger;
 import org.iban4j.*;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 @Component
@@ -28,12 +33,31 @@ public class AccountSystem {
         return iban.toFormattedString();
     }
 
-    private String generateNumber(){ //todo alhorithm
+    public static String generateNumber(){
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 19; i++) {
-            sb.append((int)(Math.random() * 10));
+        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMddHHmmssSSS"));
+        for (int i = 0; i < timestamp.length(); i++) {
+            int num = Integer.parseInt(timestamp.substring(i, i + 1));
+            if (num % 2 == 0) {
+                sb.append(num + 1);
+            } else {
+                sb.append(num);
+            }
         }
-        return sb.toString();
+        sb.append(timestamp);
+
+        List<Character> chars = new ArrayList<>();
+        for (int i = 0; i < sb.length(); i++) {
+            chars.add(sb.charAt(i));
+        }
+        Collections.shuffle(chars);
+
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < 19; i++) {
+            result.append(chars.get(i));
+        }
+
+        return result.toString();
     }
 
     public static boolean isValid(String ibanString) {
