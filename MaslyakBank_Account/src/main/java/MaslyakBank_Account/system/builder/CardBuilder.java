@@ -1,6 +1,6 @@
 package MaslyakBank_Account.system.builder;
 
-import MaslyakBank_Account.dto.AccountRequestDTO;
+import MaslyakBank_Account.dto.CardRequestDTO;
 import MaslyakBank_Account.entity.AccountTable;
 import MaslyakBank_Account.entity.CardTable;
 import MaslyakBank_Account.enums.BinCode;
@@ -33,6 +33,18 @@ public class CardBuilder {
         card.setCvv(String.valueOf((int)(Math.random() * 900 + 100)));
         card.setExpiryDate(java.sql.Date.valueOf(LocalDate.now().plusYears(3)));
         card.setCardType(CardType.DEBIT);
+        card.set_expired(false);
+        card.setBlocked(false);
+        card.setCreatedAt(new Date());
+        card.setUpdatedAt(new Date());
+        return this;
+    }
+
+    public CardBuilder card(CardRequestDTO dto) {
+        card.setCardNumber(CardSystem.generateCardNumber(BinCode.PRIVAT_MASTER.getValue()));
+        card.setCvv(String.valueOf((int)(Math.random() * 900 + 100)));
+        card.setExpiryDate(java.sql.Date.valueOf(LocalDate.now().plusYears(3)));
+        card.setCardType(dto.getCardType());
         card.set_expired(false);
         card.setBlocked(false);
         card.setCreatedAt(new Date());
