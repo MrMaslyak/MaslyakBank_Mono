@@ -1,11 +1,14 @@
 package MaslyakBank_Account.system.builder;
 
+import MaslyakBank_Account.dto.CardRequestDTO;
 import MaslyakBank_Account.entity.AccountTable;
 import MaslyakBank_Account.enums.AccountType;
+import MaslyakBank_Account.enums.CardType;
 import MaslyakBank_Account.system.account.IbanSystem;
 import entity.UsersTable;
 import enums.AccountStatus;
 import enums.Currency;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,23 +34,14 @@ public class AccountBuilder {
     }
 
 
-    public AccountBuilder defaultAccount() {
-        account.setCurrency(Currency.UAH);
-        account.setAccountNumber(ibanSystem.generateIBAN());
-        account.setStatus(AccountStatus.OPENED);
-        account.setType(AccountType.CURRENT);
-        account.setBalance(0.0);
-        account.setBlocked(false);
-        account.setCreatedAt(new Date());
-        account.setUpdatedAt(new Date());
-        return this;
+    public AccountBuilder account() {
+        return account(null);
     }
 
-    public AccountBuilder account(Currency currency) {
-        account.setCurrency(currency);
+    public AccountBuilder account(@Nullable CardRequestDTO dto) {
+        account.setCurrency(dto != null && dto.getCurrency() != null ? dto.getCurrency() : Currency.UAH);
         account.setAccountNumber(ibanSystem.generateIBAN());
         account.setStatus(AccountStatus.OPENED);
-        account.setType(AccountType.CURRENT);
         account.setBalance(0.0);
         account.setBlocked(false);
         account.setCreatedAt(new Date());

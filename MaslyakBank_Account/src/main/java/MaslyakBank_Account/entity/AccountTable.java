@@ -48,8 +48,6 @@ public class AccountTable {
     @Column(name = "updated_at", nullable = false)
     private Date updatedAt;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false)
-    private AccountType type;
+
 
 }
