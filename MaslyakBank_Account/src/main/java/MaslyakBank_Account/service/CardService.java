@@ -21,7 +21,7 @@ public class CardService {
         return   cardBuilder
                 .newCard()
                 .withAccount(account)
-                .defaultCard()
+                .card()
                 .build();
     }
 

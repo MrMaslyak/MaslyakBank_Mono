@@ -14,7 +14,7 @@ public class CardDAO {
     private final SessionFactory sessionFactory;
 
 
-    public CardTable createCard(CardTable card) {
+    public CardTable saveCard(CardTable card) {
         Session session = null;
         Transaction transaction = null;
         try {

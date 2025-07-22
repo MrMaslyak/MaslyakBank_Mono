@@ -7,6 +7,7 @@ import MaslyakBank_Account.enums.BinCode;
 import MaslyakBank_Account.enums.CardType;
 import MaslyakBank_Account.system.CardSystem;
 import enums.Currency;
+import jakarta.annotation.Nullable;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -28,30 +29,21 @@ public class CardBuilder {
         return this;
     }
 
-    public CardBuilder defaultCard() {
+    public CardBuilder card() {
+        return card(null);
+    }
+
+    public CardBuilder card(@Nullable CardRequestDTO dto) {
         card.setCardNumber(CardSystem.generateCardNumber(BinCode.PRIVAT_MASTER.getValue()));
         card.setCvv(String.valueOf((int)(Math.random() * 900 + 100)));
         card.setExpiryDate(java.sql.Date.valueOf(LocalDate.now().plusYears(3)));
-        card.setCardType(CardType.DEBIT);
+        card.setCardType(dto != null && dto.getCardType() != null ? dto.getCardType() : CardType.DEBIT);
         card.set_expired(false);
         card.setBlocked(false);
         card.setCreatedAt(new Date());
         card.setUpdatedAt(new Date());
         return this;
     }
-
-    public CardBuilder card(CardRequestDTO dto) {
-        card.setCardNumber(CardSystem.generateCardNumber(BinCode.PRIVAT_MASTER.getValue()));
-        card.setCvv(String.valueOf((int)(Math.random() * 900 + 100)));
-        card.setExpiryDate(java.sql.Date.valueOf(LocalDate.now().plusYears(3)));
-        card.setCardType(dto.getCardType());
-        card.set_expired(false);
-        card.setBlocked(false);
-        card.setCreatedAt(new Date());
-        card.setUpdatedAt(new Date());
-        return this;
-    }
-
 
 
     public CardTable build() {

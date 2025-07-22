@@ -18,9 +18,9 @@ public class CardController {
     private final CardDAO cardDAO;
 
     @PostMapping("/create")
-    public void createCard(@RequestBody CardRequestDTO dto) {
+    public CardTable createCard(@RequestBody CardRequestDTO dto) {
         UsersTable user = SecurityUtil.getCurrentUser();
         CardTable card = cardService.createCard(user, dto);
-        cardDAO.createCard(card);
+        return cardDAO.saveCard(card);
     }
 }

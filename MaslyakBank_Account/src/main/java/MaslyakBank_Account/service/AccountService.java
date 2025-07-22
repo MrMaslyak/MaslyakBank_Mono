@@ -51,6 +51,6 @@ public class AccountService {
 
     private void createCard(AccountTable account) {
         CardTable cardDefault = cardService.createDefaultCard(account);
-        cardDAO.createCard(cardDefault);
+        cardDAO.saveCard(cardDefault);
     }
 }
