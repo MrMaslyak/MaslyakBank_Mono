@@ -29,6 +29,10 @@ public class CardBuilder {
         return this;
     }
 
+    public CardBuilder card() {
+        return card(null);
+    }
+
     public CardBuilder card(@Nullable CardRequestDTO dto) {
         card.setCardNumber(CardSystem.generateCardNumber(BinCode.PRIVAT_MASTER.getValue()));
         card.setCvv(String.valueOf((int)(Math.random() * 900 + 100)));
