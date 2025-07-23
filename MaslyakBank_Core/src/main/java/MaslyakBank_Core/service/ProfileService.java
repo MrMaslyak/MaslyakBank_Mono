@@ -27,8 +27,6 @@ public class ProfileService {
         profile.setUser(user);
 
         verification.checkStatus(user);
-
-        userDAO.updateUser(user);
         return profileDAO.saveProfile(profile);
     }
 
