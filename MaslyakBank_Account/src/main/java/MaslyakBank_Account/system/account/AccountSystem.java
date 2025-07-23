@@ -16,11 +16,17 @@ public class AccountSystem {
     private final AccountFactory accountFactory;
 
     public AccountTable ensureAccount(UUID userId, CardRequestDTO dto) {
-        AccountTable existing = accountDAO.findByCurrency(userId, dto.getCurrency());
-        if (existing != null) {
-            return existing;
+        if (dto.getAccount_number() == null || dto.getAccount_number().isBlank()) {
+            return accountFactory.createAccount(userId, dto);
+        }else {
+            AccountTable account = accountDAO.findByIban(dto.getAccount_number());
+            if (account == null) {
+                return accountFactory.createAccount(userId, dto);
+            }
+            return account;
         }
-        return accountFactory.createAccount(userId, dto);
+
     }
+
 
 }

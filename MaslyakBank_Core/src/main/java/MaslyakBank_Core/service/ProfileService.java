@@ -17,7 +17,6 @@ import util.SecurityUtil;
 public class ProfileService {
 
     private ProfileDAO profileDAO;
-    private UserDAO userDAO;
     private ProfileMapper profileMapper;
     private VerificationUserStatus verification;
 
@@ -27,8 +26,6 @@ public class ProfileService {
         profile.setUser(user);
 
         verification.checkStatus(user);
-
-        userDAO.updateUser(user);
         return profileDAO.saveProfile(profile);
     }
 
