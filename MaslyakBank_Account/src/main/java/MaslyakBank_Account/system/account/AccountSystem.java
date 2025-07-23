@@ -23,6 +23,9 @@ public class AccountSystem {
             if (account == null) {
                 return accountFactory.createAccount(userId, dto);
             }
+            if (dto.getCurrency() != account.getCurrency()) {
+                throw new IllegalArgumentException("In this account -> Currency mismatch");
+            }
             return account;
         }
 
