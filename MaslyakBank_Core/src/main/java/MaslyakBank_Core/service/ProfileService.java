@@ -17,7 +17,6 @@ import util.SecurityUtil;
 public class ProfileService {
 
     private ProfileDAO profileDAO;
-    private UserDAO userDAO;
     private ProfileMapper profileMapper;
     private VerificationUserStatus verification;
 
