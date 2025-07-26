@@ -9,20 +9,22 @@ import MaslyakBank_Core.mappers.UserMapper;
 import entity.UsersTable;
 import enums.UserStatus;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
-
-
 @Service
-@AllArgsConstructor
 public class UserService {
 
+    private final RestClient tokenRestClient;
     private final UserSecurityDAO userDAO;
     private final UserMapper userMapper;
-    private final RestClient tokenRestClient;
 
-
+    public UserService(@Qualifier("tokenRestClient") RestClient tokenRestClient, UserSecurityDAO userDAO, UserMapper userMapper) {
+        this.tokenRestClient = tokenRestClient;
+        this.userDAO = userDAO;
+        this.userMapper = userMapper;
+    }
 
     public String requestRegistrationToken(RegistrationRequestDTO  dto) {
         UsersTable user = userMapper.toEntity(dto);

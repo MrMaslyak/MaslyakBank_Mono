@@ -17,4 +17,13 @@ public class SecurityUtil {
 
         throw new IllegalStateException("User not Authorized (utils)");
     }
+
+
+    public static String getCurrentToken() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.getDetails() instanceof String token) {
+            return token;
+        }
+        return null;
+    }
 }

@@ -47,6 +47,7 @@ public class CustomUserDetails implements UserDetails {
         return user;
     }
 
+
     @Override
     public boolean isEnabled() {
         return user.getStatus().name().equals("COMPLETED");
