@@ -14,6 +14,5 @@ public class VerificationUserStatus {
     public void checkStatus(UsersTable user) {
         user.setStatus(user.getStatus().next());
         userDAO.updateUser(user);
-
     }
 }

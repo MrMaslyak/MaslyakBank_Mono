@@ -16,11 +16,23 @@ public class AccountSystem {
     private final AccountFactory accountFactory;
 
     public AccountTable ensureAccount(UUID userId, CardRequestDTO dto) {
-        AccountTable existing = accountDAO.findByCurrency(userId, dto.getCurrency());
-        if (existing != null) {
-            return existing;
+        String iban = dto.getAccount_number();
+
+        if (iban == null || iban.isBlank()) {
+            return accountFactory.createAccount(userId, dto);
         }
-        return accountFactory.createAccount(userId, dto);
+
+        AccountTable account = accountDAO.findByIban(iban);
+        if (account == null) {
+            return accountFactory.createAccount(userId, dto);
+        }
+
+        if (!dto.getCurrency().equals(account.getCurrency())) {
+            throw new IllegalArgumentException("In this account -> Currency mismatch");
+        }
+
+        return account;
     }
+
 
 }

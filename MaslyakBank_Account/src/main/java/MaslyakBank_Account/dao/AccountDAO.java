@@ -61,4 +61,27 @@ public class AccountDAO {
         }
     }
 
+    public AccountTable findByIban(String ibanNumber){
+        Session session = null;
+        Transaction transaction = null;
+        try {
+            session = sessionFactory.openSession();
+            transaction = session.beginTransaction();
+
+            AccountTable account = session.createQuery(
+                            "FROM AccountTable WHERE accountNumber = :ibanNumber", AccountTable.class)
+                    .setParameter("ibanNumber", ibanNumber)
+                    .uniqueResult();
+
+            transaction.commit();
+            return account;
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            throw e;
+        } finally {
+            if (session != null) session.close();
+        }
+    }
+
+
 }
