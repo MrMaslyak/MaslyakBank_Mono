@@ -7,9 +7,7 @@ import MaslyakBank_Core.mappers.ProfileMapper;
 import dao.UserDAO;
 import entity.UsersTable;
 import enums.UserStatus;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import system.VerificationUserStatus;
@@ -39,36 +37,45 @@ public class ProfileService {
         this.userDAO = userDAO;
     }
 
-    public ProfileTable createProfile(ProfileRequestDTO dto){
+    public ProfileTable createProfile(ProfileRequestDTO dto) {
         UsersTable user = SecurityUtil.getCurrentUser();
         verification.checkStatus(user);
 
+        ProfileTable profile = createAndSaveProfile(dto, user);
+        createInitialAccount();
+
+        updateUserStatus(user, UserStatus.COMPLETED);
+
+        return profile;
+    }
+
+
+    private ProfileTable createAndSaveProfile(ProfileRequestDTO dto, UsersTable user) {
         ProfileTable profile = profileMapper.toEntity(dto);
         profile.setUser(user);
-        ProfileTable savedProfile = profileDAO.saveProfile(profile);
+        return profileDAO.saveProfile(profile);
+    }
 
+
+
+    private void updateUserStatus(UsersTable user, UserStatus status) {
+        user.setStatus(status);
+        userDAO.updateUser(user);
+    }
+
+
+    private void createInitialAccount() {
         try {
-            requestCreateAccount();
-        }catch (Exception e){
+            String token = SecurityUtil.getCurrentToken();
+            accountRestClient.post()
+                    .uri("/create")
+                    .header("Authorization", "Bearer " + token)
+                    .retrieve()
+                    .toBodilessEntity();
+        } catch (Exception e) {
             throw new IllegalStateException("Профиль создан, но не удалось создать счёт", e);
         }
-
-        user.setStatus(UserStatus.COMPLETED);
-        userDAO.updateUser(user);
-
-        return savedProfile;
     }
-
-    private void requestCreateAccount(){
-        String token = SecurityUtil.getCurrentToken();
-        accountRestClient.post()
-                .uri("/create")
-                .header("Authorization", "Bearer " + token)
-                .retrieve()
-                .toBodilessEntity();
-    }
-
-
 
 
 }
