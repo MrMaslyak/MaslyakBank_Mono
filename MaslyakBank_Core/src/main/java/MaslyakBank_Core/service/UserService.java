@@ -10,6 +10,7 @@ import entity.UsersTable;
 import enums.UserStatus;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -19,20 +20,32 @@ public class UserService {
     private final RestClient tokenRestClient;
     private final UserSecurityDAO userDAO;
     private final UserMapper userMapper;
+    private PasswordEncoder passwordEncoder;
 
-    public UserService(@Qualifier("tokenRestClient") RestClient tokenRestClient, UserSecurityDAO userDAO, UserMapper userMapper) {
+
+    public UserService(@Qualifier("tokenRestClient") RestClient tokenRestClient, UserSecurityDAO userDAO, UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.tokenRestClient = tokenRestClient;
         this.userDAO = userDAO;
         this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    public String requestRegistrationToken(RegistrationRequestDTO  dto) {
+    public String requestRegistrationToken(RegistrationRequestDTO dto) {
+        registerUser(dto);
+        return sendTokenRequest(dto.getLogin());
+    }
+
+    private void registerUser(RegistrationRequestDTO dto) {
         UsersTable user = userMapper.toEntity(dto);
+        user.setPasswordSalt(encodePassword(user.getPassword()));
         user.setStatus(UserStatus.REGISTERED);
         userDAO.registrationUser(user);
+    }
+
+    private String sendTokenRequest(String login) {
         return tokenRestClient.post()
                 .uri("/registration/create")
-                .body(dto.getLogin())
+                .body(login)
                 .retrieve()
                 .body(String.class);
     }
@@ -47,6 +60,10 @@ public class UserService {
                 .body(dto)
                 .retrieve()
                 .body(String.class);
+    }
+
+    private String encodePassword(String rawPassword){
+       return passwordEncoder.encode(rawPassword);
     }
 
 }

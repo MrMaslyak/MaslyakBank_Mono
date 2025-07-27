@@ -11,7 +11,6 @@ public class RegistrationRequestDTO {
     private String login;
     private String email;
     private String password;
-    private String passwordSalt;
     private String phoneNumber;
 
 
