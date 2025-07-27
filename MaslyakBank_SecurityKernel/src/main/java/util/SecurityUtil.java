@@ -24,6 +24,6 @@ public class SecurityUtil {
         if (auth != null && auth.getDetails() instanceof String token) {
             return token;
         }
-        return null;
+        throw new IllegalStateException("User not Authorized (utils)");
     }
 }

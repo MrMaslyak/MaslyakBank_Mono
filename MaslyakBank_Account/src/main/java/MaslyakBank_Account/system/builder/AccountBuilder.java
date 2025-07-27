@@ -2,21 +2,17 @@ package MaslyakBank_Account.system.builder;
 
 import MaslyakBank_Account.dto.CardRequestDTO;
 import MaslyakBank_Account.entity.AccountTable;
-import MaslyakBank_Account.enums.AccountType;
-import MaslyakBank_Account.enums.CardType;
 import MaslyakBank_Account.system.account.IbanSystem;
 import entity.UsersTable;
 import enums.AccountStatus;
 import enums.Currency;
 import jakarta.annotation.Nullable;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 @Component
-@RequiredArgsConstructor
 public class AccountBuilder {
 
     @Autowired
