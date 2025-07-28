@@ -20,7 +20,7 @@ public class UserService {
     private final RestClient tokenRestClient;
     private final UserSecurityDAO userDAO;
     private final UserMapper userMapper;
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
 
     public UserService(@Qualifier("tokenRestClient") RestClient tokenRestClient, UserSecurityDAO userDAO, UserMapper userMapper, PasswordEncoder passwordEncoder) {
