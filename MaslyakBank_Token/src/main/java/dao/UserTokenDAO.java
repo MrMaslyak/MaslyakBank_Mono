@@ -59,5 +59,29 @@ public class UserTokenDAO {
         }
     }
 
+    public void deleteToken (String login){
+        Session session = null;
+        Transaction transaction = null;
+        try {
+            session = sessionFactory.openSession();
+            transaction = session.beginTransaction();
+            TokenTable result = session.createQuery(
+                            "FROM TokenTable WHERE login = :login", TokenTable.class)
+                    .setParameter("login", login)
+                    .uniqueResult();
+            session.remove(result);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
 
 }

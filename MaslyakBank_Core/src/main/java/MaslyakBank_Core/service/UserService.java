@@ -37,7 +37,7 @@ public class UserService {
 
     private void registerUser(RegistrationRequestDTO dto) {
         UsersTable user = userMapper.toEntity(dto);
-        user.setPasswordSalt(encodePassword(user.getPassword()));
+        user.setPasswordSalt(encodePassword(dto.getPassword()));
         user.setStatus(UserStatus.REGISTERED);
         userDAO.registrationUser(user);
     }

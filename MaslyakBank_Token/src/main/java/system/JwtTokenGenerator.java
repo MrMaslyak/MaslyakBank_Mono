@@ -1,16 +1,18 @@
 package system;
 
 import dao.UserTokenDAO;
+import details.CustomUserDetails;
 import entity.TokenTable;
 import entity.UsersTable;
+import enums.TokenLifetime;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -34,11 +36,18 @@ public class JwtTokenGenerator {
         this.secret = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(UsersTable user){
+    public String generateToken(Authentication auth){
+        CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+        UsersTable user = userDetails.getUser();
+        userTokenDAO.deleteToken(user.getLogin());
+        return generateToken(user, TokenLifetime.AUTHENTICATION);
+    }
+
+    public String generateToken(UsersTable user, TokenLifetime lifetime){
         String token = Jwts.builder()
                 .setSubject(user.getLogin())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 86400000))
+                .setExpiration(new Date(System.currentTimeMillis() + lifetime.getMillis()))
                 .signWith(secret, SignatureAlgorithm.HS256)
                 .compact();
 
