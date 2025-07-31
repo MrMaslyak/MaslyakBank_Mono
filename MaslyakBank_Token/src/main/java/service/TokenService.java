@@ -31,7 +31,6 @@ public class TokenService {
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(dto.getLogin(), dto.getPassword())
             );
-            SecurityContextHolder.getContext().setAuthentication(auth);
             return jwtGenerator.generateToken(auth);
         } catch (BadCredentialsException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Bad credentials");

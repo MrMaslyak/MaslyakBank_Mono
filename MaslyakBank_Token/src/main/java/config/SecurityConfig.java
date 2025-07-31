@@ -16,13 +16,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import service.security.CustomUserDetailsService;
 
 @Configuration
 @AllArgsConstructor
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
-    private final UserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
 
     @Bean
