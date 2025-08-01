@@ -66,7 +66,7 @@ public class UserTokenDAO {
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
             TokenTable result = session.createQuery(
-                            "FROM TokenTable WHERE login = :login", TokenTable.class)
+                            "FROM TokenTable WHERE user.login = :login", TokenTable.class)
                     .setParameter("login", login)
                     .uniqueResult();
             session.remove(result);

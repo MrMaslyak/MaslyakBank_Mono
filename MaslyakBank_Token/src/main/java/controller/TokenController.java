@@ -14,7 +14,7 @@ public class TokenController {
     private final TokenService tokenManagmentService;
 
     @PostMapping("/auth/create")
-    public String createAuthToken(JwtTokenRequestDTO dto) {
+    public String createAuthToken(@RequestBody JwtTokenRequestDTO dto) {
         return tokenManagmentService.getAuthToken(dto);
     }
 
