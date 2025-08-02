@@ -36,7 +36,12 @@ public class SecurityConfig {
                                 "/maslyakbank/tokenmanagment/token/auth/create",
                                 "/maslyakbank/user/registration",
                                 "/maslyakbank/user/delete",
-                                "/maslyakbank/user/login"
+                                "/maslyakbank/user/login",
+                                "/actuator",
+                                "/actuator/beans",
+                                "/actuator/health",
+                                "/actuator/loggers",
+                                "/actuator/threaddump"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
