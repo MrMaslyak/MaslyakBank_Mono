@@ -17,22 +17,26 @@ import entity.UsersTable;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
+import system.strategy.AuthTokenStrategy;
+import system.strategy.RegistrationTokenStrategy;
 
 @Service
 @AllArgsConstructor
 public class TokenService {
 
 
-    private final JwtTokenGenerator jwtGenerator;
+
     private final AuthenticationManager authenticationManager;
     private final UserDAO userDAO;
+    private final AuthTokenStrategy authStrategy;
+    private final RegistrationTokenStrategy registrationStrategy;
 
     public String getAuthToken(JwtTokenRequestDTO dto) {
         try {
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(dto.getLogin(), dto.getPassword())
             );
-            return jwtGenerator.generateToken(auth);
+            return authStrategy.createToken(auth);
         } catch (BadCredentialsException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Bad credentials");
         }
@@ -40,7 +44,7 @@ public class TokenService {
 
     public String getRegistrationToken(String login) {
         UsersTable user = userDAO.findByLogin(login);
-        return jwtGenerator.generateToken(user, TokenLifetime.REGISTRATION, TokenRole.REGISTRATION);
+        return registrationStrategy.createToken(user);
     }
 
 

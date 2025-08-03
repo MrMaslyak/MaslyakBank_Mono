@@ -29,19 +29,11 @@ public class JwtTokenGenerator {
 
     private Key secret;
     private final UserTokenDAO userTokenDAO;
-    private final AuthenticationManager authenticationManager;
 
 
     @PostConstruct
     public void init() {
         this.secret = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
-    }
-
-    public String generateToken(Authentication auth){
-        CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
-        UsersTable user = userDetails.getUser();
-        userTokenDAO.deleteToken(user.getLogin());
-        return generateToken(user, TokenLifetime.AUTHENTICATION, TokenRole.AUTH);
     }
 
     public String generateToken(UsersTable user, TokenLifetime lifetime, TokenRole role){
