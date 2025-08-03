@@ -8,14 +8,14 @@
     <changeSet id="2000-1" author="Maslyak">
         <preConditions>
             <not>
-                <columnExists tableName="accounts" columnName="type"/>
+                <columnExists tableName="users" columnName="role"/>
             </not>
         </preConditions>
-        <addColumn tableName="accounts">
-            <column name="type" type="VARCHAR" />
+        <addColumn tableName="users">
+            <column name="role" type="VARCHAR" />
         </addColumn>
         <rollback>
-            <dropColumn tableName="accounts" columnName="type"/>
+            <dropColumn tableName="users" columnName="role"/>
         </rollback>
     </changeSet>
 

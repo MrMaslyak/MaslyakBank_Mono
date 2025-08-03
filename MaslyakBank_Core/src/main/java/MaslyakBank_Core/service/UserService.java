@@ -7,9 +7,10 @@ import MaslyakBank_Core.dto.requests.JwtTokenRequestDTO;
 import MaslyakBank_Core.dto.requests.RegistrationRequestDTO;
 import MaslyakBank_Core.mappers.UserMapper;
 import entity.UsersTable;
+import enums.UserRole;
 import enums.UserStatus;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -17,6 +18,8 @@ import org.springframework.web.client.RestClient;
 @Service
 public class UserService {
 
+    @Value("${admin}")
+    private String adminSecretCode;
     private final RestClient tokenRestClient;
     private final UserSecurityDAO userDAO;
     private final UserMapper userMapper;
@@ -39,6 +42,7 @@ public class UserService {
         UsersTable user = userMapper.toEntity(dto);
         user.setPasswordSalt(encodePassword(dto.getPassword()));
         user.setStatus(UserStatus.REGISTERED);
+        user.setRole(determineUserRole(dto));
         userDAO.registrationUser(user);
     }
 
@@ -64,6 +68,15 @@ public class UserService {
 
     private String encodePassword(String rawPassword){
        return passwordEncoder.encode(rawPassword);
+    }
+
+    private UserRole determineUserRole(RegistrationRequestDTO dto) {
+        if (adminSecretCode.equals(dto.getSecretCode())) {
+            return UserRole.ADMIN;
+        } else if (dto.getSecretCode() == null || dto.getSecretCode().isBlank() ) {
+            return UserRole.USER;
+        }
+        return null;
     }
 
 }

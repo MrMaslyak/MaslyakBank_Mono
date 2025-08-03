@@ -1,5 +1,6 @@
 package entity;
 
+import enums.UserRole;
 import enums.UserStatus;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
@@ -43,5 +44,9 @@ public class UsersTable {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private UserStatus status;
+
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
 }

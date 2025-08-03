@@ -6,6 +6,6 @@
 
 
 
-    <include file="column-type-account.xml" relativeToChangelogFile="true"/>
+    <include file="column-userStatus-users.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
