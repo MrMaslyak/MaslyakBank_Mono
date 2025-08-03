@@ -3,6 +3,7 @@ package service;
 
 import dto.JwtTokenRequestDTO;
 import enums.TokenLifetime;
+import enums.TokenRole;
 import mappers.UserMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -39,7 +40,7 @@ public class TokenService {
 
     public String getRegistrationToken(String login) {
         UsersTable user = userDAO.findByLogin(login);
-        return jwtGenerator.generateToken(user, TokenLifetime.REGISTRATION);
+        return jwtGenerator.generateToken(user, TokenLifetime.REGISTRATION, TokenRole.REGISTRATION);
     }
 
 

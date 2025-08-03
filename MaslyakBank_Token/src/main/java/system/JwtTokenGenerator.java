@@ -5,6 +5,7 @@ import details.CustomUserDetails;
 import entity.TokenTable;
 import entity.UsersTable;
 import enums.TokenLifetime;
+import enums.TokenRole;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -40,10 +41,10 @@ public class JwtTokenGenerator {
         CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
         UsersTable user = userDetails.getUser();
         userTokenDAO.deleteToken(user.getLogin());
-        return generateToken(user, TokenLifetime.AUTHENTICATION);
+        return generateToken(user, TokenLifetime.AUTHENTICATION, TokenRole.AUTH);
     }
 
-    public String generateToken(UsersTable user, TokenLifetime lifetime){
+    public String generateToken(UsersTable user, TokenLifetime lifetime, TokenRole role){
         String token = Jwts.builder()
                 .setSubject(user.getLogin())
                 .setIssuedAt(new Date())
@@ -51,15 +52,17 @@ public class JwtTokenGenerator {
                 .signWith(secret, SignatureAlgorithm.HS256)
                 .compact();
 
-        TokenTable tokenTable = new TokenBuilder()
-                .withUser(user)
-                .token(token)
-                .build();
-
-        userTokenDAO.saveToken(tokenTable);
+        userTokenDAO.saveToken(generateTokenTable(user, token, role));
 
         return token;
     }
 
+    private TokenTable generateTokenTable(UsersTable user, String token, TokenRole role){
+        return new TokenBuilder()
+                .withUser(user)
+                .withRole(role)
+                .token(token)
+                .build();
+    }
 
 }
