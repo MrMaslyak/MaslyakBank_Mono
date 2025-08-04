@@ -25,8 +25,11 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().authenticated()
-                )
+                        .requestMatchers(
+                                "/maslyakbank/accountmanagment/account/create",
+                                "/maslyakbank/accountmanagment/card/create"
+                        ).hasAnyRole("USER", "ADMIN")
+                        .anyRequest().authenticated()                )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

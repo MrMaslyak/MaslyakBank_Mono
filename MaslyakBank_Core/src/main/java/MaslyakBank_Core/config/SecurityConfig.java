@@ -37,11 +37,14 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/maslyakbank/user/delete",
                                 "/actuator",
-                                "/actuator/beans",
+                                "/actuator/bean",
                                 "/actuator/health",
                                 "/actuator/loggers",
                                 "/actuator/threaddump"
                         ).hasRole("ADMIN")
+                        .requestMatchers(
+                                "/maslyakbank/profilemanagment/profile/create"
+                        ).hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
