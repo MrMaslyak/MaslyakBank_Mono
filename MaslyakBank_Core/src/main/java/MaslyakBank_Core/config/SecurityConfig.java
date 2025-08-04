@@ -31,18 +31,17 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/maslyakbank/tokenmanagment/token/registration",
-                                "/maslyakbank/tokenmanagment/token/registration/create",
-                                "/maslyakbank/tokenmanagment/token/auth/create",
                                 "/maslyakbank/user/registration",
+                                "/maslyakbank/user/login"
+                        ).permitAll()
+                        .requestMatchers(
                                 "/maslyakbank/user/delete",
-                                "/maslyakbank/user/login",
                                 "/actuator",
                                 "/actuator/beans",
                                 "/actuator/health",
                                 "/actuator/loggers",
                                 "/actuator/threaddump"
-                        ).permitAll()
+                        ).hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
