@@ -35,6 +35,9 @@ public class SecurityConfig {
                         "/maslyakbank/tokenmanagment/token/auth/create",
                         "/maslyakbank/tokenmanagment/token/registration/create"
                         ).permitAll()
+                        .requestMatchers(
+                                "/maslyakbank/tokenmanagment/token/cleaner/toggle"
+                        ).hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())

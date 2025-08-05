@@ -1,17 +1,13 @@
 package service;
 
 
+
 import dto.JwtTokenRequestDTO;
-import enums.TokenLifetime;
-import enums.TokenRole;
-import mappers.UserMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.server.ResponseStatusException;
-import system.JwtTokenGenerator;
 import dao.UserDAO;
 import entity.UsersTable;
 import lombok.AllArgsConstructor;
@@ -46,10 +42,5 @@ public class TokenService {
         UsersTable user = userDAO.findByLogin(login);
         return registrationStrategy.createToken(user);
     }
-
-
-
-
-
 
 }
