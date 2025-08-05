@@ -2,6 +2,7 @@ package dao;
 
 
 import entity.TokenTable;
+import entity.UsersTable;
 import lombok.AllArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -11,6 +12,7 @@ import system.JwtTokenProvider;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 @AllArgsConstructor
@@ -118,6 +120,51 @@ public class UserTokenDAO {
             if (session != null) session.close();
         }
     }
+
+    public List<UUID> findUsersWithOnlyExpiredTokens() {
+        Session session = null;
+        try {
+            session = sessionFactory.openSession();
+
+            return session.createQuery("""
+                SELECT u.id FROM UsersTable u
+                WHERE NOT EXISTS (
+                    SELECT 1 FROM TokenTable t
+                    WHERE t.user.id = u.id AND t.isExpired = false AND t.isValid = true
+                )
+            """, UUID.class).list();
+
+        } finally {
+            if (session != null) session.close();
+        }
+    }
+
+    public void deleteUsersByIds(List<UUID> userIds) {
+        Session session = null;
+        Transaction transaction = null;
+        try {
+            session = sessionFactory.openSession();
+            transaction = session.beginTransaction();
+
+            List<UsersTable> users = session.createQuery(
+                    "FROM UsersTable WHERE id IN (:ids)", UsersTable.class
+            ).setParameter("ids", userIds).list();
+
+            for (UsersTable user : users) {
+                session.remove(user);
+            }
+
+            transaction.commit();
+            System.out.println("Deleted users with expired tokens: " + users.size());
+
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            throw e;
+        } finally {
+            if (session != null) session.close();
+        }
+    }
+
 
 
 

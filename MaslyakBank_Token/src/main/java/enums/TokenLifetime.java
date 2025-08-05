@@ -2,7 +2,7 @@ package enums;
 
 public enum TokenLifetime {
 
-    REGISTRATION(15 * 60 * 1000), // 15 min
+    REGISTRATION(1 * 60 * 1000), // 15 min
     AUTHENTICATION(5 * 60 * 60 * 1000); // 5 hours
 
     private final long millis;

@@ -7,6 +7,9 @@ import lombok.Setter;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.UUID;
+
 @Component
 @RequiredArgsConstructor
 @Setter
@@ -18,6 +21,8 @@ public class CleanerJob implements Job{
     @Override
     public void execute() {
         userTokenDAO.cleanExpiredTokens();
+        List<UUID> userIds = userTokenDAO.findUsersWithOnlyExpiredTokens();
+        userTokenDAO.deleteUsersByIds(userIds);
     }
 
     @Scheduled(fixedRate = 1 * 60 * 1000) // 1 min
