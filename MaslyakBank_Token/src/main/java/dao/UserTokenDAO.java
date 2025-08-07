@@ -121,6 +121,7 @@ public class UserTokenDAO {
         }
     }
 
+
     public List<UUID> findUsersWithOnlyExpiredTokens() {
         Session session = null;
         try {
