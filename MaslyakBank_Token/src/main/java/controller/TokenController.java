@@ -6,7 +6,6 @@ import dto.JwtTokenRequestDTO;
 import service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import system.jobs.CleanerJob;
 
 @RestController
 @RequiredArgsConstructor
@@ -14,7 +13,6 @@ import system.jobs.CleanerJob;
 public class TokenController {
 
     private final TokenService tokenManagmentService;
-    private final CleanerJob cleanerJob;
 
     @PostMapping("/auth/create")
     public String createAuthToken(@RequestBody JwtTokenRequestDTO dto) {
@@ -26,11 +24,6 @@ public class TokenController {
             return tokenManagmentService.getRegistrationToken(login);
     }
 
-    @PostMapping("/cleaner/toggle")
-    public String cleanToken(@RequestBody CleanerRequestDTO dto) {
-        cleanerJob.setEnabled(dto.isEnable());
-        return dto.isEnable() ? "Cleaner enabled" : "Cleaner disabled";
-    }
 
 
 

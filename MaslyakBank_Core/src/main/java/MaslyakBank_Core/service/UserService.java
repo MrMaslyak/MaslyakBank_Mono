@@ -42,7 +42,7 @@ public class UserService {
         UsersTable user = userMapper.toEntity(dto);
         user.setPasswordSalt(encodePassword(dto.getPassword()));
         user.setStatus(UserStatus.REGISTERED);
-        user.setRole(determineUserRole(dto));
+        user.setRole(UserRole.USER);
         userDAO.registrationUser(user);
     }
 
@@ -70,13 +70,6 @@ public class UserService {
        return passwordEncoder.encode(rawPassword);
     }
 
-    private UserRole determineUserRole(RegistrationRequestDTO dto) {
-        if (adminSecretCode.equals(dto.getSecretCode())) {
-            return UserRole.ADMIN;
-        } else if (dto.getSecretCode() == null || dto.getSecretCode().isBlank() ) {
-            return UserRole.USER;
-        }
-        return null;
-    }
+
 
 }
