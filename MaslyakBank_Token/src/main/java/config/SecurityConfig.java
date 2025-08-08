@@ -33,7 +33,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                         "/maslyakbank/tokenmanagment/token/auth/create",
-                        "/maslyakbank/tokenmanagment/token/registration/create"
+                        "/maslyakbank/tokenmanagment/token/registration/create",
+                                "/maslyakbank/tokenmanagment/token/superadmin/create"
                         ).permitAll()
                         .requestMatchers(
                                 "/maslyakbank/tokenmanagment/token/cleaner/toggle"

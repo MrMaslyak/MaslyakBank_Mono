@@ -2,6 +2,6 @@ package enums;
 
 public enum TokenRole {
     AUTH,
-    REFRESH,
+    SUPER_ADMIN,
     REGISTRATION
 }

@@ -18,8 +18,6 @@ import org.springframework.web.client.RestClient;
 @Service
 public class UserService {
 
-    @Value("${admin}")
-    private String adminSecretCode;
     private final RestClient tokenRestClient;
     private final UserSecurityDAO userDAO;
     private final UserMapper userMapper;
@@ -52,10 +50,6 @@ public class UserService {
                 .body(login)
                 .retrieve()
                 .body(String.class);
-    }
-
-    public DeleteUsersDTO deleteUser(DeleteUsersDTO login) {
-        return userDAO.deleteUser(login);
     }
 
     public String requestAuthToken(JwtTokenRequestDTO  dto) {

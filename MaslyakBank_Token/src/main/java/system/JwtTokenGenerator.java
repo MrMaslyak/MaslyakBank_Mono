@@ -39,7 +39,6 @@ public class JwtTokenGenerator {
     public String generateToken(UsersTable user, TokenLifetime lifetime, TokenRole role){
         String token = Jwts.builder()
                 .setSubject(user.getLogin())
-                .claim("role", user.getRole())
                 .claim("user_id", user.getId())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + lifetime.getMillis()))

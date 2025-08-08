@@ -28,10 +28,7 @@ public class UserController {
         return new ResponseDTO("Login successful", true, token);
     }
 
-    @DeleteMapping("/delete")
-    public DeleteUsersDTO deleteUser(@RequestBody DeleteUsersDTO login) {
-        return userService.deleteUser(login);
-    }
+
 
 
 

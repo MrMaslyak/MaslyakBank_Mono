@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -91,5 +92,29 @@ public class UserSecurityDAO {
             }
         }
 
+    }
+
+    public boolean existsByLogin(String login){
+        Transaction   transaction = null;
+        Session  session = null;
+        try {
+            session = sessionFactory.openSession();
+            transaction = session.beginTransaction();
+            UsersTable user = session.createQuery("FROM UsersTable WHERE login = :login", UsersTable.class)
+                    .setParameter("login", login)
+                    .getResultList()
+                    .stream().findFirst().orElse(null);
+            transaction.commit();
+            return user != null;
+        }catch (Exception e){
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
+        }finally {
+            if (session != null) {
+                session.close();
+            }
+        }
     }
 }

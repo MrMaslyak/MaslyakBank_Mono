@@ -1,7 +1,6 @@
 package controller;
 
 
-import dto.CleanerRequestDTO;
 import dto.JwtTokenRequestDTO;
 import service.TokenService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +21,11 @@ public class TokenController {
     @PostMapping("/registration/create")
     public String createRegistrationToken(@RequestBody String login) {
             return tokenManagmentService.getRegistrationToken(login);
+    }
+
+    @PostMapping("/superadmin/create")
+    public String createSuperAdminToken(@RequestBody String login) {
+        return tokenManagmentService.getSuperAdminToken(login);
     }
 
 
