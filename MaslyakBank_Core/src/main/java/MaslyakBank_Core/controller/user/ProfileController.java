@@ -1,8 +1,8 @@
-package MaslyakBank_Core.controller;
+package MaslyakBank_Core.controller.user;
 
 import MaslyakBank_Core.dto.requests.ProfileRequestDTO;
 import MaslyakBank_Core.entity.ProfileTable;
-import MaslyakBank_Core.service.ProfileService;
+import MaslyakBank_Core.service.user.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,11 +1,10 @@
-package MaslyakBank_Core.controller;
+package MaslyakBank_Core.controller.user;
 
 
-import MaslyakBank_Core.dto.DeleteUsersDTO;
 import MaslyakBank_Core.dto.requests.JwtTokenRequestDTO;
 import MaslyakBank_Core.dto.requests.RegistrationRequestDTO;
 import MaslyakBank_Core.dto.response.ResponseDTO;
-import MaslyakBank_Core.service.UserService;
+import MaslyakBank_Core.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

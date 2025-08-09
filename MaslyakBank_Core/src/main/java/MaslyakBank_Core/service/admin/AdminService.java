@@ -1,4 +1,4 @@
-package MaslyakBank_Core.service;
+package MaslyakBank_Core.service.admin;
 
 import MaslyakBank_Core.dao.UserSecurityDAO;
 import MaslyakBank_Core.dto.DeleteUsersDTO;
@@ -12,7 +12,7 @@ public class AdminService {
     private final UserSecurityDAO userDAO;
 
     public DeleteUsersDTO deleteUser(DeleteUsersDTO login) {
-        return userDAO.deleteUser(login);
+        return userDAO.deleteUsers(login);
     }
 
 

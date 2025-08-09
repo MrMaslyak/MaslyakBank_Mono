@@ -45,6 +45,10 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/maslyakbank/profilemanagment/profile/create"
                         ).hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(
+                                "/maslyakbank/super-admin/grand-admin",
+                                "/maslyakbank/super-admin/revoke-admin"
+                        ).hasAnyRole("SUPER_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())

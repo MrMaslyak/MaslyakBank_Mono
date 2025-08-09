@@ -3,7 +3,9 @@ package MaslyakBank_Core.dao;
 
 import MaslyakBank_Core.dto.DeleteUsersDTO;
 import MaslyakBank_Core.dto.requests.JwtTokenRequestDTO;
+import MaslyakBank_Core.dto.requests.admin.SAdminListDTO;
 import entity.UsersTable;
+import enums.UserRole;
 import lombok.AllArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -39,7 +41,7 @@ public class UserSecurityDAO {
 
 
 
-    public DeleteUsersDTO deleteUser(DeleteUsersDTO dto) {
+    public DeleteUsersDTO deleteUsers(DeleteUsersDTO dto) {
         Transaction   transaction = null;
         Session  session = null;
         try {
@@ -55,6 +57,31 @@ public class UserSecurityDAO {
             }
             transaction.commit();
             return dto;
+        }catch (Exception e){
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
+        }finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+    public void deleteUser(String login) {
+        Transaction   transaction = null;
+        Session  session = null;
+        try {
+            session = sessionFactory.openSession();
+            transaction = session.beginTransaction();
+            UsersTable user = session.createQuery("FROM UsersTable WHERE login = :login", UsersTable.class)
+                    .setParameter("login", login).getResultList()
+                    .stream().findFirst().orElse(null);
+            if (user != null) {
+                session.remove(user);
+            }
+            transaction.commit();
         }catch (Exception e){
             if (transaction != null) {
                 transaction.rollback();
@@ -106,6 +133,34 @@ public class UserSecurityDAO {
                     .stream().findFirst().orElse(null);
             transaction.commit();
             return user != null;
+        }catch (Exception e){
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
+        }finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+    public void updateUserRole(SAdminListDTO sAdminListDTO, UserRole role){
+        Transaction   transaction = null;
+        Session  session = null;
+        try {
+            session = sessionFactory.openSession();
+            transaction = session.beginTransaction();
+            for (String login : sAdminListDTO.getAdminList()) {
+                UsersTable user = session.createQuery("FROM UsersTable WHERE login = :login", UsersTable.class)
+                        .setParameter("login", login).getResultList()
+                        .stream().findFirst().orElse(null);
+                if (user != null) {
+                    user.setRole(role);
+                    session.merge(user);
+                }
+            }
+            transaction.commit();
         }catch (Exception e){
             if (transaction != null) {
                 transaction.rollback();

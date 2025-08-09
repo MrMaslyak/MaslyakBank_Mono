@@ -1,8 +1,7 @@
-package MaslyakBank_Core.service;
+package MaslyakBank_Core.service.user;
 
 
 import MaslyakBank_Core.dao.UserSecurityDAO;
-import MaslyakBank_Core.dto.DeleteUsersDTO;
 import MaslyakBank_Core.dto.requests.JwtTokenRequestDTO;
 import MaslyakBank_Core.dto.requests.RegistrationRequestDTO;
 import MaslyakBank_Core.mappers.UserMapper;
@@ -10,7 +9,6 @@ import entity.UsersTable;
 import enums.UserRole;
 import enums.UserStatus;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;

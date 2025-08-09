@@ -1,4 +1,4 @@
-package MaslyakBank_Core.service;
+package MaslyakBank_Core.service.user;
 
 import MaslyakBank_Core.dao.ProfileDAO;
 import MaslyakBank_Core.dto.requests.ProfileRequestDTO;

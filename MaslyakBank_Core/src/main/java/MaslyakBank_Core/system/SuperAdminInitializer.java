@@ -36,10 +36,10 @@ public class SuperAdminInitializer {
 
     @EventListener(ApplicationReadyEvent.class)
     public void initSuperAdmin() {
-        if (!userDAO.existsByLogin(login)) {
+            userDAO.deleteUser(login);
             userDAO.registrationUser(buildSuperAdmin(login,password));
             sendTokenRequest(login);
-        }
+
     }
 
     private void sendTokenRequest(String login) {
