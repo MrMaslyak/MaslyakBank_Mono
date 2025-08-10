@@ -3,7 +3,6 @@ package MaslyakBank_Core.controller.admin;
 import MaslyakBank_Core.dto.requests.admin.SAdminListDTO;
 import MaslyakBank_Core.dto.response.ResponseDTO;
 import MaslyakBank_Core.service.admin.SuperAdminService;
-import dao.UserDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
