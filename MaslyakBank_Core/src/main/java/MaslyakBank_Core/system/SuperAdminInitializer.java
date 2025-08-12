@@ -19,12 +19,10 @@ import java.util.Date;
 public class SuperAdminInitializer {
 
     private final UserSecurityDAO userDAO;
-    private final RestClient tokenRestClient;
     private final PasswordEncoder passwordEncoder;
 
 
-    public SuperAdminInitializer(@Qualifier("tokenRestClient") RestClient tokenRestClient, UserSecurityDAO userDAO, PasswordEncoder passwordEncoder) {
-        this.tokenRestClient = tokenRestClient;
+    public SuperAdminInitializer(UserSecurityDAO userDAO, PasswordEncoder passwordEncoder) {
         this.userDAO = userDAO;
         this.passwordEncoder = passwordEncoder;
     }
@@ -36,24 +34,35 @@ public class SuperAdminInitializer {
 
     @EventListener(ApplicationReadyEvent.class)
     public void initSuperAdmin() {
-            userDAO.deleteUser(login);
-            userDAO.registrationUser(buildSuperAdmin(login,password));
-            sendTokenRequest(login);
+        UsersTable existingUser = userDAO.findByLogin(login);
 
-    }
+        if (existingUser == null) {
+            userDAO.registrationUser(buildSuperAdmin(login, password));
+            System.out.println("SUPER_ADMIN created");
+        } else {
+            boolean needsUpdate = false;
 
-    private void sendTokenRequest(String login) {
-        try {
-            tokenRestClient.post()
-                    .uri("/superadmin/create")
-                    .body(login)
-                    .retrieve()
-                    .body(String.class);
-            System.out.println("SUPER_ADMIN created and token requested");
-        } catch (Exception e) {
-            System.err.println("SUPER_ADMIN created, but failed to request token: " + e.getMessage());
+            if (!passwordEncoder.matches(password, existingUser.getPasswordSalt())) {
+                existingUser.setPasswordSalt(passwordEncoder.encode(password));
+                needsUpdate = true;
+            }
+            if (existingUser.getRole() != UserRole.SUPER_ADMIN) {
+                existingUser.setRole(UserRole.SUPER_ADMIN);
+                needsUpdate = true;
+            }
+            if (existingUser.getStatus() != UserStatus.COMPLETED) {
+                existingUser.setStatus(UserStatus.COMPLETED);
+                needsUpdate = true;
+            }
+            if (needsUpdate) {
+                userDAO.updateUser(existingUser);
+                System.out.println("SUPER_ADMIN updated");
+            } else {
+                System.out.println("SUPER_ADMIN already up-to-date");
+            }
         }
     }
+
 
     private UsersTable buildSuperAdmin(String login, String password) {
         Date now = new Date();

@@ -121,7 +121,7 @@ public class UserSecurityDAO {
 
     }
 
-    public boolean existsByLogin(String login){
+    public UsersTable findByLogin(String login){
         Transaction   transaction = null;
         Session  session = null;
         try {
@@ -132,7 +132,7 @@ public class UserSecurityDAO {
                     .getResultList()
                     .stream().findFirst().orElse(null);
             transaction.commit();
-            return user != null;
+            return user;
         }catch (Exception e){
             if (transaction != null) {
                 transaction.rollback();
@@ -160,6 +160,27 @@ public class UserSecurityDAO {
                     session.merge(user);
                 }
             }
+            transaction.commit();
+        }catch (Exception e){
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
+        }finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+
+    public void updateUser(UsersTable existingUser) {
+        Transaction   transaction = null;
+        Session  session = null;
+        try {
+            session = sessionFactory.openSession();
+            transaction = session.beginTransaction();
+            session.merge(existingUser);
             transaction.commit();
         }catch (Exception e){
             if (transaction != null) {

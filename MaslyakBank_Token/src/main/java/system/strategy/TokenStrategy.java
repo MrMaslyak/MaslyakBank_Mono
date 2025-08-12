@@ -1,5 +1,5 @@
 package system.strategy;
 
-public interface TokenStrategy {
-    String createToken(Object principal);
+public interface TokenStrategy<T> {
+    String createToken(T principal);
 }

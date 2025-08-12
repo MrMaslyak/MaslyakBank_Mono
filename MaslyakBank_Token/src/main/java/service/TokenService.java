@@ -9,13 +9,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.server.ResponseStatusException;
 import dao.UserDAO;
-import entity.UsersTable;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
 import system.strategy.AuthTokenStrategy;
 import system.strategy.RegistrationTokenStrategy;
-import system.strategy.SuperAdminTokenStrategy;
 
 @Service
 @AllArgsConstructor
@@ -27,7 +25,6 @@ public class TokenService {
     private final UserDAO userDAO;
     private final AuthTokenStrategy authStrategy;
     private final RegistrationTokenStrategy registrationStrategy;
-    private final SuperAdminTokenStrategy superAdminTokenStrategy;
 
     public String getAuthToken(JwtTokenRequestDTO dto) {
         try {
@@ -41,13 +38,7 @@ public class TokenService {
     }
 
     public String getRegistrationToken(String login) {
-        UsersTable user = userDAO.findByLogin(login);
-        return registrationStrategy.createToken(user);
-    }
-
-    public String getSuperAdminToken(String login) {
-        UsersTable user = userDAO.findByLogin(login);
-        return superAdminTokenStrategy.createToken(user);
+        return registrationStrategy.createToken(userDAO.findByLogin(login));
     }
 
 }

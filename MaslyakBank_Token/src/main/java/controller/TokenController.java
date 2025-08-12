@@ -23,10 +23,7 @@ public class TokenController {
             return tokenManagmentService.getRegistrationToken(login);
     }
 
-    @PostMapping("/superadmin/create")
-    public String createSuperAdminToken(@RequestBody String login) {
-        return tokenManagmentService.getSuperAdminToken(login);
-    }
+
 
 
 

@@ -99,47 +99,6 @@ public class UserTokenDAO {
             if (session != null) session.close();
         }
     }
-
-
-    public void cleanExpiredTokens() {
-        Session session = null;
-        Transaction transaction = null;
-        try {
-            session = sessionFactory.openSession();
-            transaction = session.beginTransaction();
-
-            int deletedCount = session.createQuery(
-                    "DELETE FROM TokenTable WHERE isExpired = true"
-            ).executeUpdate();
-            transaction.commit();
-            System.out.println("Deleted " + deletedCount + " expired tokens.");
-        } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
-            throw e;
-        } finally {
-            if (session != null) session.close();
-        }
-    }
-
-
-    public List<UUID> findUsersWithOnlyExpiredTokens() {
-        Session session = null;
-        try {
-            session = sessionFactory.openSession();
-
-            return session.createQuery("""
-                SELECT u.id FROM UsersTable u
-                WHERE NOT EXISTS (
-                    SELECT 1 FROM TokenTable t
-                    WHERE t.user.id = u.id AND t.isExpired = false AND t.isValid = true
-                )
-            """, UUID.class).list();
-
-        } finally {
-            if (session != null) session.close();
-        }
-    }
-
     public void deleteUsersByIds(List<UUID> userIds) {
         Session session = null;
         Transaction transaction = null;
@@ -164,6 +123,31 @@ public class UserTokenDAO {
         } finally {
             if (session != null) session.close();
         }
+    }
+
+    public boolean findTokenByUser (UsersTable user){
+        Session session = null;
+        Transaction transaction = null;
+        try {
+            session = sessionFactory.openSession();
+            transaction = session.beginTransaction();
+            TokenTable result = session.createQuery(
+                            "FROM TokenTable WHERE user.id = :id", TokenTable.class)
+                    .setParameter("id", user.getId())
+                    .uniqueResult();
+            transaction.commit();
+            return result != null;
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+
     }
 
 

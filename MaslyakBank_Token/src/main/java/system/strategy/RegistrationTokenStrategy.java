@@ -9,13 +9,13 @@ import system.JwtTokenGenerator;
 
 @Component
 @RequiredArgsConstructor
-public class RegistrationTokenStrategy implements TokenStrategy{
+public class RegistrationTokenStrategy implements TokenStrategy<UsersTable>{
 
     private final JwtTokenGenerator generator;
 
     @Override
-    public String createToken(Object principal) {
-        UsersTable user = (UsersTable) principal;
+    public String createToken(UsersTable user) {
         return generator.generateToken(user, TokenLifetime.REGISTRATION, TokenRole.REGISTRATION);
     }
+
 }
