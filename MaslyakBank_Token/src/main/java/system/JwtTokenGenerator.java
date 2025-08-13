@@ -1,7 +1,6 @@
 package system;
 
 import dao.UserTokenDAO;
-import details.CustomUserDetails;
 import entity.TokenTable;
 import entity.UsersTable;
 import enums.TokenLifetime;
@@ -12,8 +11,6 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
