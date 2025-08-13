@@ -31,26 +31,18 @@ public class UserService {
 
     public String requestRegistrationToken(RegistrationRequestDTO dto) {
         registerUser(dto);
-        return sendTokenRequest(dto.getLogin());
+        return sendTokenRequest(dto.getLogin(), "/create");
     }
 
     private void registerUser(RegistrationRequestDTO dto) {
         UsersTable user = userMapper.toEntity(dto);
-        user.setPasswordSalt(encodePassword(dto.getPassword()));
+        user.setPasswordSalt(passwordEncoder.encode(dto.getPassword()));
         user.setStatus(UserStatus.REGISTERED);
         user.setRole(UserRole.USER);
         userDAO.registrationUser(user);
     }
 
-    private String sendTokenRequest(String login) {
-        return tokenRestClient.post()
-                .uri("/registration/create")
-                .body(login)
-                .retrieve()
-                .body(String.class);
-    }
-
-    public String requestAuthToken(JwtTokenRequestDTO  dto) {
+    public String sendAuthRequest(JwtTokenRequestDTO dto) {
         return tokenRestClient.post()
                 .uri("/auth/create")
                 .body(dto)
@@ -58,10 +50,11 @@ public class UserService {
                 .body(String.class);
     }
 
-    private String encodePassword(String rawPassword){
-       return passwordEncoder.encode(rawPassword);
+    private String sendTokenRequest(String login, String uri) {
+        return tokenRestClient.post()
+                .uri(uri)
+                .body(login)
+                .retrieve()
+                .body(String.class);
     }
-
-
-
 }

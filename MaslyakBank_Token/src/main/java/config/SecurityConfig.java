@@ -32,9 +32,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
+                        "/maslyakbank/tokenmanagment/token/create",
                         "/maslyakbank/tokenmanagment/token/auth/create",
-                        "/maslyakbank/tokenmanagment/token/registration/create",
-                                "/maslyakbank/tokenmanagment/token/superadmin/create",
                                 "/maslyakbank/user/login"
                         ).permitAll()
                         .requestMatchers(

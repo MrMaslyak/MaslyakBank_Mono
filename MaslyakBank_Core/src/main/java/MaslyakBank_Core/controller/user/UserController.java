@@ -23,7 +23,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseDTO login(@RequestBody JwtTokenRequestDTO dto) {
-        String token = userService.requestAuthToken(dto);
+        String token = userService.sendAuthRequest(dto);
         return new ResponseDTO("Login successful", true, token);
     }
 

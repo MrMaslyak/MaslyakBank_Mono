@@ -4,7 +4,6 @@ import dao.UserTokenDAO;
 import entity.TokenTable;
 import entity.UsersTable;
 import enums.TokenLifetime;
-import enums.TokenRole;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -23,17 +22,15 @@ public class JwtTokenGenerator {
 
     @Value("${jwt.secret}")
     private String secretKey;
-
     private Key secret;
     private final UserTokenDAO userTokenDAO;
-
 
     @PostConstruct
     public void init() {
         this.secret = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(UsersTable user, TokenLifetime lifetime, TokenRole role){
+    public String generateToken(UsersTable user, TokenLifetime lifetime) {
         String token = Jwts.builder()
                 .setSubject(user.getLogin())
                 .claim("user_id", user.getId())
@@ -42,17 +39,15 @@ public class JwtTokenGenerator {
                 .signWith(secret, SignatureAlgorithm.HS256)
                 .compact();
 
-        userTokenDAO.saveToken(generateTokenTable(user, token, role));
-
+        saveToken(user, token);
         return token;
     }
 
-    private TokenTable generateTokenTable(UsersTable user, String token, TokenRole role){
-        return new TokenBuilder()
+    private void saveToken(UsersTable user, String token) {
+        TokenTable tokenEntity = new TokenBuilder()
                 .withUser(user)
-                .withRole(role)
                 .token(token)
                 .build();
+        userTokenDAO.saveToken(tokenEntity);
     }
-
 }

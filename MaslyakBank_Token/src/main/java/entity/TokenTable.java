@@ -1,7 +1,6 @@
 package entity;
 
 
-import enums.TokenRole;
 import enums.TokenStatus;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -37,10 +36,6 @@ public class TokenTable {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private TokenStatus status;
-
-    @Column(name = "role")
-    @Enumerated(EnumType.STRING)
-    private TokenRole role;
 
     @Column(name = "created_at")
     private Date createdAt;

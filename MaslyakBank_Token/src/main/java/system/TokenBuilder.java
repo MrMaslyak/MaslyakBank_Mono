@@ -1,7 +1,6 @@
 package system;
 
 import entity.TokenTable;
-import enums.TokenRole;
 import enums.TokenStatus;
 import entity.UsersTable;
 import lombok.AllArgsConstructor;
@@ -17,12 +16,6 @@ public class TokenBuilder {
 
     public TokenBuilder withUser(UsersTable user) {
         tokenTable.setUser(user);
-        return this;
-    }
-
-
-    public TokenBuilder withRole(TokenRole role) {
-        tokenTable.setRole(role);
         return this;
     }
 

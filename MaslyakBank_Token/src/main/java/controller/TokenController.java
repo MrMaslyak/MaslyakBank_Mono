@@ -2,6 +2,7 @@ package controller;
 
 
 import dto.JwtTokenRequestDTO;
+import enums.TokenLifetime;
 import service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -13,14 +14,14 @@ public class TokenController {
 
     private final TokenService tokenManagmentService;
 
-    @PostMapping("/auth/create")
-    public String createAuthToken(@RequestBody JwtTokenRequestDTO dto) {
-        return tokenManagmentService.getAuthToken(dto);
+    @PostMapping("/create")
+    public String createToken(@RequestBody String login) {
+            return tokenManagmentService.getToken(login, TokenLifetime.REGISTRATION);
     }
 
-    @PostMapping("/registration/create")
-    public String createRegistrationToken(@RequestBody String login) {
-            return tokenManagmentService.getRegistrationToken(login);
+    @PostMapping("auth/create")
+    public String createToken(@RequestBody JwtTokenRequestDTO dto) {
+        return tokenManagmentService.getAuthToken(dto);
     }
 
 
