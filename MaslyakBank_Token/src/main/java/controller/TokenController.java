@@ -2,7 +2,6 @@ package controller;
 
 
 import dto.JwtTokenRequestDTO;
-import enums.TokenLifetime;
 import service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +15,7 @@ public class TokenController {
 
     @PostMapping("/create")
     public String createToken(@RequestBody String login) {
-            return tokenManagmentService.getToken(login, TokenLifetime.REGISTRATION);
+            return tokenManagmentService.getToken(login);
     }
 
     @PostMapping("auth/create")
