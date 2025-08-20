@@ -1,7 +1,4 @@
 databaseChangeLog:
-  - include:
-      file: changelog/tables-generated-changelog.xml
-      relativeToChangelogFile: true
 
   - include:
       file: changelog/v1/main-changelog.xml

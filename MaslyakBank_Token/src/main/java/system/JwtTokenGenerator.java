@@ -34,7 +34,7 @@ public class JwtTokenGenerator {
                 .setSubject(user.getLogin())
                 .claim("user_id", user.getId())
                 .setIssuedAt(new Date())
-                .setExpiration( new Date(System.currentTimeMillis() + 1000 * 60 * 24 * 7))//2 h 40 min
+                .setExpiration( new Date(System.currentTimeMillis() + 600 * 1000))//10 min
                 .signWith(secret, SignatureAlgorithm.HS256)
                 .compact();
         saveToken(user, token);
