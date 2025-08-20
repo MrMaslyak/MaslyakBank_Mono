@@ -1,7 +1,7 @@
 package dao;
 
 
-import entity.TokenTable;
+import entity.UserTokenTable;
 import entity.UsersTable;
 import lombok.AllArgsConstructor;
 import org.hibernate.Session;
@@ -21,7 +21,7 @@ public class UserTokenDAO {
     private final SessionFactory sessionFactory;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public TokenTable saveToken(TokenTable userToken) {
+    public UserTokenTable saveToken(UserTokenTable userToken) {
         Session session = null;
         Transaction transaction = null;
         try {
@@ -48,8 +48,8 @@ public class UserTokenDAO {
         try {
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
-            TokenTable result = session.createQuery(
-                            "FROM TokenTable WHERE user.login = :login", TokenTable.class)
+            UserTokenTable result = session.createQuery(
+                            "FROM TokenTable WHERE user.login = :login", UserTokenTable.class)
                     .setParameter("login", login)
                     .uniqueResult();
             session.remove(result);
@@ -75,11 +75,11 @@ public class UserTokenDAO {
 
             Date now = new Date();
 
-            List<TokenTable> tokens = session.createQuery(
-                    "FROM TokenTable WHERE isExpired = false", TokenTable.class
+            List<UserTokenTable> tokens = session.createQuery(
+                    "FROM TokenTable WHERE isExpired = false", UserTokenTable.class
             ).list();
 
-            for (TokenTable token : tokens) {
+            for (UserTokenTable token : tokens) {
                 if (jwtTokenProvider.isTokenExpired(token.getToken())) {
                     token.setExpired(true);
                     token.setValid(false);
@@ -131,8 +131,8 @@ public class UserTokenDAO {
         try {
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
-            TokenTable result = session.createQuery(
-                            "FROM TokenTable WHERE user.id = :id", TokenTable.class)
+            UserTokenTable result = session.createQuery(
+                            "FROM TokenTable WHERE user.id = :id", UserTokenTable.class)
                     .setParameter("id", user.getId())
                     .uniqueResult();
             transaction.commit();

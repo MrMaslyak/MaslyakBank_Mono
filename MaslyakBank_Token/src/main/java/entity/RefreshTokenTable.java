@@ -1,0 +1,41 @@
+package entity;
+
+
+import enums.TokenStatus;
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Date;
+import java.util.UUID;
+
+@Data
+@NoArgsConstructor
+@Entity
+@Table(name = "refresh_token")
+public class RefreshTokenTable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", nullable = false)
+    private UUID id;
+
+    @ManyToOne
+    @JoinColumn(name = "user_token_id", nullable = false)
+    private UserTokenTable userTokenTable;
+
+    @Column(name = "token",  unique = true, nullable = false)
+    private String token;
+
+    @Column(name = "revoked")
+    private boolean revoked;
+
+    @Column(name = "is_expired")
+    private boolean isExpired;
+
+    @Column(name = "created_at")
+    private Date createdAt;
+
+    @Column(name = "updated_at")
+    private Date updatedAt;
+}

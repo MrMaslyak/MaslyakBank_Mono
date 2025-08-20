@@ -1,6 +1,6 @@
 package dto;
 
-import entity.TokenTable;
+import entity.UserTokenTable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -10,5 +10,5 @@ public class ResponseDTO {
 
     private String message;
     private boolean success;
-    private TokenTable tokenTable;
+    private UserTokenTable userTokenTable;
 }

@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table(name = "user_token")
-public class TokenTable {
+public class UserTokenTable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

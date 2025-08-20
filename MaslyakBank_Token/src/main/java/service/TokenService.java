@@ -4,6 +4,7 @@ package service;
 
 import dao.UserTokenDAO;
 import dto.JwtTokenRequestDTO;
+import dto.record.TokenPair;
 import entity.UsersTable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -27,12 +28,12 @@ public class TokenService {
     private final JwtTokenGenerator tokenGenerator;
 
 
-    public String getToken(String login) {
+    public TokenPair getToken(String login) {
         UsersTable user = userDAO.findByLogin(login);
-        return tokenGenerator.generateToken(user);
+        return tokenGenerator.generateTokenPair(user);
     }
 
-    public String getAuthToken(JwtTokenRequestDTO dto) {
+    public TokenPair getAuthToken(JwtTokenRequestDTO dto) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(dto.getLogin(), dto.getPassword())
