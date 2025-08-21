@@ -24,9 +24,9 @@ public class RefreshTokenDAO {
         try {
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
-            session.merge(refreshToken);
+            RefreshTokenTable saved = session.merge(refreshToken);
             transaction.commit();
-            return refreshToken;
+            return saved;
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
