@@ -5,6 +5,7 @@ import MaslyakBank_Core.dto.requests.JwtTokenRequestDTO;
 import MaslyakBank_Core.dto.requests.RegistrationRequestDTO;
 import MaslyakBank_Core.dto.response.ResponseDTO;
 import MaslyakBank_Core.service.user.UserService;
+import dto.TokenPair;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,13 +18,13 @@ public class UserController {
 
     @PostMapping("/registration")
     public ResponseDTO registration(@RequestBody RegistrationRequestDTO dto) {
-        String token = userService.requestRegistrationToken(dto);
+        TokenPair token = userService.requestRegistrationToken(dto);
         return new ResponseDTO("Registration successful", true, token);
     }
 
     @PostMapping("/login")
     public ResponseDTO login(@RequestBody JwtTokenRequestDTO dto) {
-        String token = userService.sendAuthRequest(dto);
+        TokenPair token = userService.sendAuthRequest(dto);
         return new ResponseDTO("Login successful", true, token);
     }
 

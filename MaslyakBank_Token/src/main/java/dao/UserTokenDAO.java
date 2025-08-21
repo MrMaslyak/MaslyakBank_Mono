@@ -27,9 +27,9 @@ public class UserTokenDAO {
         try {
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
-            session.merge(userToken);
+            UserTokenTable saved = session.merge(userToken); // верни managed entity
             transaction.commit();
-            return userToken;
+            return saved;
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();

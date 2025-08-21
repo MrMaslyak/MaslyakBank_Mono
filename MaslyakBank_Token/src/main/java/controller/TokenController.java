@@ -2,7 +2,7 @@ package controller;
 
 
 import dto.JwtTokenRequestDTO;
-import dto.record.TokenPair;
+import dto.TokenPair;
 import service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

@@ -20,7 +20,7 @@ public class RefreshTokenTable {
     @Column(name = "id", nullable = false)
     private UUID id;
 
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_token_id", nullable = false)
     private UserTokenTable userTokenTable;
 

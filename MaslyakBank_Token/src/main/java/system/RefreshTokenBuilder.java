@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 
-@Component
 @AllArgsConstructor
 public class RefreshTokenBuilder {
 
@@ -22,6 +21,7 @@ public class RefreshTokenBuilder {
     public RefreshTokenBuilder token(String token) {
         refreshTokenTable.setToken(token);
         refreshTokenTable.setRevoked(false);
+        refreshTokenTable.setExpired(false);
         refreshTokenTable.setCreatedAt(new Date());
         refreshTokenTable.setUpdatedAt(new Date());
         return this;

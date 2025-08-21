@@ -2,7 +2,7 @@ package system;
 
 import dao.RefreshTokenDAO;
 import dao.UserTokenDAO;
-import dto.record.TokenPair;
+import dto.TokenPair;
 import entity.RefreshTokenTable;
 import entity.UserTokenTable;
 import entity.UsersTable;
@@ -68,8 +68,7 @@ public class JwtTokenGenerator {
                 .withUser(user)
                 .token(token)
                 .build();
-        userTokenDAO.saveToken(tokenEntity);
-        return tokenEntity;
+        return userTokenDAO.saveToken(tokenEntity);
     }
 
     private void saveRefreshToken(UserTokenTable userTokenTable, String refreshToken) {

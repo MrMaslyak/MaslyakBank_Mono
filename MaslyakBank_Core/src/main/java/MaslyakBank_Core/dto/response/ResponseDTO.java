@@ -1,5 +1,6 @@
 package MaslyakBank_Core.dto.response;
 
+import dto.TokenPair;
 import entity.UsersTable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,5 +11,5 @@ public class ResponseDTO {
 
     private String message;
     private boolean success;
-    private String token;
+    private TokenPair token;
 }

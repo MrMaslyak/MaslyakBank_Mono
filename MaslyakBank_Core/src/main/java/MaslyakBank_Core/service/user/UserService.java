@@ -5,6 +5,7 @@ import MaslyakBank_Core.dao.UserSecurityDAO;
 import MaslyakBank_Core.dto.requests.JwtTokenRequestDTO;
 import MaslyakBank_Core.dto.requests.RegistrationRequestDTO;
 import MaslyakBank_Core.mappers.UserMapper;
+import dto.TokenPair;
 import entity.UsersTable;
 import enums.UserRole;
 import enums.UserStatus;
@@ -29,7 +30,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public String requestRegistrationToken(RegistrationRequestDTO dto) {
+    public TokenPair requestRegistrationToken(RegistrationRequestDTO dto) {
         registerUser(dto);
         return sendTokenRequest(dto.getLogin(), "/create");
     }
@@ -42,19 +43,19 @@ public class UserService {
         userDAO.registrationUser(user);
     }
 
-    public String sendAuthRequest(JwtTokenRequestDTO dto) {
+    public TokenPair sendAuthRequest(JwtTokenRequestDTO dto) {
         return tokenRestClient.post()
                 .uri("/auth/create")
                 .body(dto)
                 .retrieve()
-                .body(String.class);
+                .body(TokenPair.class);
     }
 
-    private String sendTokenRequest(String login, String uri) {
+    private TokenPair sendTokenRequest(String login, String uri) {
         return tokenRestClient.post()
                 .uri(uri)
                 .body(login)
                 .retrieve()
-                .body(String.class);
+                .body(TokenPair.class);
     }
 }

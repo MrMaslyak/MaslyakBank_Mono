@@ -4,7 +4,7 @@ package service;
 
 import dao.UserTokenDAO;
 import dto.JwtTokenRequestDTO;
-import dto.record.TokenPair;
+import dto.TokenPair;
 import entity.UsersTable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
