@@ -2,6 +2,7 @@ package controller;
 
 
 import dto.JwtTokenRequestDTO;
+import dto.RefreshRequestDTO;
 import dto.TokenPair;
 import service.TokenService;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +21,13 @@ public class TokenController {
     }
 
     @PostMapping("auth/create")
-    public TokenPair createToken(@RequestBody JwtTokenRequestDTO dto) {
+    public TokenPair createAuthToken(@RequestBody JwtTokenRequestDTO dto) {
         return tokenManagmentService.getAuthToken(dto);
+    }
+
+    @PostMapping("/refresh")
+    public TokenPair getTokenPair(RefreshRequestDTO dtp) {
+        return tokenManagmentService.getTokenPair(dto);
     }
 
 

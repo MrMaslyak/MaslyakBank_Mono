@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -30,8 +31,8 @@ public class RefreshTokenTable {
     @Column(name = "revoked")
     private boolean revoked;
 
-    @Column(name = "is_expired")
-    private boolean isExpired;
+    @Column(name = "expired_at")
+    private LocalDateTime expiredAt;
 
     @Column(name = "created_at")
     private Date createdAt;

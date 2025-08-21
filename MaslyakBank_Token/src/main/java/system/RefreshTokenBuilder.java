@@ -3,8 +3,8 @@ package system;
 import entity.RefreshTokenTable;
 import entity.UserTokenTable;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 
@@ -21,7 +21,7 @@ public class RefreshTokenBuilder {
     public RefreshTokenBuilder token(String token) {
         refreshTokenTable.setToken(token);
         refreshTokenTable.setRevoked(false);
-        refreshTokenTable.setExpired(false);
+        refreshTokenTable.setExpiredAt(LocalDateTime.now().plusDays(30));
         refreshTokenTable.setCreatedAt(new Date());
         refreshTokenTable.setUpdatedAt(new Date());
         return this;

@@ -29,7 +29,7 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="is_expired" type="BOOLEAN">
+            <column name="expiredAt" type="CURRENT_TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
 

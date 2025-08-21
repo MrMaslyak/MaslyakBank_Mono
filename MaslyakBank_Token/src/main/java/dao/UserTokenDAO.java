@@ -1,6 +1,7 @@
 package dao;
 
 
+import entity.RefreshTokenTable;
 import entity.UserTokenTable;
 import entity.UsersTable;
 import lombok.AllArgsConstructor;
@@ -66,62 +67,28 @@ public class UserTokenDAO {
         }
     }
 
-    public void updateExpiredTokens() {
+
+    public RefreshTokenTable findRefreshToken(String token){
         Session session = null;
         Transaction transaction = null;
         try {
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
-
-            Date now = new Date();
-
-            List<UserTokenTable> tokens = session.createQuery(
-                    "FROM TokenTable WHERE isExpired = false", UserTokenTable.class
-            ).list();
-
-            for (UserTokenTable token : tokens) {
-                if (jwtTokenProvider.isTokenExpired(token.getToken())) {
-                    token.setExpired(true);
-                    token.setValid(false);
-                    token.setUpdatedAt(now);
-                    session.merge(token);
-                    System.out.println(("Token {} marked as expired " + token.getId()));
-                }
-                token.setUpdatedAt(now);
-                session.merge(token);
-            }
-
+            RefreshTokenTable result = session.createQuery(
+                            "FROM RefreshTokenTable WHERE token = :token", RefreshTokenTable.class)
+                    .setParameter("token", token)
+                    .uniqueResult();
             transaction.commit();
+            return result;
         } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
+            if (transaction != null) {
+                transaction.rollback();
+            }
             throw e;
         } finally {
-            if (session != null) session.close();
-        }
-    }
-    public void deleteUsersByIds(List<UUID> userIds) {
-        Session session = null;
-        Transaction transaction = null;
-        try {
-            session = sessionFactory.openSession();
-            transaction = session.beginTransaction();
-
-            List<UsersTable> users = session.createQuery(
-                    "FROM UsersTable WHERE id IN (:ids)", UsersTable.class
-            ).setParameter("ids", userIds).list();
-
-            for (UsersTable user : users) {
-                session.remove(user);
+            if (session != null) {
+                session.close();
             }
-
-            transaction.commit();
-            System.out.println("Deleted users with expired tokens: " + users.size());
-
-        } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
-            throw e;
-        } finally {
-            if (session != null) session.close();
         }
     }
 

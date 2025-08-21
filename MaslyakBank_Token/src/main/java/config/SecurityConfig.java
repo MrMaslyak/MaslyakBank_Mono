@@ -34,6 +34,7 @@ public class SecurityConfig {
                         .requestMatchers(
                         "/maslyakbank/tokenmanagment/token/create",
                         "/maslyakbank/tokenmanagment/token/auth/create",
+                        "/maslyakbank/tokenmanagment/token/refresh",
                                 "/maslyakbank/user/login"
                         ).permitAll()
                         .requestMatchers(
