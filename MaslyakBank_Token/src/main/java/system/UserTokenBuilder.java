@@ -1,10 +1,9 @@
 package system;
 
-import entity.UserTokenTable;
 import enums.TokenStatus;
+import entity.UserTokenTable;
 import entity.UsersTable;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.util.Date;
 

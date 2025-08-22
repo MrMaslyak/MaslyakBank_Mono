@@ -1,38 +1,42 @@
 package entity;
 
 
+
 import enums.TokenStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "refresh_token")
-public class RefreshTokenTable {
+@Table(name = "user_token")
+public class UserTokenTable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private UUID id;
 
-    @OneToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "user_token_id", nullable = false)
-    private UserTokenTable userTokenTable;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private UsersTable user;
 
     @Column(name = "token",  unique = true, nullable = false)
     private String token;
 
-    @Column(name = "revoked")
-    private boolean revoked;
+    @Column(name = "is_valid")
+    private boolean isValid;
 
-    @Column(name = "expired_at")
-    private LocalDateTime expiredAt;
+    @Column(name = "is_expired")
+    private boolean isExpired;
+
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private TokenStatus status;
 
     @Column(name = "created_at")
     private Date createdAt;

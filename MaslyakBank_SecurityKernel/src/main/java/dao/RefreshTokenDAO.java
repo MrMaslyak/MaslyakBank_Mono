@@ -2,8 +2,6 @@ package dao;
 
 
 import entity.RefreshTokenTable;
-import entity.UserTokenTable;
-import entity.UsersTable;
 import lombok.AllArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -11,22 +9,24 @@ import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 import system.JwtTokenProvider;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
 @AllArgsConstructor
-public class UserTokenDAO {
+public class RefreshTokenDAO {
+
 
     private final SessionFactory sessionFactory;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public UserTokenTable saveToken(UserTokenTable userToken) {
+    public RefreshTokenTable saveToken(RefreshTokenTable refreshToken) {
         Session session = null;
         Transaction transaction = null;
         try {
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
-            UserTokenTable saved = session.merge(userToken);
+            RefreshTokenTable saved = session.merge(refreshToken);
             transaction.commit();
             return saved;
         } catch (Exception e) {
@@ -41,18 +41,17 @@ public class UserTokenDAO {
         }
     }
 
-    public void deleteToken (String login){
+    public Optional<RefreshTokenTable> findByToken(String refresh){
         Session session = null;
         Transaction transaction = null;
         try {
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
-            UserTokenTable result = session.createQuery(
-                            "FROM UserTokenTable WHERE user.login = :login", UserTokenTable.class)
-                    .setParameter("login", login)
+            RefreshTokenTable token = session.createQuery("FROM RefreshTokenTable WHERE token = :token", RefreshTokenTable.class)
+                    .setParameter("token", refresh)
                     .uniqueResult();
-            session.remove(result);
             transaction.commit();
+            return Optional.ofNullable(token);
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
@@ -65,30 +64,6 @@ public class UserTokenDAO {
         }
     }
 
-    public boolean findTokenByUser (UsersTable user){
-        Session session = null;
-        Transaction transaction = null;
-        try {
-            session = sessionFactory.openSession();
-            transaction = session.beginTransaction();
-            UserTokenTable result = session.createQuery(
-                            "FROM UserTokenTable WHERE user.id = :id", UserTokenTable.class)
-                    .setParameter("id", user.getId())
-                    .uniqueResult();
-            transaction.commit();
-            return result != null;
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw e;
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
-
-    }
 
     public void deleteByUserId (UUID id){
         Session session = null;
@@ -96,7 +71,7 @@ public class UserTokenDAO {
         try {
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
-            session.createQuery("DELETE FROM UserTokenTable ut WHERE ut.user.id = :id")
+            session.createQuery("DELETE FROM RefreshTokenTable rt WHERE rt.userTokenTable.user.id = :id")
                     .setParameter("id", id)
                     .executeUpdate();
             transaction.commit();
@@ -111,8 +86,4 @@ public class UserTokenDAO {
             }
         }
     }
-
-
-
-
 }

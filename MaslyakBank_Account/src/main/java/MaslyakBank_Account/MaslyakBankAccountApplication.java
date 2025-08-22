@@ -20,6 +20,7 @@ import org.springframework.context.annotation.PropertySource;
 		"dao",
 		"controller",
 		"repository",
+		"entity",
 		"enums"
 })
 @PropertySource("classpath:/application_account.properties")

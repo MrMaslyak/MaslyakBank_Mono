@@ -19,6 +19,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 		"filter",
 		"mappers",
 		"controller",
+		"entity",
 		"enums"
 })
 @PropertySource("classpath:/application_token.properties")

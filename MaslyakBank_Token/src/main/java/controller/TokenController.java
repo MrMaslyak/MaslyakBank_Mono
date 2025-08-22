@@ -26,7 +26,7 @@ public class TokenController {
     }
 
     @PostMapping("/refresh")
-    public TokenPair getTokenPair(RefreshRequestDTO dtp) {
+    public TokenPair getTokenPair(@RequestBody RefreshRequestDTO dto) {
         return tokenManagmentService.getTokenPair(dto);
     }
 

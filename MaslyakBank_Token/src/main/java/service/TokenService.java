@@ -2,6 +2,7 @@ package service;
 
 
 
+import dao.RefreshTokenDAO;
 import dao.UserTokenDAO;
 import dto.JwtTokenRequestDTO;
 import dto.RefreshRequestDTO;
@@ -18,7 +19,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
 import system.JwtTokenGenerator;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -29,6 +31,7 @@ public class TokenService {
     private final AuthenticationManager authenticationManager;
     private final UserDAO userDAO;
     private final UserTokenDAO tokenDAO;
+    private final RefreshTokenDAO refreshTokenDAO;
     private final JwtTokenGenerator tokenGenerator;
 
 
@@ -50,18 +53,38 @@ public class TokenService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Bad credentials");
         }
     }
+    public TokenPair getTokenPair(RefreshRequestDTO dto) {
+        String oldRefreshToken = dto.getRefresh();
 
-    public TokenPair getTokenPair(RefreshRequestDTO dto){
-        var refresh = tokenDAO.findRefreshToken(dto.getRefresh())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid refresh token"));
+        Optional<RefreshTokenTable> oldRefreshOpt = refreshTokenDAO.findByToken(oldRefreshToken);
 
-        if (refresh.getExpiredAt().isBefore(Instant.now())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Refresh token expired");
+        if (oldRefreshOpt.isEmpty()) {
+            System.out.println("Refresh token not found: " + dto.getRefresh());
+            throw new RuntimeException("Refresh token not found or invalid");
         }
 
-        UsersTable user = refresh.getUser();
-        return tokenGenerator.generateTokenPair(user);
+        RefreshTokenTable token = oldRefreshOpt.get();
+        System.out.println("Refresh token found: id=" + token.getId() + ", revoked=" + token.isRevoked() + ", expiresAt=" + token.getExpiredAt());
 
+        if (token.isRevoked()) {
+            System.out.println("Refresh token revoked");
+            throw new RuntimeException("Refresh token revoked");
+        }
+
+        if (token.getExpiredAt() == null || token.getExpiredAt().isBefore(LocalDateTime.now())) {
+            System.out.println("Refresh token expired");
+            throw new RuntimeException("Refresh token expired");
+        }
+
+        UsersTable user = token.getUserTokenTable().getUser();
+
+        // Удаляем или деактивируем старые токены
+        refreshTokenDAO.deleteByUserId(user.getId());
+        tokenDAO.deleteByUserId(user.getId());
+
+        // Генерируем и сохраняем новую пару
+        return tokenGenerator.generateTokenPair(user);
     }
+
 
 }

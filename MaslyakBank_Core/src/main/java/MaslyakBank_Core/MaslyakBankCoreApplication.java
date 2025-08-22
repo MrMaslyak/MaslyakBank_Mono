@@ -21,6 +21,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 		"dao",
 		"controller",
 		"repository",
+		"entity",
 		"enums"
 })
 @PropertySource("classpath:/application_core.properties")
