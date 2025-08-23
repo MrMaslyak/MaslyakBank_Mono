@@ -18,7 +18,6 @@ public class RefreshTokenDAO {
 
 
     private final SessionFactory sessionFactory;
-    private final JwtTokenProvider jwtTokenProvider;
 
     public RefreshTokenTable saveToken(RefreshTokenTable refreshToken) {
         Session session = null;

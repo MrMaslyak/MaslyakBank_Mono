@@ -8,16 +8,17 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import service.security.RefreshTokenService;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import system.RefreshTokenProvider;
+
 import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
 public class RefreshTokenFilter extends OncePerRequestFilter {
 
-    private final RefreshTokenService refreshTokenService;
+    private final RefreshTokenProvider refreshTokenProvider;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -28,7 +29,6 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
 
             ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request);
 
-            // Прочитать поток для кэширования
             wrappedRequest.getInputStream().readAllBytes();
 
             String body = new String(wrappedRequest.getContentAsByteArray(), request.getCharacterEncoding());
@@ -44,17 +44,17 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
                 }
             }
 
-            if (!refreshTokenService.validate(refreshToken)) {
+            if (!refreshTokenProvider.isValid(refreshToken)) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }
 
-            // Передать дальше обёрнутый запрос
             chain.doFilter(wrappedRequest, response);
             return;
         }
 
         chain.doFilter(request, response);
     }
+
 
 }

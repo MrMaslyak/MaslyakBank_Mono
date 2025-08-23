@@ -1,7 +1,6 @@
 package dao;
 
 
-import entity.RefreshTokenTable;
 import entity.UserTokenTable;
 import entity.UsersTable;
 import lombok.AllArgsConstructor;
@@ -18,7 +17,6 @@ import java.util.UUID;
 public class UserTokenDAO {
 
     private final SessionFactory sessionFactory;
-    private final JwtTokenProvider jwtTokenProvider;
 
     public UserTokenTable saveToken(UserTokenTable userToken) {
         Session session = null;

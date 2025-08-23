@@ -1,6 +1,7 @@
 package config;
 
 import filter.JwtAuthFilter;
+import filter.RefreshTokenFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,12 +18,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import service.security.CustomUserDetailsService;
+import system.JwtTokenProvider;
+import system.RefreshTokenProvider;
 
 @Configuration
 @AllArgsConstructor
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
+    private final RefreshTokenFilter refreshTokenFilter;
     private final CustomUserDetailsService userDetailsService;
 
 
@@ -32,20 +36,18 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                        "/maslyakbank/tokenmanagment/token/create",
-                        "/maslyakbank/tokenmanagment/token/auth/create",
-                        "/maslyakbank/tokenmanagment/token/refresh",
+                            "/maslyakbank/tokenmanagment/token/create",
+                            "/maslyakbank/tokenmanagment/token/auth/create",
                                 "/maslyakbank/user/login"
                         ).permitAll()
-                        .requestMatchers(
-                                "/maslyakbank/tokenmanagment/token/cleaner/toggle"
-                        ).hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
+                .addFilterBefore(refreshTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

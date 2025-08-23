@@ -53,13 +53,13 @@ public class TokenService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Bad credentials");
         }
     }
-    public TokenPair getTokenPair(RefreshRequestDTO dto) {
-        String oldRefreshToken = dto.getRefresh();
+    public TokenPair getTokenPair(String refreshToken) {
+        Optional<RefreshTokenTable> oldRefreshOpt = refreshTokenDAO.findByToken(refreshToken);
 
-        Optional<RefreshTokenTable> oldRefreshOpt = refreshTokenDAO.findByToken(oldRefreshToken);
+        System.out.println("Refresh token found: " + oldRefreshOpt.isPresent());
 
         if (oldRefreshOpt.isEmpty()) {
-            System.out.println("Refresh token not found: " + dto.getRefresh());
+            System.out.println("Refresh token not found: " + refreshToken);
             throw new RuntimeException("Refresh token not found or invalid");
         }
 
