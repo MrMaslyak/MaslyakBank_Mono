@@ -21,7 +21,7 @@ public class RefreshTokenBuilder {
     public RefreshTokenBuilder token(String token) {
         refreshTokenTable.setToken(token);
         refreshTokenTable.setRevoked(false);
-        refreshTokenTable.setExpiredAt(LocalDateTime.now().plusDays(30));
+        refreshTokenTable.setExpiredAt(LocalDateTime.now().plusDays(10));
         refreshTokenTable.setCreatedAt(new Date());
         refreshTokenTable.setUpdatedAt(new Date());
         return this;

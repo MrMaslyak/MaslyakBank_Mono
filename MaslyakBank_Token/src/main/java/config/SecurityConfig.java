@@ -1,32 +1,26 @@
 package config;
 
 import filter.JwtAuthFilter;
-import filter.RefreshTokenFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import service.security.CustomUserDetailsService;
-import system.JwtTokenProvider;
-import system.RefreshTokenProvider;
 
 @Configuration
 @AllArgsConstructor
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
-    private final RefreshTokenFilter refreshTokenFilter;
     private final CustomUserDetailsService userDetailsService;
 
 
@@ -38,12 +32,12 @@ public class SecurityConfig {
                         .requestMatchers(
                             "/maslyakbank/tokenmanagment/token/create",
                             "/maslyakbank/tokenmanagment/token/auth/create",
+                            "/maslyakbank/tokenmanagment/token/refresh",
                                 "/maslyakbank/user/login"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(refreshTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
