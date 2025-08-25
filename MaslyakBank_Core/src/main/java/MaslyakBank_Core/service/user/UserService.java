@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import util.SecurityUtil;
 
 @Service
 public class UserService {
@@ -41,6 +42,15 @@ public class UserService {
         user.setStatus(UserStatus.REGISTERED);
         user.setRole(UserRole.USER);
         userDAO.registrationUser(user);
+    }
+
+    public void sendLogoutRequest() {
+        String token = SecurityUtil.getCurrentToken();
+        tokenRestClient.post()
+                .uri("/logout")
+                .header("Authorization", "Bearer " + token)
+                .retrieve()
+                .toBodilessEntity();
     }
 
     public TokenPair sendAuthRequest(JwtTokenRequestDTO dto) {

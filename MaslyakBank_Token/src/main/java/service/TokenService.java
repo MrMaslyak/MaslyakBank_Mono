@@ -17,9 +17,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
 import system.JwtTokenGenerator;
 import system.validators.RefreshTokenValidator;
+import util.SecurityUtil;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -63,4 +65,16 @@ public class TokenService {
         return tokenGenerator.generateTokenPair(user);
     }
 
+    public void logout() {
+        UsersTable user = SecurityUtil.getCurrentUser();
+        tokenDAO.deleteByUserId(user.getId());
+        refreshTokenDAO.deleteByUserId(user.getId());
+    }
+
+
+    public void adminLogout(String login) {
+        UsersTable user = userDAO.findByLogin(login);
+        tokenDAO.deleteByUserId(user.getId());
+        refreshTokenDAO.deleteByUserId(user.getId());
+    }
 }

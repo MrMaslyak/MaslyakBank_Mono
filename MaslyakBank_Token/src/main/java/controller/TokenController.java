@@ -30,6 +30,16 @@ public class TokenController {
         return tokenManagmentService.getTokenPair(dto.getRefresh());
     }
 
+    @PostMapping("/logout")
+    public void logout() {
+        tokenManagmentService.logout();
+    }
+
+    @PostMapping("/admin/logout")
+    public void adminLogout(@RequestBody String login) {
+        tokenManagmentService.adminLogout(login);
+    }
+
 
 
 

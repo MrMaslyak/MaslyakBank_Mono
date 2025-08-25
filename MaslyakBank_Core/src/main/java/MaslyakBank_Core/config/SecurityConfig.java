@@ -35,7 +35,8 @@ public class SecurityConfig {
                                 "/maslyakbank/user/login"
                         ).permitAll()
                         .requestMatchers(
-                                "/maslyakbank/user/delete",
+                                "/maslyakbank/admin/delete",
+                                "/maslyakbank/admin/logout",
                                 "/actuator",
                                 "/actuator/bean",
                                 "/actuator/health",

@@ -28,6 +28,12 @@ public class UserController {
         return new ResponseDTO("Login successful", true, token);
     }
 
+    @PostMapping("/logout")
+    public ResponseDTO logout() {
+        userService.sendLogoutRequest();
+        return new ResponseDTO("Logout successful", true, null);
+    }
+
 
 
 
