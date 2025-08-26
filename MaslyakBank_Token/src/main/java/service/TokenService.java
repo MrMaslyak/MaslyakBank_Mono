@@ -93,9 +93,5 @@ public class TokenService {
     }
 
 
-    public void adminLogout(String login) {
-        UsersTable user = userDAO.findByLogin(login);
-        tokenDAO.deleteByUserId(user.getId());
-        refreshTokenDAO.deleteByUserId(user.getId());
-    }
+
 }

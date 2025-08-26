@@ -35,10 +35,7 @@ public class TokenController {
         tokenManagmentService.refreshOrLogout(null);
     }
 
-    @PostMapping("/admin/logout")
-    public void adminLogout(@RequestBody String login) {
-        tokenManagmentService.adminLogout(login);
-    }
+
 
 
 

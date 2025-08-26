@@ -28,15 +28,7 @@ public class AdminService {
     }
 
 
-    public void logoutUser(LogoutUserDTO dto) {
-        String token = SecurityUtil.getCurrentToken();
-        tokenRestClient.post()
-                .uri("/admin/logout")
-                .body(dto.getLogin())
-                .header("Authorization", "Bearer " + token)
-                .retrieve()
-                .toBodilessEntity();
-    }
+
 
 
 
