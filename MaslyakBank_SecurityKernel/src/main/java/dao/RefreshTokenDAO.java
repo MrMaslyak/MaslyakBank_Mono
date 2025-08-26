@@ -2,6 +2,7 @@ package dao;
 
 
 import entity.RefreshTokenTable;
+import entity.UserTokenTable;
 import lombok.AllArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -9,6 +10,7 @@ import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 import system.JwtTokenProvider;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -74,6 +76,33 @@ public class RefreshTokenDAO {
                     .setParameter("id", id)
                     .executeUpdate();
             transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+
+    public List<RefreshTokenTable> findAllByUserId (UUID id){
+        Session session = null;
+        Transaction transaction = null;
+        try {
+            session = sessionFactory.openSession();
+            transaction = session.beginTransaction();
+            List<RefreshTokenTable> results = session.createQuery(
+                            "SELECT rt FROM RefreshTokenTable rt " +
+                                    "JOIN rt.userTokenTable ut " +
+                                    "WHERE ut.user.id = :id", RefreshTokenTable.class)
+                    .setParameter("id", id)
+                    .list();
+            transaction.commit();
+            return results;
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();

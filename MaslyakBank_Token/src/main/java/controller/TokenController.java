@@ -27,12 +27,12 @@ public class TokenController {
 
     @PostMapping("/refresh")
     public TokenPair getTokenPair(@RequestBody RefreshRequestDTO dto) {
-        return tokenManagmentService.getTokenPair(dto.getRefresh());
+        return tokenManagmentService.refreshOrLogout(dto.getRefresh());
     }
 
     @PostMapping("/logout")
     public void logout() {
-        tokenManagmentService.logout();
+        tokenManagmentService.refreshOrLogout(null);
     }
 
     @PostMapping("/admin/logout")

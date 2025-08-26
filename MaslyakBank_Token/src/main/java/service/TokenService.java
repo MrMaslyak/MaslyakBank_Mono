@@ -5,8 +5,9 @@ import dao.UserTokenDAO;
 import dto.JwtTokenRequestDTO;
 import dto.TokenPair;
 import entity.RefreshTokenTable;
+import entity.UserTokenTable;
 import entity.UsersTable;
-import errors.RefreshTokenException;
+import enums.TokenStatus;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,9 +20,7 @@ import system.JwtTokenGenerator;
 import system.validators.RefreshTokenValidator;
 import util.SecurityUtil;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -42,33 +41,55 @@ public class TokenService {
 
     public TokenPair getAuthToken(JwtTokenRequestDTO dto) {
         try {
+            UsersTable user = userDAO.findByLogin(dto.getLogin());
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(dto.getLogin(), dto.getPassword())
             );
-            if (tokenDAO.findTokenByUser(userDAO.findByLogin(dto.getLogin()))){
-                tokenDAO.deleteToken(dto.getLogin());
+            List<UserTokenTable> tokens = tokenDAO.findTokensByUser(user);
+            if (!tokens.isEmpty()) {
+                invalidateTokens(user);
             }
             return getToken(dto.getLogin());
         } catch (BadCredentialsException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Bad credentials");
         }
     }
+    public TokenPair refreshOrLogout(String refreshToken) {
+        UsersTable user;
 
-    public TokenPair getTokenPair(String refreshToken) {
-        RefreshTokenTable token = refreshTokenValidator.validate(refreshToken);
+        if (refreshToken == null || refreshToken.isBlank()) {
+            user = SecurityUtil.getCurrentUser();
+        } else {
+            RefreshTokenTable token = refreshTokenValidator.validate(refreshToken);
+            user = token.getUserTokenTable().getUser();
+        }
 
-        UsersTable user = token.getUserTokenTable().getUser();
+        invalidateTokens(user);
 
-        refreshTokenDAO.deleteByUserId(user.getId());
-        tokenDAO.deleteByUserId(user.getId());
+        if (refreshToken == null || refreshToken.isBlank()) {
+            return null; // чистый logout
+        }
+
 
         return tokenGenerator.generateTokenPair(user);
     }
 
-    public void logout() {
-        UsersTable user = SecurityUtil.getCurrentUser();
-        tokenDAO.deleteByUserId(user.getId());
-        refreshTokenDAO.deleteByUserId(user.getId());
+
+
+    private void invalidateTokens(UsersTable user) {
+        // access
+        tokenDAO.findAllByUserId(user.getId()).forEach(token -> {
+            token.setExpired(true);
+            token.setValid(false);
+            token.setStatus(TokenStatus.EXPIRED);
+            tokenDAO.saveToken(token);
+        });
+
+        // refresh
+        refreshTokenDAO.findAllByUserId(user.getId()).forEach(refresh -> {
+            refresh.setRevoked(true);
+            refreshTokenDAO.saveToken(refresh);
+        });
     }
 
 

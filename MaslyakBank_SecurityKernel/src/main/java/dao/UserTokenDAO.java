@@ -10,6 +10,7 @@ import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 import system.JwtTokenProvider;
 
+import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -63,18 +64,18 @@ public class UserTokenDAO {
         }
     }
 
-    public boolean findTokenByUser (UsersTable user){
+    public List<UserTokenTable> findTokensByUser(UsersTable user) {
         Session session = null;
         Transaction transaction = null;
         try {
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
-            UserTokenTable result = session.createQuery(
-                            "FROM UserTokenTable WHERE user.id = :id", UserTokenTable.class)
+            List<UserTokenTable> results = session.createQuery(
+                            "FROM UserTokenTable WHERE user.id = :id ORDER BY createdAt DESC", UserTokenTable.class)
                     .setParameter("id", user.getId())
-                    .uniqueResult();
+                    .list();
             transaction.commit();
-            return result != null;
+            return results;
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
@@ -85,7 +86,6 @@ public class UserTokenDAO {
                 session.close();
             }
         }
-
     }
 
     public void deleteByUserId (UUID id){
@@ -111,6 +111,28 @@ public class UserTokenDAO {
     }
 
 
-
+    public List<UserTokenTable> findAllByUserId (UUID id){
+        Session session = null;
+        Transaction transaction = null;
+        try {
+            session = sessionFactory.openSession();
+            transaction = session.beginTransaction();
+            List<UserTokenTable> results = session.createQuery(
+                            "FROM UserTokenTable WHERE user.id = :id", UserTokenTable.class)
+                    .setParameter("id", id)
+                    .list();
+            transaction.commit();
+            return results;
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
 
 }
