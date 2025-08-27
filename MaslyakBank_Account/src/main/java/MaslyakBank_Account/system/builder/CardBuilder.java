@@ -1,12 +1,11 @@
 package MaslyakBank_Account.system.builder;
 
 import MaslyakBank_Account.dto.CardRequestDTO;
-import MaslyakBank_Account.entity.AccountTable;
-import MaslyakBank_Account.entity.CardTable;
 import MaslyakBank_Account.enums.BinCode;
-import MaslyakBank_Account.enums.CardType;
 import MaslyakBank_Account.system.CardSystem;
-import enums.Currency;
+import entity.AccountTable;
+import entity.CardTable;
+import enums.CardType;
 import jakarta.annotation.Nullable;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +15,7 @@ import java.util.Date;
 @Component
 public class CardBuilder {
 
-    private  CardTable card;
+    private CardTable card;
 
 
     public CardBuilder newCard() {

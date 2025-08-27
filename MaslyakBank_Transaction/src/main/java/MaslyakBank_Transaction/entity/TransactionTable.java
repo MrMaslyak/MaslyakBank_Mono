@@ -1,7 +1,8 @@
 package MaslyakBank_Transaction.entity;
 
 
-import MaslyakBank_Account.entity.AccountTable;
+
+import entity.AccountTable;
 import enums.Currency;
 import enums.TransactionStatus;
 import jakarta.persistence.*;
@@ -28,7 +29,7 @@ public class TransactionTable {
 
     @ManyToOne
     @JoinColumn(name = "to_account_id", nullable = false)
-    private AccountTable toAccountId;
+    private AccountTable   toAccountId;
 
     @Column(name = "description")
     private String description;

@@ -1,4 +1,4 @@
-package MaslyakBank_Account.enums;
+package enums;
 
 public enum CardType {
     DEBIT, CREDIT

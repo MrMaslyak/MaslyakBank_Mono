@@ -1,6 +1,6 @@
 package MaslyakBank_Account.dao;
 
-import MaslyakBank_Account.entity.CardTable;
+import entity.CardTable;
 import lombok.AllArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

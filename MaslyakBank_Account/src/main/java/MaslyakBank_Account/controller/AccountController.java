@@ -1,7 +1,7 @@
 package MaslyakBank_Account.controller;
 
-import MaslyakBank_Account.entity.AccountTable;
 import MaslyakBank_Account.service.AccountService;
+import entity.AccountTable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

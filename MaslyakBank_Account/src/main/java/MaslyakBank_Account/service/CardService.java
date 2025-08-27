@@ -2,10 +2,10 @@ package MaslyakBank_Account.service;
 
 
 import MaslyakBank_Account.dto.CardRequestDTO;
-import MaslyakBank_Account.entity.AccountTable;
-import MaslyakBank_Account.entity.CardTable;
 import MaslyakBank_Account.system.account.AccountSystem;
 import MaslyakBank_Account.system.builder.CardBuilder;
+import entity.AccountTable;
+import entity.CardTable;
 import entity.UsersTable;
 import io.micrometer.common.lang.Nullable;
 import lombok.AllArgsConstructor;

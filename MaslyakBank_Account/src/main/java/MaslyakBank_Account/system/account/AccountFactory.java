@@ -2,9 +2,9 @@ package MaslyakBank_Account.system.account;
 
 import MaslyakBank_Account.dao.AccountDAO;
 import MaslyakBank_Account.dto.CardRequestDTO;
-import MaslyakBank_Account.entity.AccountTable;
 import MaslyakBank_Account.system.builder.AccountBuilder;
 import dao.UserDAO;
+import entity.AccountTable;
 import entity.UsersTable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

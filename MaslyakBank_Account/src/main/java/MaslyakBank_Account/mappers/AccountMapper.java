@@ -1,6 +1,5 @@
 package MaslyakBank_Account.mappers;
 
-import MaslyakBank_Account.entity.AccountTable;
 import MaslyakBank_Account.enums.AccountType;
 import enums.AccountStatus;
 import org.mapstruct.Mapper;

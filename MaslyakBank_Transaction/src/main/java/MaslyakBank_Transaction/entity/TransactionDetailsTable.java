@@ -1,7 +1,8 @@
 package MaslyakBank_Transaction.entity;
 
 
-import MaslyakBank_Account.entity.CardTable;
+
+import entity.CardTable;
 import enums.TransactionDirectionType;
 import jakarta.persistence.*;
 

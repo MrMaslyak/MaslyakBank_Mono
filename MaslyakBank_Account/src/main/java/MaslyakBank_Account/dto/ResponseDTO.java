@@ -1,7 +1,6 @@
 package MaslyakBank_Account.dto;
 
-import MaslyakBank_Account.entity.AccountTable;
-import entity.UsersTable;
+import entity.AccountTable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

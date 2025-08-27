@@ -117,18 +117,19 @@
 			<artifactId>jjwt-jackson</artifactId>
 		</dependency>
 
+		<!-- Maslyak Library -->
 
 		<dependency>
 			<groupId>com.example</groupId>
-			<artifactId>MaslyakBank_Account</artifactId>
+			<artifactId>MaslyakBank_SecurityKernel</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-
 		<dependency>
 			<groupId>com.example</groupId>
 			<artifactId>MaslyakBank_Model</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+
 	</dependencies>
 
 

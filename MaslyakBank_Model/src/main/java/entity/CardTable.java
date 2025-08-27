@@ -1,8 +1,8 @@
-package MaslyakBank_Account.entity;
+package entity;
 
 
-import MaslyakBank_Account.enums.CardType;
-import enums.Currency;
+
+import enums.CardType;
 import jakarta.persistence.*;
 import lombok.Data;
 

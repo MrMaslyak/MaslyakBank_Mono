@@ -1,7 +1,7 @@
 package MaslyakBank_Account.dao;
 
 
-import MaslyakBank_Account.entity.AccountTable;
+import entity.AccountTable;
 import enums.Currency;
 import lombok.AllArgsConstructor;
 import org.hibernate.Session;

@@ -2,8 +2,8 @@ package MaslyakBank_Account.controller;
 
 import MaslyakBank_Account.dao.CardDAO;
 import MaslyakBank_Account.dto.CardRequestDTO;
-import MaslyakBank_Account.entity.CardTable;
 import MaslyakBank_Account.service.CardService;
+import entity.CardTable;
 import entity.UsersTable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

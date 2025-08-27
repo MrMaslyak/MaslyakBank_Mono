@@ -1,8 +1,8 @@
 package MaslyakBank_Account.system.builder;
 
 import MaslyakBank_Account.dto.CardRequestDTO;
-import MaslyakBank_Account.entity.AccountTable;
 import MaslyakBank_Account.system.account.IbanSystem;
+import entity.AccountTable;
 import entity.UsersTable;
 import enums.AccountStatus;
 import enums.Currency;

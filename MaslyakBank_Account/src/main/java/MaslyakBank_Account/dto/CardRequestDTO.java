@@ -1,7 +1,7 @@
 package MaslyakBank_Account.dto;
 
 
-import MaslyakBank_Account.enums.CardType;
+import enums.CardType;
 import enums.Currency;
 import lombok.AllArgsConstructor;
 import lombok.Data;

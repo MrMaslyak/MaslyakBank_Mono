@@ -1,9 +1,9 @@
 package MaslyakBank_Account.service;
 
 import MaslyakBank_Account.dao.CardDAO;
-import MaslyakBank_Account.entity.AccountTable;
-import MaslyakBank_Account.entity.CardTable;
 import MaslyakBank_Account.system.account.AccountFactory;
+import entity.AccountTable;
+import entity.CardTable;
 import entity.UsersTable;
 
 import jakarta.transaction.Transactional;

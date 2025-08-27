@@ -9,7 +9,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {
-		"MaslyakBank_Transaction",
 		"MaslyakBank_Account",
 		"MaslyakBank_Model",
 		"MaslyakBank_SecurityKernel",

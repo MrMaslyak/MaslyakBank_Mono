@@ -1,8 +1,6 @@
-package MaslyakBank_Account.entity;
+package entity;
 
 
-import MaslyakBank_Account.enums.AccountType;
-import entity.UsersTable;
 import enums.AccountStatus;
 import enums.Currency;
 import jakarta.persistence.*;
