@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TransactionController {
 
 
-    @PostMapping("/transfer")
+    @PostMapping("/transfer/card")
     public TransferSuccessDTO transfer(@RequestBody TransferCardToCardDTO dto) {
 
         return new TransferSuccessDTO("Transfer successful", true);

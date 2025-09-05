@@ -10,9 +10,6 @@ import org.springframework.stereotype.Service;
 public class TransactionService {
 
 
-
-
-
     public void transferCardToCard(TransferCardToCardDTO dto) {
 
     }
