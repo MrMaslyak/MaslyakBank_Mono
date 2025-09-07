@@ -23,14 +23,6 @@ public class TransactionTable {
     @Column(name = "transaction_type", length = 20, nullable = false)
     private String transactionType;
 
-    @ManyToOne
-    @JoinColumn(name = "from_account_id", nullable = false)
-    private AccountTable fromAccountId;
-
-    @ManyToOne
-    @JoinColumn(name = "to_account_id", nullable = false)
-    private AccountTable   toAccountId;
-
     @Column(name = "description")
     private String description;
 

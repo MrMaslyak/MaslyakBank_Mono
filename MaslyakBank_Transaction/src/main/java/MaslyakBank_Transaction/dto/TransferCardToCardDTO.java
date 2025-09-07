@@ -13,7 +13,6 @@ public class TransferCardToCardDTO {
     private UUID fromCardNumber;
     private UUID toCardNumber;
     private double amount;
-    private Currency currency;
     private String description;
 
 }

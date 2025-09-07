@@ -2,6 +2,7 @@ package MaslyakBank_Transaction.entity;
 
 
 
+import entity.AccountTable;
 import entity.CardTable;
 import enums.TransactionDirectionType;
 import jakarta.persistence.*;
@@ -26,15 +27,18 @@ public class TransactionDetailsTable {
     private TransactionTable transaction;
 
     @OneToOne
-    @JoinColumn(name = "from_card_id", nullable = false)
-    private CardTable fromAccountId;
+    @JoinColumn(name = "account_id", nullable = false)
+    private AccountTable accountTable;
 
     @OneToOne
-    @JoinColumn(name = "to_card_id", nullable = false)
-    private CardTable toAccountId;
+    @JoinColumn(name = "card_id", nullable = false)
+    private CardTable cardTable;
 
     @Column(name = "direction_type", length = 10, nullable = false)
     private TransactionDirectionType directionType;
+
+    @Column(name = "balance_after", nullable = false, precision = 15, scale = 2)
+    private double balanceAfter;
 
     @Column(name = "operation_at", nullable = false)
     private Date operationAt;
