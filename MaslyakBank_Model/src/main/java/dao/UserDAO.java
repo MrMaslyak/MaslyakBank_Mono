@@ -1,6 +1,7 @@
 package dao;
 
 import entity.UsersTable;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -9,13 +10,11 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
+@RequiredArgsConstructor
 public class UserDAO {
 
     private final SessionFactory sessionFactory;
 
-    public UserDAO(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
 
     public UsersTable findById (UUID id){
         Transaction transaction = null;

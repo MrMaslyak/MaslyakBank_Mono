@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {
-		"MaslyakBank_Account",
+		"MaslyakBank_Transaction",
 		"MaslyakBank_Model",
 		"MaslyakBank_SecurityKernel",
 		"details",
@@ -25,7 +25,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 		"enums"
 })
 @PropertySource("classpath:/application_transaction.properties")
-@EntityScan({"MaslyakBank_Transaction.entity", "entity", "MaslyakBank_Account.entity"})
+@EntityScan({"MaslyakBank_Transaction.entity", "entity"})
 @EnableScheduling
 public class MaslyakBankTransactionApplication {
 

@@ -2,13 +2,14 @@ package MaslyakBank_Transaction.entity;
 
 
 
+import MaslyakBank_Transaction.enums.TransactionDirectionType;
 import entity.AccountTable;
 import entity.CardTable;
-import enums.TransactionDirectionType;
 import jakarta.persistence.*;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
 
@@ -17,7 +18,7 @@ import java.util.UUID;
 @Data
 public class TransactionDetailsTable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     private UUID id;
 
@@ -38,7 +39,7 @@ public class TransactionDetailsTable {
     private TransactionDirectionType directionType;
 
     @Column(name = "balance_after", nullable = false, precision = 15, scale = 2)
-    private double balanceAfter;
+    private BigDecimal balanceAfter;
 
     @Column(name = "operation_at", nullable = false)
     private Date operationAt;
