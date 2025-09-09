@@ -33,6 +33,19 @@ public class CardDAO {
                 session.close();
             }
         }
+    }
 
+    public CardTable getCardByNumber(String cardNumber) {
+        Session session = null;
+        try {
+            session = sessionFactory.openSession();
+            return session.createQuery("FROM CardTable WHERE cardNumber = :cardNumber", CardTable.class)
+                    .setParameter("cardNumber", cardNumber)
+                    .uniqueResult();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
     }
 }

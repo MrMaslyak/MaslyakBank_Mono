@@ -24,4 +24,10 @@ public class CardController {
         return cardDAO.saveCard(card);
     }
 
+    @GetMapping("/validate")
+    public boolean checkCard(@RequestParam String fromCardNumber,
+                             @RequestParam String toCardNumber) {
+        return cardService.validateCard(fromCardNumber, toCardNumber);
+    }
+
 }

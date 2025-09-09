@@ -35,7 +35,7 @@ public class CardBuilder {
     public CardBuilder card(@Nullable CardRequestDTO dto) {
         card.setCardNumber(CardSystem.generateCardNumber(BinCode.PRIVAT_MASTER.getValue()));
         card.setCvv(String.valueOf((int)(Math.random() * 900 + 100)));
-        card.setExpiryDate(java.sql.Date.valueOf(LocalDate.now().plusYears(3)));
+        card.setExpiryDate(java.sql.Date.valueOf(LocalDate.now().plusYears(3)).toLocalDate());
         card.setCardType(dto != null && dto.getCardType() != null ? dto.getCardType() : CardType.DEBIT);
         card.set_expired(false);
         card.setBlocked(false);

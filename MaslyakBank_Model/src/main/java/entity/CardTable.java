@@ -6,6 +6,7 @@ import enums.CardType;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 
@@ -27,7 +28,7 @@ public class CardTable {
     private String cardNumber;
 
     @Column(name = "expiry_date", nullable = false)
-    private Date expiryDate;
+    private LocalDate expiryDate;
 
     @Column(name = "is_expired", nullable = false)
     private boolean is_expired;

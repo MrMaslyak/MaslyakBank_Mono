@@ -34,4 +34,24 @@ public class TransactionDAO {
             }
         }
     }
+
+    public void update(TransactionTable transactionT){
+        Transaction transaction = null;
+        Session session = null;
+        try {
+            session = sessionFactory.openSession();
+            transaction = session.beginTransaction();
+            session.merge(transactionT);
+            transaction.commit();
+        }catch (Exception e){
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
+        }finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
 }

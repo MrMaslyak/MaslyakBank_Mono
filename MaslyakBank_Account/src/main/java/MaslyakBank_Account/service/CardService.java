@@ -1,9 +1,11 @@
 package MaslyakBank_Account.service;
 
 
+import MaslyakBank_Account.dao.CardDAO;
 import MaslyakBank_Account.dto.CardRequestDTO;
 import MaslyakBank_Account.system.account.AccountSystem;
 import MaslyakBank_Account.system.builder.CardBuilder;
+import MaslyakBank_Account.system.validators.CardValidator;
 import entity.AccountTable;
 import entity.CardTable;
 import entity.UsersTable;
@@ -11,12 +13,16 @@ import io.micrometer.common.lang.Nullable;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class CardService {
 
     private final CardBuilder cardBuilder;
     private final AccountSystem accountSystem;
+    private final CardDAO cardDAO;
+    private final List<CardValidator> cardValidators;
 
 
     public CardTable createCard(UsersTable user, CardRequestDTO dto) {
@@ -34,4 +40,16 @@ public class CardService {
     }
 
 
+    public boolean validateCard(String fromCardNumber, String toCardNumber) {
+        CardTable fromCard = cardDAO.getCardByNumber(fromCardNumber);
+        CardTable toCard = cardDAO.getCardByNumber(toCardNumber);
+
+        System.out.println("ValidateCard: from=" + fromCard + " to=" + toCard);
+
+        for (CardValidator validator : cardValidators) {
+            System.out.println("Running validator: " + validator.getClass().getSimpleName());
+            validator.validate(fromCard, toCard);
+        }
+        return true;
+    }
 }

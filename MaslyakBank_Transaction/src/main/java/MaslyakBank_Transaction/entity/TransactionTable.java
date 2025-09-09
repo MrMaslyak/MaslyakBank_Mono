@@ -23,6 +23,7 @@ public class TransactionTable {
     @Column(nullable = false)
     private UUID id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "transaction_type", length = 20, nullable = false)
     private TransactionType transactionType;
 
