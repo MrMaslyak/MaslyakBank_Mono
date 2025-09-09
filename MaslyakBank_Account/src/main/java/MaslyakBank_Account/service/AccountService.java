@@ -35,5 +35,8 @@ public class AccountService {
     }
 
 
-
+    public double checkBalance(String cardNumber) {
+        CardTable card = cardDAO.getCardByNumber(cardNumber);
+        return card.getAccount().getBalance();
+    }
 }

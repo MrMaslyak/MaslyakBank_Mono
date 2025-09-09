@@ -1,7 +1,6 @@
 package MaslyakBank_Transaction.service;
 
 
-import MaslyakBank_Transaction.config.RestClientConfig;
 import MaslyakBank_Transaction.dao.TransactionDAO;
 import MaslyakBank_Transaction.dto.TransferDTO;
 import MaslyakBank_Transaction.entity.TransactionTable;
@@ -9,7 +8,6 @@ import MaslyakBank_Transaction.enums.TransactionStatus;
 import MaslyakBank_Transaction.enums.TransactionType;
 import MaslyakBank_Transaction.system.TransactionBuilder;
 import enums.Currency;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -36,6 +34,7 @@ public class TransactionService {
     public void transferCardToCard(TransferDTO dto) {
        TransactionTable transaction = saveTransaction(dto, TransactionType.CardToCard);
        checkCards(dto, transaction);
+       checkBalance(dto, transaction);
 
     }
 
@@ -48,6 +47,17 @@ public class TransactionService {
 
         transactionDAO.save(transaction);
         return transaction;
+    }
+
+    private void checkBalance(TransferDTO dto, TransactionTable transaction) {
+        double fromBalance = getBalance(dto.getFromCardNumber());
+
+        if (fromBalance < dto.getAmount()) {
+            System.out.println("Not enough money on the card, balance = " + fromBalance + ", need = " + dto.getAmount());
+            transaction.setStatus(TransactionStatus.FAILED);
+            transactionDAO.update(transaction);
+        }
+
     }
 
     private void checkCards(TransferDTO dto, TransactionTable transaction) {
@@ -71,6 +81,19 @@ public class TransactionService {
         } finally {
             transactionDAO.update(transaction);
         }
+    }
+
+    public double getBalance(String cardNumber) {
+        String token = SecurityUtil.getCurrentToken();
+        return accountManagmentService.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/balance")
+                        .queryParam("cardNumber", cardNumber)
+                        .build()
+                )
+                .header("Authorization", "Bearer " + token)
+                .retrieve()
+                .body(Double.class);
     }
 
 }

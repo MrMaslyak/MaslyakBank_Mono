@@ -17,4 +17,10 @@ public class AccountController {
         return accountService.createDefaultAccount();
     }
 
+    @GetMapping("/balance")
+    public double checkBalance(@RequestParam String cardNumber) {
+        return accountService.checkBalance(cardNumber);
+    }
+
+
 }

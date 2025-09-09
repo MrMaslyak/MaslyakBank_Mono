@@ -28,7 +28,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/maslyakbank/accountmanagment/account/create",
                                 "/maslyakbank/accountmanagment/card/create",
-                                "/maslyakbank/accountmanagment/card/validate"
+                                "/maslyakbank/accountmanagment/card/validate",
+                                "/maslyakbank/accountmanagment/account/balance"
                         ).hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()                )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
