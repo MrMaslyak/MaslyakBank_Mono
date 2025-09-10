@@ -38,21 +38,14 @@ public class AccountDAO {
         }
     }
 
-    public AccountTable findByCurrency(UUID userId, Currency currency) {
+    public void update(AccountTable account){
         Session session = null;
         Transaction transaction = null;
         try {
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
-
-            AccountTable account = session.createQuery(
-                            "FROM AccountTable WHERE currency = :currency AND user.id = :userId", AccountTable.class)
-                    .setParameter("currency", currency)
-                    .setParameter("userId", userId)
-                    .uniqueResult();
-
+            session.merge(account);
             transaction.commit();
-            return account;
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
             throw e;

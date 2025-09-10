@@ -1,5 +1,6 @@
 package MaslyakBank_Account.controller;
 
+import MaslyakBank_Account.dto.TransferDTO;
 import MaslyakBank_Account.service.AccountService;
 import entity.AccountTable;
 import lombok.RequiredArgsConstructor;
@@ -22,5 +23,9 @@ public class AccountController {
         return accountService.checkBalance(cardNumber);
     }
 
+    @PostMapping("/transfer/card")
+    public void transferCard(@RequestBody TransferDTO dto) {
+       accountService.transfer(dto);
+    }
 
 }

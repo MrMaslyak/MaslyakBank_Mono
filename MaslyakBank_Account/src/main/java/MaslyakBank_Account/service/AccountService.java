@@ -1,6 +1,8 @@
 package MaslyakBank_Account.service;
 
+import MaslyakBank_Account.dao.AccountDAO;
 import MaslyakBank_Account.dao.CardDAO;
+import MaslyakBank_Account.dto.TransferDTO;
 import MaslyakBank_Account.system.account.AccountFactory;
 import entity.AccountTable;
 import entity.CardTable;
@@ -17,6 +19,7 @@ import util.SecurityUtil;
 public class AccountService {
 
     private final CardDAO cardDAO;
+    private final AccountDAO accountDAO;
     private final CardService cardService;
     private final VerificationUserStatus  verification;
     private final AccountFactory accountFactory;
@@ -32,6 +35,22 @@ public class AccountService {
         cardDAO.saveCard(card);
 
         return account;
+    }
+
+    @Transactional
+    public void transfer(TransferDTO dto) {
+        CardTable toUserCard = cardDAO.getCardByNumber(dto.getToCardNumber());
+        CardTable fromUserCard = cardDAO.getCardByNumber(dto.getFromCardNumber());
+        AccountTable  toAccount = toUserCard.getAccount();
+        AccountTable fromAccount = fromUserCard.getAccount();
+        double amount = dto.getAmount();
+        double fromBalance = fromAccount.getBalance();
+        double toBalance = toAccount.getBalance();
+        fromAccount.setBalance(fromBalance - amount);
+        toAccount.setBalance(toBalance + amount);
+        accountDAO.update(fromAccount);
+        accountDAO.update(toAccount);
+
     }
 
 
