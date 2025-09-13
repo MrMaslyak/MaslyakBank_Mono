@@ -2,6 +2,7 @@ package MaslyakBank_Account.controller;
 
 import MaslyakBank_Account.dao.CardDAO;
 import MaslyakBank_Account.dto.CardRequestDTO;
+import MaslyakBank_Account.dto.CardValidationResultDTO;
 import MaslyakBank_Account.service.CardService;
 import entity.CardTable;
 import entity.UsersTable;
@@ -25,8 +26,8 @@ public class CardController {
     }
 
     @GetMapping("/validate")
-    public boolean checkCard(@RequestParam String fromCardNumber,
-                             @RequestParam String toCardNumber) {
+    public CardValidationResultDTO checkCard(@RequestParam String fromCardNumber,
+                                             @RequestParam String toCardNumber) {
         return cardService.validateCard(fromCardNumber, toCardNumber);
     }
 

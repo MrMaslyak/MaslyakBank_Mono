@@ -3,6 +3,7 @@ package MaslyakBank_Account.service;
 
 import MaslyakBank_Account.dao.CardDAO;
 import MaslyakBank_Account.dto.CardRequestDTO;
+import MaslyakBank_Account.dto.CardValidationResultDTO;
 import MaslyakBank_Account.system.account.AccountSystem;
 import MaslyakBank_Account.system.builder.CardBuilder;
 import MaslyakBank_Account.system.validators.CardValidator;
@@ -40,16 +41,13 @@ public class CardService {
     }
 
 
-    public boolean validateCard(String fromCardNumber, String toCardNumber) {
+    public CardValidationResultDTO validateCard(String fromCardNumber, String toCardNumber) {
         CardTable fromCard = cardDAO.getCardByNumber(fromCardNumber);
         CardTable toCard = cardDAO.getCardByNumber(toCardNumber);
 
-        System.out.println("ValidateCard: from=" + fromCard + " to=" + toCard);
-
         for (CardValidator validator : cardValidators) {
-            System.out.println("Running validator: " + validator.getClass().getSimpleName());
             validator.validate(fromCard, toCard);
         }
-        return true;
+        return new CardValidationResultDTO(fromCard, toCard);
     }
 }
