@@ -41,13 +41,23 @@ public class AccountService {
     public void transfer(TransferDTO dto) {
         CardTable toUserCard = cardDAO.getCardByNumber(dto.getToCardNumber());
         CardTable fromUserCard = cardDAO.getCardByNumber(dto.getFromCardNumber());
-        AccountTable  toAccount = toUserCard.getAccount();
+        AccountTable toAccount = toUserCard.getAccount();
         AccountTable fromAccount = fromUserCard.getAccount();
+
         double amount = dto.getAmount();
         double fromBalance = fromAccount.getBalance();
-        double toBalance = toAccount.getBalance();
+
+        if (fromBalance < amount) {
+            throw new IllegalArgumentException("Недостаточно средств для перевода");
+        }
+
+        if (dto.getFromCardNumber().equals(dto.getToCardNumber())) {
+            throw new IllegalArgumentException("Перевод на ту же карту невозможен");
+        }
+
         fromAccount.setBalance(fromBalance - amount);
-        toAccount.setBalance(toBalance + amount);
+        toAccount.setBalance(toAccount.getBalance() + amount);
+
         accountDAO.update(fromAccount);
         accountDAO.update(toAccount);
 

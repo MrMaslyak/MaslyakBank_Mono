@@ -62,7 +62,21 @@ public class TransactionService {
                 BigDecimal.valueOf(validation.getToCard().getAccount().getBalance() + dto.getAmount()),
                 TransactionDirectionType.CREDIT);
 
+        transferOperation(dto);
 
+        transaction.setStatus(TransactionStatus.SUCCESS);
+        transactionDAO.update(transaction);
+
+    }
+
+    private void transferOperation(TransferDTO dto){
+        String token = SecurityUtil.getCurrentToken();
+         accountManagmentService.post()
+                .uri(uriBuilder -> uriBuilder.path("/transfer/card").build())
+                .body(dto)
+                .header("Authorization", "Bearer " + token)
+                .retrieve()
+                .toBodilessEntity();
     }
 
 
@@ -84,7 +98,6 @@ public class TransactionService {
         detailsDAO.save(details);
         return details;
     }
-
 
     private boolean checkBalance(TransferDTO dto, TransactionTable transaction) {
         double fromBalance = getBalance(dto.getFromCardNumber());
