@@ -1,18 +1,15 @@
 package MaslyakBank_Transaction.system.exception;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
-@EqualsAndHashCode(callSuper = true)
-@AllArgsConstructor
-@Data
-public class TransactionException extends RuntimeException {
-    private final HttpStatus status;
 
-    public TransactionException(String message, HttpStatus status) {
-        super(message);
-        this.status = status;
+public class TransactionException extends ResponseStatusException {
+
+    public TransactionException(HttpStatus status, String reason) {
+        super(status, reason);
     }
+
+
 }

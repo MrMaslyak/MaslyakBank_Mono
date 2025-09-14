@@ -12,10 +12,12 @@ import MaslyakBank_Transaction.enums.TransactionStatus;
 import MaslyakBank_Transaction.enums.TransactionType;
 import MaslyakBank_Transaction.system.DetailsBuilder;
 import MaslyakBank_Transaction.system.TransactionBuilder;
+import MaslyakBank_Transaction.system.exception.TransactionException;
 import entity.AccountTable;
 import entity.CardTable;
 import enums.Currency;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
@@ -49,12 +51,20 @@ public class TransactionService {
     public void transferCardToCard(TransferDTO dto) {
        TransactionTable transaction = saveTransaction(dto,Currency.UAH, TransactionType.CardToCard);
         CardValidationResultDTO validation = checkCards(dto, transaction);
-        if (validation == null) return;
-        if (!checkBalance(dto, transaction)) return;
+        if (validation == null) {
+            transaction.setStatus(TransactionStatus.FAILED);
+            transactionDAO.update(transaction);
+            throw new TransactionException(HttpStatus.BAD_REQUEST,"Cards is not valid");
+        }
 
         transaction.setCurrency(validation.getFromCard().getAccount().getCurrency());
         transactionDAO.update(transaction);
 
+        if (!checkBalance(dto, transaction)) {
+            transaction.setStatus(TransactionStatus.FAILED);
+            transactionDAO.update(transaction);
+            throw new TransactionException(HttpStatus.BAD_REQUEST,"Not enough money");
+        }
         saveDetails(transaction,
                 validation.getFromCard().getAccount(),
                 validation.getFromCard(),
@@ -110,10 +120,9 @@ public class TransactionService {
         double fromBalance = getBalance(dto.getFromCardNumber());
 
         if (fromBalance < dto.getAmount()) {
-            System.out.println("Not enough money on the card, balance = " + fromBalance + ", need = " + dto.getAmount());
             transaction.setStatus(TransactionStatus.FAILED);
             transactionDAO.update(transaction);
-            return false;
+            throw new TransactionException(HttpStatus.BAD_REQUEST, "Not enough money on the card");
         }
 
         return true;
@@ -138,7 +147,7 @@ public class TransactionService {
         } catch (Exception e) {
             transaction.setStatus(TransactionStatus.FAILED);
             transactionDAO.update(transaction);
-            return null;
+            throw new TransactionException(HttpStatus.BAD_REQUEST, "Error in validation card");
         }
     }
 
