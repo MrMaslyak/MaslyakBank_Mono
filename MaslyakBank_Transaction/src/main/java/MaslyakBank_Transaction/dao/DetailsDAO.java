@@ -22,7 +22,7 @@ public class DetailsDAO {
         try {
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
-            session.persist(detailsT);
+            session.merge(detailsT);
             transaction.commit();
         }catch (Exception e){
             if (transaction != null) {

@@ -24,15 +24,14 @@ public class DetailsBuilder {
     }
 
 
-    public DetailsBuilder details(TransactionTable transaction, AccountTable account, CardTable card, BigDecimal balanceAfter, TransactionDirectionType transactionDirectionType) {
+    public DetailsBuilder details(TransactionTable transaction, AccountTable account, CardTable card, BigDecimal amount, BigDecimal balanceAfter, TransactionDirectionType transactionDirectionType) {
         details.setTransaction(transaction);
         details.setAccountTable(account);
         details.setCardTable(card);
         details.setBalanceAfter(balanceAfter);
+        details.setAmount(amount);
         details.setDirectionType(transactionDirectionType);
-        details.setOperationAt(new Date());
         details.setCreatedAt(new Date());
-        details.setUpdatedAt(new Date());
         return this;
     }
 

@@ -22,9 +22,8 @@ public class TransactionDetailsTable {
     @Column(nullable = false)
     private UUID id;
 
-    @OneToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "transaction_id", nullable = false)
-    @MapsId
     private TransactionTable transaction;
 
     @OneToOne
@@ -35,19 +34,19 @@ public class TransactionDetailsTable {
     @JoinColumn(name = "card_id", nullable = false)
     private CardTable cardTable;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "direction_type", length = 10, nullable = false)
     private TransactionDirectionType directionType;
+
+    @Column(name = "amount", nullable = false)
+    private BigDecimal amount;
 
     @Column(name = "balance_after", nullable = false, precision = 15, scale = 2)
     private BigDecimal balanceAfter;
 
-    @Column(name = "operation_at", nullable = false)
-    private Date operationAt;
 
     @Column(name = "created_at", nullable = false)
     private Date createdAt;
 
-    @Column(name = "updated_at", nullable = false)
-    private Date updatedAt;
 
 }

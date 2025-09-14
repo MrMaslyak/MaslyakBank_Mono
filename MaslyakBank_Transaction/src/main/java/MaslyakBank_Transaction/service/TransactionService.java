@@ -17,6 +17,7 @@ import entity.CardTable;
 import enums.Currency;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 import util.SecurityUtil;
 
@@ -44,23 +45,29 @@ public class TransactionService {
         this.accountManagmentService = accountManagmentService;
     }
 
+    @Transactional
     public void transferCardToCard(TransferDTO dto) {
-       TransactionTable transaction = saveTransaction(dto, TransactionType.CardToCard);
+       TransactionTable transaction = saveTransaction(dto,Currency.UAH, TransactionType.CardToCard);
         CardValidationResultDTO validation = checkCards(dto, transaction);
         if (validation == null) return;
         if (!checkBalance(dto, transaction)) return;
 
+        transaction.setCurrency(validation.getFromCard().getAccount().getCurrency());
+        transactionDAO.update(transaction);
+
         saveDetails(transaction,
                 validation.getFromCard().getAccount(),
                 validation.getFromCard(),
+                BigDecimal.valueOf(dto.getAmount()),
                 BigDecimal.valueOf(validation.getFromCard().getAccount().getBalance() - dto.getAmount()),
-                TransactionDirectionType.DEBIT);
+                TransactionDirectionType.debit);
 
         saveDetails(transaction,
                 validation.getToCard().getAccount(),
                 validation.getToCard(),
+                BigDecimal.valueOf(dto.getAmount()),
                 BigDecimal.valueOf(validation.getToCard().getAccount().getBalance() + dto.getAmount()),
-                TransactionDirectionType.CREDIT);
+                TransactionDirectionType.credit);
 
         transferOperation(dto);
 
@@ -80,20 +87,20 @@ public class TransactionService {
     }
 
 
-    private TransactionTable saveTransaction(TransferDTO dto, TransactionType transactionType) {
+    private TransactionTable saveTransaction(TransferDTO dto,Currency currency, TransactionType transactionType) {
         TransactionTable transaction = transactionBuilder
                 .newTransaction()
-                .transaction(dto, Currency.UAH, transactionType )
+                .transaction(dto, currency, transactionType )
                 .build();
 
         transactionDAO.save(transaction);
         return transaction;
     }
 
-    private TransactionDetailsTable saveDetails(TransactionTable transaction, AccountTable account, CardTable card, BigDecimal balanceAfter, TransactionDirectionType transactionDirectionType){
+    private TransactionDetailsTable saveDetails(TransactionTable transaction, AccountTable account, CardTable card,BigDecimal amount, BigDecimal balanceAfter, TransactionDirectionType transactionDirectionType){
         TransactionDetailsTable details = detailsBuilder
                 .newDetails()
-                .details(transaction,account,card,balanceAfter,transactionDirectionType)
+                .details(transaction,account,card,amount, balanceAfter,transactionDirectionType)
                 .build();
         detailsDAO.save(details);
         return details;
