@@ -8,6 +8,7 @@ import entity.RefreshTokenTable;
 import entity.UserTokenTable;
 import entity.UsersTable;
 import enums.TokenStatus;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,6 +33,8 @@ public class TokenService {
     private final UserTokenDAO tokenDAO;
     private final RefreshTokenDAO refreshTokenDAO;
     private final JwtTokenGenerator tokenGenerator;
+
+    private final RedisTemplate<String, Object> redisTemplate;
 
 
     public TokenPair getToken(String login) {
