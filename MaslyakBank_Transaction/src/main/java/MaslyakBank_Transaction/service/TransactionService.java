@@ -17,6 +17,7 @@ import entity.AccountTable;
 import entity.CardTable;
 import enums.Currency;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ import org.springframework.web.client.RestClient;
 import util.SecurityUtil;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Service
 public class TransactionService {
@@ -34,22 +36,24 @@ public class TransactionService {
     private final DetailsDAO detailsDAO;
     private final RestClient cardManagmentService;
     private final RestClient accountManagmentService;
+    private final RedisTemplate<String, Object> redisTemplate;
 
 
     public TransactionService(TransactionBuilder transactionBuilder, TransactionDAO transactionDAO, DetailsBuilder detailsBuilder, DetailsDAO detailsDAO,
                               @Qualifier("cardRestClient") RestClient cardManagmentService,
-                              @Qualifier("accountRestClient") RestClient accountManagmentService) {
+                              @Qualifier("accountRestClient") RestClient accountManagmentService, RedisTemplate<String, Object> redisTemplate) {
         this.transactionBuilder = transactionBuilder;
         this.transactionDAO = transactionDAO;
         this.detailsBuilder = detailsBuilder;
         this.detailsDAO = detailsDAO;
         this.cardManagmentService = cardManagmentService;
         this.accountManagmentService = accountManagmentService;
+        this.redisTemplate = redisTemplate;
     }
 
     @Transactional
     public void transferCardToCard(TransferDTO dto) {
-       TransactionTable transaction = saveTransaction(dto,Currency.UAH, TransactionType.CardToCard);
+       TransactionTable transaction = saveTransaction(dto,Currency.UAH, TransactionType.CardToCard);//toRedis
         CardValidationResultDTO validation = checkCards(dto, transaction);
         if (validation == null) {
             transaction.setStatus(TransactionStatus.FAILED);
@@ -58,7 +62,7 @@ public class TransactionService {
         }
 
         transaction.setCurrency(validation.getFromCard().getAccount().getCurrency());
-        transactionDAO.update(transaction);
+        updateTransactionRedis(transaction);//updateRedis
 
         if (!checkBalance(dto, transaction)) {
             transaction.setStatus(TransactionStatus.FAILED);
@@ -81,8 +85,13 @@ public class TransactionService {
 
         transferOperation(dto);
 
+        TransactionTable finalTransaction = (TransactionTable) redisTemplate.opsForValue()
+                .get("transaction:" + transaction.getId());
+
         transaction.setStatus(TransactionStatus.SUCCESS);
-        transactionDAO.update(transaction);
+
+        transactionDAO.save(finalTransaction);
+//        redisTemplate.delete("transaction:" + transaction.getId());
 
     }
 
@@ -102,9 +111,13 @@ public class TransactionService {
                 .newTransaction()
                 .transaction(dto, currency, transactionType )
                 .build();
-
-        transactionDAO.save(transaction);
+        String redisKey = "transaction:" + UUID.randomUUID();
+        redisTemplate.opsForValue().set(redisKey, transaction);
         return transaction;
+    }
+
+    private void updateTransactionRedis(TransactionTable transaction){
+        redisTemplate.opsForValue().set("transaction:" + transaction.getId(), transaction);
     }
 
     private TransactionDetailsTable saveDetails(TransactionTable transaction, AccountTable account, CardTable card,BigDecimal amount, BigDecimal balanceAfter, TransactionDirectionType transactionDirectionType){
