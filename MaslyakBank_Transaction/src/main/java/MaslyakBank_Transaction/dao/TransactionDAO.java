@@ -19,7 +19,11 @@ public class TransactionDAO {
         Transaction tx = null;
         try (Session session = sessionFactory.openSession()) {
             tx = session.beginTransaction();
-            session.persist(transactionT); // сохраняем как новую сущность
+            if (transactionT.getId() == null) {
+                session.persist(transactionT);
+            } else {
+                session.merge(transactionT);
+            }
             tx.commit();
         } catch (Exception e) {
             if (tx != null) tx.rollback();
@@ -27,17 +31,7 @@ public class TransactionDAO {
         }
     }
 
-    public void update(TransactionTable transactionT){
-        Transaction tx = null;
-        try (Session session = sessionFactory.openSession()) {
-            tx = session.beginTransaction();
-            session.merge(transactionT); // обновляем detached entity
-            tx.commit();
-        } catch (Exception e) {
-            if (tx != null) tx.rollback();
-            throw e;
-        }
-    }
+
 
 
 

@@ -19,7 +19,7 @@ import java.util.UUID;
 @Data
 public class TransactionTable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(nullable = false)
     private UUID id;
 
