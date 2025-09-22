@@ -7,12 +7,15 @@ import MaslyakBank_Account.dto.CardValidationResultDTO;
 import MaslyakBank_Account.system.account.AccountSystem;
 import MaslyakBank_Account.system.builder.CardBuilder;
 import MaslyakBank_Account.system.validators.CardValidator;
+import MaslyakBank_Account.system.validators.exception.TransactionException;
 import entity.AccountTable;
 import entity.CardTable;
 import entity.UsersTable;
 import io.micrometer.common.lang.Nullable;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import util.SecurityUtil;
 
 import java.util.List;
 
@@ -42,8 +45,13 @@ public class CardService {
 
 
     public CardValidationResultDTO validateCard(String fromCardNumber, String toCardNumber) {
+        UsersTable user = SecurityUtil.getCurrentUser();
         CardTable fromCard = cardDAO.getCardByNumber(fromCardNumber);
         CardTable toCard = cardDAO.getCardByNumber(toCardNumber);
+
+        if (!fromCard.getAccount().getUser().getId().equals(user.getId())) {
+            throw new TransactionException(HttpStatus.FORBIDDEN, "This card does not belong to the current user");
+        }
 
         for (CardValidator validator : cardValidators) {
             validator.validate(fromCard, toCard);
