@@ -53,22 +53,29 @@ public class TransactionService {
 
     @Transactional
     public void transferCardToCard(TransferDTO dto) {
-       TransactionTable transaction = saveTransaction(dto,Currency.UAH, TransactionType.CardToCard);//toRedis
-        CardValidationResultDTO validation = checkCards(dto, transaction);
+        TransactionTable transaction = saveTransactionRedis(dto,Currency.UAH, TransactionType.CardToCard);
+
+        CardValidationResultDTO validation = checkCards(dto);
         if (validation == null) {
             transaction.setStatus(TransactionStatus.FAILED);
+            transactionDAO.save(transaction);
+            redisTemplate.delete("transaction:" + transaction.getId());
+            throw new TransactionException(HttpStatus.BAD_REQUEST, "Cards are not valid");
+        } else {
+            transaction.setStatus(TransactionStatus.PENDING);
             transactionDAO.update(transaction);
-            throw new TransactionException(HttpStatus.BAD_REQUEST,"Cards is not valid");
         }
 
         transaction.setCurrency(validation.getFromCard().getAccount().getCurrency());
-        updateTransactionRedis(transaction);//updateRedis
+        updateTransactionRedis(transaction);
 
-        if (!checkBalance(dto, transaction)) {
+        if (!checkBalance(dto)) {
             transaction.setStatus(TransactionStatus.FAILED);
-            transactionDAO.update(transaction);
+            transactionDAO.save(transaction);
+            redisTemplate.delete("transaction:" + transaction.getId());
             throw new TransactionException(HttpStatus.BAD_REQUEST,"Not enough money");
         }
+
         saveDetails(transaction,
                 validation.getFromCard().getAccount(),
                 validation.getFromCard(),
@@ -91,7 +98,7 @@ public class TransactionService {
         transaction.setStatus(TransactionStatus.SUCCESS);
 
         transactionDAO.save(finalTransaction);
-//        redisTemplate.delete("transaction:" + transaction.getId());
+        redisTemplate.delete("transaction:" + transaction.getId());
 
     }
 
@@ -106,7 +113,7 @@ public class TransactionService {
     }
 
 
-    private TransactionTable saveTransaction(TransferDTO dto,Currency currency, TransactionType transactionType) {
+    private TransactionTable saveTransactionRedis(TransferDTO dto,Currency currency, TransactionType transactionType) {
         TransactionTable transaction = transactionBuilder
                 .newTransaction()
                 .transaction(dto, currency, transactionType )
@@ -129,39 +136,22 @@ public class TransactionService {
         return details;
     }
 
-    private boolean checkBalance(TransferDTO dto, TransactionTable transaction) {
-        double fromBalance = getBalance(dto.getFromCardNumber());
-
-        if (fromBalance < dto.getAmount()) {
-            transaction.setStatus(TransactionStatus.FAILED);
-            transactionDAO.update(transaction);
-            throw new TransactionException(HttpStatus.BAD_REQUEST, "Not enough money on the card");
-        }
-
-        return true;
+    private CardValidationResultDTO checkCards(TransferDTO dto) {
+        String token = SecurityUtil.getCurrentToken();
+        return cardManagmentService.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/validate")
+                        .queryParam("fromCardNumber", dto.getFromCardNumber())
+                        .queryParam("toCardNumber", dto.getToCardNumber())
+                        .build())
+                .header("Authorization", "Bearer " + token)
+                .retrieve()
+                .body(CardValidationResultDTO.class);
     }
 
-    private CardValidationResultDTO checkCards(TransferDTO dto, TransactionTable transaction) {
-        String token = SecurityUtil.getCurrentToken();
-        try {
-            CardValidationResultDTO result = cardManagmentService.get()
-                    .uri(uriBuilder -> uriBuilder
-                            .path("/validate")
-                            .queryParam("fromCardNumber", dto.getFromCardNumber())
-                            .queryParam("toCardNumber", dto.getToCardNumber())
-                            .build())
-                    .header("Authorization", "Bearer " + token)
-                    .retrieve()
-                    .body(CardValidationResultDTO.class);
-
-            transaction.setStatus(result != null ? TransactionStatus.PENDING : TransactionStatus.FAILED);
-            transactionDAO.update(transaction);
-            return result;
-        } catch (Exception e) {
-            transaction.setStatus(TransactionStatus.FAILED);
-            transactionDAO.update(transaction);
-            throw new TransactionException(HttpStatus.BAD_REQUEST, "Error in validation card");
-        }
+    private boolean checkBalance(TransferDTO dto) {
+        double fromBalance = getBalance(dto.getFromCardNumber());
+        return fromBalance >= dto.getAmount();
     }
 
     public double getBalance(String cardNumber) {
