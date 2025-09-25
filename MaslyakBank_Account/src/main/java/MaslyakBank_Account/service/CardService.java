@@ -52,7 +52,6 @@ public class CardService {
         if (!fromCard.getAccount().getUser().getId().equals(user.getId())) {
             throw new TransactionException(HttpStatus.FORBIDDEN, "This card does not belong to the current user");
         }
-
         for (CardValidator validator : cardValidators) {
             validator.validate(fromCard, toCard);
         }

@@ -20,13 +20,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientResponseException;
 import util.SecurityUtil;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 @Service
 public class TransactionService {
@@ -123,13 +121,12 @@ public class TransactionService {
         redisTemplate.opsForValue().set("transaction:" + transaction.getId(), transaction);
     }
 
-    private TransactionDetailsTable saveDetails(TransactionTable transaction, AccountTable account, CardTable card,BigDecimal amount, BigDecimal balanceAfter, TransactionDirectionType transactionDirectionType){
+    private void saveDetails(TransactionTable transaction, AccountTable account, CardTable card, BigDecimal amount, BigDecimal balanceAfter, TransactionDirectionType transactionDirectionType){
         TransactionDetailsTable details = detailsBuilder
                 .newDetails()
                 .details(transaction,account,card,amount, balanceAfter,transactionDirectionType)
                 .build();
         detailsDAO.save(details);
-        return details;
     }
 
 

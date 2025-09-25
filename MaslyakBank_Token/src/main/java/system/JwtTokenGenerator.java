@@ -12,6 +12,7 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -19,6 +20,7 @@ import java.security.Key;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @RequiredArgsConstructor
@@ -29,6 +31,7 @@ public class JwtTokenGenerator {
     private Key secret;
     private final UserTokenDAO userTokenDAO;
     private final RefreshTokenDAO refreshTokenDAO;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @PostConstruct
     public void init() {
@@ -40,6 +43,12 @@ public class JwtTokenGenerator {
         String refresh = generateRefreshToken();
 
        UserTokenTable tokenTable = saveAccessToken(user, access);
+        redisTemplate.opsForValue().set(
+                "token: " + access,
+                user.getLogin(),
+                1000 * 60 * 1000,
+                TimeUnit.MILLISECONDS
+        );
        saveRefreshToken(tokenTable, refresh);
 
         return new TokenPair(access, refresh);
