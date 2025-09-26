@@ -13,6 +13,8 @@ import MaslyakBank_Transaction.enums.TransactionType;
 import MaslyakBank_Transaction.system.DetailsBuilder;
 import MaslyakBank_Transaction.system.TransactionBuilder;
 import MaslyakBank_Transaction.system.exception.TransactionException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import entity.AccountTable;
 import entity.CardTable;
 import enums.Currency;
@@ -36,6 +38,8 @@ public class TransactionService {
     private final RestClient cardManagmentService;
     private final RestClient accountManagmentService;
     private final RedisTemplate<String, Object> redisTemplate;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
 
 
     public TransactionService(TransactionBuilder transactionBuilder, TransactionDAO transactionDAO, DetailsBuilder detailsBuilder, DetailsDAO detailsDAO,
@@ -65,6 +69,7 @@ public class TransactionService {
             transferOperation(dto);
 
             transaction.setStatus(TransactionStatus.SUCCESS);
+            //jobs
             transactionDAO.save(transaction);
 
             saveDetails(transaction,
@@ -85,11 +90,13 @@ public class TransactionService {
 
         } catch (TransactionException ex) {
             transaction.setStatus(TransactionStatus.FAILED);
+            transaction.setFailedReason(ex.getMessage());
             transactionDAO.save(transaction);
             redisTemplate.delete("transaction:" + transaction.getId());
             throw ex;
         } catch (Exception ex) {
             transaction.setStatus(TransactionStatus.FAILED);
+            transaction.setFailedReason("Unexpected error");
             transactionDAO.save(transaction);
             redisTemplate.delete("transaction:" + transaction.getId());
             throw new TransactionException(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error");
@@ -143,9 +150,18 @@ public class TransactionService {
                     .retrieve()
                     .body(CardValidationResultDTO.class);
         } catch (RestClientResponseException ex) {
+            String response = ex.getResponseBodyAsString();
+            String message = response;
+            try {
+                JsonNode json = objectMapper.readTree(response);
+                if (json.has("message")) {
+                    message = json.get("message").asText();
+                }
+            } catch (Exception ignored) {
+            }
             throw new TransactionException(
                     HttpStatus.valueOf(ex.getRawStatusCode()),
-                    ex.getResponseBodyAsString()
+                    message
             );
         }
     }
@@ -154,6 +170,7 @@ public class TransactionService {
         double fromBalance = getBalance(dto.getFromCardNumber());
         if (fromBalance < dto.getAmount()) {
             transaction.setStatus(TransactionStatus.FAILED);
+            transaction.setFailedReason("Not enough money");
             transactionDAO.save(transaction);
             redisTemplate.delete("transaction:" + transaction.getId());
             throw new TransactionException(HttpStatus.BAD_REQUEST, "Not enough money");

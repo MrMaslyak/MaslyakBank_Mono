@@ -30,6 +30,9 @@ public class TransactionTable {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "failed_reason")
+    private String failedReason;
+
     @Column(name = "amount", nullable = false, precision = 15, scale = 2)
     private BigDecimal amount;
 
