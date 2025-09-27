@@ -18,15 +18,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import entity.AccountTable;
 import entity.CardTable;
 import enums.Currency;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientResponseException;
 import util.SecurityUtil;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 @Service
 public class TransactionService {
@@ -39,12 +42,14 @@ public class TransactionService {
     private final RestClient accountManagmentService;
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final TaskScheduler taskScheduler;
 
 
 
     public TransactionService(TransactionBuilder transactionBuilder, TransactionDAO transactionDAO, DetailsBuilder detailsBuilder, DetailsDAO detailsDAO,
                               @Qualifier("cardRestClient") RestClient cardManagmentService,
-                              @Qualifier("accountRestClient") RestClient accountManagmentService, RedisTemplate<String, Object> redisTemplate) {
+                              @Qualifier("accountRestClient") RestClient accountManagmentService,
+                              RedisTemplate<String, Object> redisTemplate,TaskScheduler taskScheduler ) {
         this.transactionBuilder = transactionBuilder;
         this.transactionDAO = transactionDAO;
         this.detailsBuilder = detailsBuilder;
@@ -52,6 +57,7 @@ public class TransactionService {
         this.cardManagmentService = cardManagmentService;
         this.accountManagmentService = accountManagmentService;
         this.redisTemplate = redisTemplate;
+        this.taskScheduler = taskScheduler;
     }
 
 
@@ -96,10 +102,14 @@ public class TransactionService {
             throw new TransactionException(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error");
         } finally {
             if (transaction != null) {
-                redisTemplate.delete("transaction:" + transaction.getId());
+                Set<String> keys = redisTemplate.keys("transaction:*");
+                if (!keys.isEmpty()) {
+                    redisTemplate.delete(keys);
+                }
             }
         }
     }
+
 
 
     private void transferOperation(TransferDTO dto){

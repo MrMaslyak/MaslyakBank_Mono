@@ -5,6 +5,7 @@ package MaslyakBank_Transaction.entity;
 import MaslyakBank_Transaction.enums.TransactionDirectionType;
 import MaslyakBank_Transaction.enums.TransactionStatus;
 import MaslyakBank_Transaction.enums.TransactionType;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import enums.Currency;
 import jakarta.persistence.*;
 import lombok.Data;

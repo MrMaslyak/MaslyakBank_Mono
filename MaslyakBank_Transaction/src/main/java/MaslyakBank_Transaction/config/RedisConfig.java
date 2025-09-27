@@ -9,6 +9,8 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 
 @Configuration
 public class RedisConfig {
@@ -40,6 +42,13 @@ public class RedisConfig {
             template.afterPropertiesSet();
             return template;
         }
+
+    @Bean
+    public TaskScheduler taskScheduler() {
+        return new ConcurrentTaskScheduler(); // или ThreadPoolTaskScheduler
     }
+    }
+
+
 
 
