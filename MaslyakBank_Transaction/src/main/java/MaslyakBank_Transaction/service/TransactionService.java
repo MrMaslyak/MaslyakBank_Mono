@@ -56,20 +56,22 @@ public class TransactionService {
 
 
     public void transferCardToCard(TransferDTO dto) {
-        TransactionTable transaction = saveTransactionRedis(dto, Currency.UAH, TransactionType.CardToCard);
+        TransactionTable transaction = null;
 
         try {
             CardValidationResultDTO validation = checkCards(dto);
 
-            transaction.setCurrency(validation.getFromCard().getAccount().getCurrency());
-            updateTransactionRedis(transaction);
+            transaction = saveTransactionRedis(
+                    dto,
+                    validation.getFromCard().getAccount().getCurrency(),
+                    TransactionType.CardToCard
+            );
 
             checkBalance(dto, transaction);
 
             transferOperation(dto);
 
             transaction.setStatus(TransactionStatus.SUCCESS);
-            //jobs
             transactionDAO.save(transaction);
 
             saveDetails(transaction,
@@ -86,20 +88,16 @@ public class TransactionService {
                     BigDecimal.valueOf(validation.getToCard().getAccount().getBalance() + dto.getAmount()),
                     TransactionDirectionType.credit);
 
-            redisTemplate.delete("transaction:" + transaction.getId());
-
         } catch (TransactionException ex) {
-            transaction.setStatus(TransactionStatus.FAILED);
-            transaction.setFailedReason(ex.getMessage());
-            transactionDAO.save(transaction);
-            redisTemplate.delete("transaction:" + transaction.getId());
+            saveFailedTransaction(transaction, dto, ex.getMessage(), Currency.UAH);
             throw ex;
         } catch (Exception ex) {
-            transaction.setStatus(TransactionStatus.FAILED);
-            transaction.setFailedReason("Unexpected error");
-            transactionDAO.save(transaction);
-            redisTemplate.delete("transaction:" + transaction.getId());
+            saveFailedTransaction(transaction, dto, "Unexpected error", Currency.UAH);
             throw new TransactionException(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error");
+        } finally {
+            if (transaction != null) {
+                redisTemplate.delete("transaction:" + transaction.getId());
+            }
         }
     }
 
@@ -124,8 +122,17 @@ public class TransactionService {
         return transaction;
     }
 
-    private void updateTransactionRedis(TransactionTable transaction){
-        redisTemplate.opsForValue().set("transaction:" + transaction.getId(), transaction);
+    private void saveFailedTransaction(TransactionTable transaction, TransferDTO dto,
+                                       String reason, Currency currency) {
+        if (transaction == null) {
+            transaction = transactionBuilder
+                    .newTransaction()
+                    .transaction(dto, currency, TransactionType.CardToCard)
+                    .build();
+        }
+        transaction.setStatus(TransactionStatus.FAILED);
+        transaction.setFailedReason(reason);
+        transactionDAO.save(transaction);
     }
 
     private void saveDetails(TransactionTable transaction, AccountTable account, CardTable card, BigDecimal amount, BigDecimal balanceAfter, TransactionDirectionType transactionDirectionType){
