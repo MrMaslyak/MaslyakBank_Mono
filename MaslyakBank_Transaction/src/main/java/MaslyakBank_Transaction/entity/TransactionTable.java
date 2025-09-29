@@ -19,8 +19,8 @@ import java.util.UUID;
 @Table(name = "transactions")
 @Data
 public class TransactionTable {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(nullable = false)
     private UUID id;
 

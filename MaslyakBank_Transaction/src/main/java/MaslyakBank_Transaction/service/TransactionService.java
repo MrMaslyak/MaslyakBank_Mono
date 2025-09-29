@@ -18,7 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import entity.AccountTable;
 import entity.CardTable;
 import enums.Currency;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.micrometer.core.aop.CountedAspect;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -30,6 +30,7 @@ import util.SecurityUtil;
 
 import java.math.BigDecimal;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class TransactionService {
@@ -45,11 +46,10 @@ public class TransactionService {
     private final TaskScheduler taskScheduler;
 
 
-
     public TransactionService(TransactionBuilder transactionBuilder, TransactionDAO transactionDAO, DetailsBuilder detailsBuilder, DetailsDAO detailsDAO,
                               @Qualifier("cardRestClient") RestClient cardManagmentService,
                               @Qualifier("accountRestClient") RestClient accountManagmentService,
-                              RedisTemplate<String, Object> redisTemplate,TaskScheduler taskScheduler ) {
+                              RedisTemplate<String, Object> redisTemplate, TaskScheduler taskScheduler) {
         this.transactionBuilder = transactionBuilder;
         this.transactionDAO = transactionDAO;
         this.detailsBuilder = detailsBuilder;
@@ -77,17 +77,18 @@ public class TransactionService {
 
             transferOperation(dto);
 
-            transaction.setStatus(TransactionStatus.SUCCESS);
-            transactionDAO.save(transaction);
+            transaction.setStatus(TransactionStatus.SUCCESS);//мб снести это потому что транзакция аля меняется и детали не могу созраниться
 
-            saveDetails(transaction,
+            System.out.println("Сохраняем детали: " + transaction.getId());
+
+            saveDetailsRedis(transaction,
                     validation.getFromCard().getAccount(),
                     validation.getFromCard(),
                     BigDecimal.valueOf(dto.getAmount()),
                     BigDecimal.valueOf(validation.getFromCard().getAccount().getBalance() - dto.getAmount()),
                     TransactionDirectionType.debit);
 
-            saveDetails(transaction,
+            saveDetailsRedis(transaction,
                     validation.getToCard().getAccount(),
                     validation.getToCard(),
                     BigDecimal.valueOf(dto.getAmount()),
@@ -100,17 +101,9 @@ public class TransactionService {
         } catch (Exception ex) {
             saveFailedTransaction(transaction, dto, "Unexpected error", Currency.UAH);
             throw new TransactionException(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error");
-        } finally {
-            if (transaction != null) {
-                Set<String> keys = redisTemplate.keys("transaction:*");
-                if (!keys.isEmpty()) {
-                    redisTemplate.delete(keys);
-                }
-            }
         }
     }
-
-
+    
 
     private void transferOperation(TransferDTO dto){
         String token = SecurityUtil.getCurrentToken();
@@ -126,31 +119,43 @@ public class TransactionService {
     private TransactionTable saveTransactionRedis(TransferDTO dto,Currency currency, TransactionType transactionType) {
         TransactionTable transaction = transactionBuilder
                 .newTransaction()
-                .transaction(dto, currency, transactionType )
+                .transaction(UUID.randomUUID(), dto, currency, transactionType )
                 .build();
+
         redisTemplate.opsForValue().set("transaction:" + transaction.getId(), transaction);
         return transaction;
     }
+    private void saveDetailsRedis(TransactionTable transaction,
+                                  AccountTable account,
+                                  CardTable card,
+                                  BigDecimal amount,
+                                  BigDecimal balanceAfter,
+                                  TransactionDirectionType transactionDirectionType) {
+
+        TransactionDetailsTable details = detailsBuilder
+                .newDetails()
+                .details(transaction, account, card, amount, balanceAfter, transactionDirectionType)
+                .build();
+
+
+        String key = "details:" + transaction.getId() + ":" + UUID.randomUUID();
+        redisTemplate.opsForValue().set(key, details);
+
+        System.out.println("Сохранили деталь в Redis с ключом: " + key);
+    }
+
 
     private void saveFailedTransaction(TransactionTable transaction, TransferDTO dto,
                                        String reason, Currency currency) {
         if (transaction == null) {
             transaction = transactionBuilder
                     .newTransaction()
-                    .transaction(dto, currency, TransactionType.CardToCard)
+                    .transaction(UUID.randomUUID(), dto, currency, TransactionType.CardToCard)
                     .build();
         }
         transaction.setStatus(TransactionStatus.FAILED);
         transaction.setFailedReason(reason);
         transactionDAO.save(transaction);
-    }
-
-    private void saveDetails(TransactionTable transaction, AccountTable account, CardTable card, BigDecimal amount, BigDecimal balanceAfter, TransactionDirectionType transactionDirectionType){
-        TransactionDetailsTable details = detailsBuilder
-                .newDetails()
-                .details(transaction,account,card,amount, balanceAfter,transactionDirectionType)
-                .build();
-        detailsDAO.save(details);
     }
 
 
