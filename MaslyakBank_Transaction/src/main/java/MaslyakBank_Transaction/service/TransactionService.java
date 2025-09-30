@@ -104,17 +104,6 @@ public class TransactionService {
             throw new TransactionException(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error");
         }
     }
-    
-
-    private void transferOperation(TransferDTO dto){
-        String token = SecurityUtil.getCurrentToken();
-         accountManagmentService.post()
-                .uri(uriBuilder -> uriBuilder.path("/transfer/card").build())
-                .body(dto)
-                .header("Authorization", "Bearer " + token)
-                .retrieve()
-                .toBodilessEntity();
-    }
 
     @Scheduled(fixedRate = 60000) // куждую минуту
     public void schedulerRedisToDB() {
@@ -136,6 +125,17 @@ public class TransactionService {
                 }
             }
         }
+    }
+
+
+    private void transferOperation(TransferDTO dto){
+        String token = SecurityUtil.getCurrentToken();
+         accountManagmentService.post()
+                .uri(uriBuilder -> uriBuilder.path("/transfer/card").build())
+                .body(dto)
+                .header("Authorization", "Bearer " + token)
+                .retrieve()
+                .toBodilessEntity();
     }
 
     private void updateTransactionRedis (TransactionTable transaction){
