@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientResponseException;
@@ -41,23 +42,24 @@ public class TransactionService {
     private final DetailsDAO detailsDAO;
     private final RestClient cardManagmentService;
     private final RestClient accountManagmentService;
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, TransactionTable> transactionRedisTemplate;
+    private final RedisTemplate<String, TransactionDetailsTable> detailsRedisTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final TaskScheduler taskScheduler;
 
 
     public TransactionService(TransactionBuilder transactionBuilder, TransactionDAO transactionDAO, DetailsBuilder detailsBuilder, DetailsDAO detailsDAO,
                               @Qualifier("cardRestClient") RestClient cardManagmentService,
                               @Qualifier("accountRestClient") RestClient accountManagmentService,
-                              RedisTemplate<String, Object> redisTemplate, TaskScheduler taskScheduler) {
+                              RedisTemplate<String, TransactionTable> transactionRedisTemplate,
+                              RedisTemplate<String, TransactionDetailsTable> detailsRedisTemplate) {
         this.transactionBuilder = transactionBuilder;
         this.transactionDAO = transactionDAO;
         this.detailsBuilder = detailsBuilder;
         this.detailsDAO = detailsDAO;
         this.cardManagmentService = cardManagmentService;
         this.accountManagmentService = accountManagmentService;
-        this.redisTemplate = redisTemplate;
-        this.taskScheduler = taskScheduler;
+        this.transactionRedisTemplate = transactionRedisTemplate;
+        this.detailsRedisTemplate = detailsRedisTemplate;
     }
 
 
@@ -77,9 +79,8 @@ public class TransactionService {
 
             transferOperation(dto);
 
-            transaction.setStatus(TransactionStatus.SUCCESS);//мб снести это потому что транзакция аля меняется и детали не могу созраниться
-
-            System.out.println("Сохраняем детали: " + transaction.getId());
+            transaction.setStatus(TransactionStatus.SUCCESS);
+            updateTransactionRedis(transaction);
 
             saveDetailsRedis(transaction,
                     validation.getFromCard().getAccount(),
@@ -115,6 +116,32 @@ public class TransactionService {
                 .toBodilessEntity();
     }
 
+    @Scheduled(fixedRate = 60000) // куждую минуту
+    public void schedulerRedisToDB() {
+        Set<String> keysTransaction = transactionRedisTemplate.keys("transaction:*");
+        Set<String> keysDetails = detailsRedisTemplate.keys("details:*");
+        if (keysTransaction != null && keysDetails != null) {
+            for (String key : keysTransaction) {
+                TransactionTable transaction =  transactionRedisTemplate.opsForValue().get(key);
+                if (transaction != null) {
+                    transactionDAO.save(transaction);
+                    transactionRedisTemplate.delete(key);
+                }
+            }
+            for (String key : keysDetails) {
+                TransactionDetailsTable details =  detailsRedisTemplate.opsForValue().get(key);
+                if (details != null) {
+                    detailsDAO.save(details);
+                    detailsRedisTemplate.delete(key);
+                }
+            }
+        }
+    }
+
+    private void updateTransactionRedis (TransactionTable transaction){
+        transactionRedisTemplate.opsForValue().set("transaction:" + transaction.getId(), transaction);
+    }
+
 
     private TransactionTable saveTransactionRedis(TransferDTO dto,Currency currency, TransactionType transactionType) {
         TransactionTable transaction = transactionBuilder
@@ -122,9 +149,10 @@ public class TransactionService {
                 .transaction(UUID.randomUUID(), dto, currency, transactionType )
                 .build();
 
-        redisTemplate.opsForValue().set("transaction:" + transaction.getId(), transaction);
+        transactionRedisTemplate.opsForValue().set("transaction:" + transaction.getId(), transaction);
         return transaction;
     }
+
     private void saveDetailsRedis(TransactionTable transaction,
                                   AccountTable account,
                                   CardTable card,
@@ -132,18 +160,15 @@ public class TransactionService {
                                   BigDecimal balanceAfter,
                                   TransactionDirectionType transactionDirectionType) {
 
-        TransactionDetailsTable details = detailsBuilder
-                .newDetails()
-                .details(transaction, account, card, amount, balanceAfter, transactionDirectionType)
-                .build();
+            TransactionDetailsTable details = detailsBuilder
+                    .newDetails()
+                    .details(transaction, account, card, amount, balanceAfter, transactionDirectionType)
+                    .build();
 
+            String key = "details:" + transaction.getId() + ":" + UUID.randomUUID();
+            detailsRedisTemplate.opsForValue().set(key, details);
 
-        String key = "details:" + transaction.getId() + ":" + UUID.randomUUID();
-        redisTemplate.opsForValue().set(key, details);
-
-        System.out.println("Сохранили деталь в Redis с ключом: " + key);
     }
-
 
     private void saveFailedTransaction(TransactionTable transaction, TransferDTO dto,
                                        String reason, Currency currency) {
@@ -194,7 +219,7 @@ public class TransactionService {
             transaction.setStatus(TransactionStatus.FAILED);
             transaction.setFailedReason("Not enough money");
             transactionDAO.save(transaction);
-            redisTemplate.delete("transaction:" + transaction.getId());
+            transactionRedisTemplate.delete("transaction:" + transaction.getId());
             throw new TransactionException(HttpStatus.BAD_REQUEST, "Not enough money");
         }
     }

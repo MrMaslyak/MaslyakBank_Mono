@@ -1,5 +1,8 @@
 package MaslyakBank_Core.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,22 +26,24 @@ public class RedisConfig {
         return new LettuceConnectionFactory(redisHost, redisPort);
     }
 
-        @Bean
-        public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
-            RedisTemplate<String, Object> template = new RedisTemplate<>();
-            template.setConnectionFactory(connectionFactory);
+    @Bean
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule()); // поддержка LocalDate, LocalDateTime
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-            // Ключи в строках
-            template.setKeySerializer(new StringRedisSerializer());
-            template.setHashKeySerializer(new StringRedisSerializer());
+        GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(mapper);
 
-            // Значения в JSON
-            template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-            template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(serializer);
+        template.setHashKeySerializer(new StringRedisSerializer());
+        template.setHashValueSerializer(serializer);
+        template.afterPropertiesSet();
+        return template;
+    }
 
-            template.afterPropertiesSet();
-            return template;
-        }
     }
 
 
