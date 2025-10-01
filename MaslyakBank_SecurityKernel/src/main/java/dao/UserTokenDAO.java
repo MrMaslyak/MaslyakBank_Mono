@@ -40,29 +40,6 @@ public class UserTokenDAO {
         }
     }
 
-    public void deleteToken (String login){
-        Session session = null;
-        Transaction transaction = null;
-        try {
-            session = sessionFactory.openSession();
-            transaction = session.beginTransaction();
-            UserTokenTable result = session.createQuery(
-                            "FROM UserTokenTable WHERE user.login = :login", UserTokenTable.class)
-                    .setParameter("login", login)
-                    .uniqueResult();
-            session.remove(result);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw e;
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
-    }
 
     public List<UserTokenTable> findTokensByUser(UsersTable user) {
         Session session = null;
@@ -88,16 +65,19 @@ public class UserTokenDAO {
         }
     }
 
-    public void deleteByUserId (UUID id){
+
+    public List<UserTokenTable> findAllByUserId (UUID id){
         Session session = null;
         Transaction transaction = null;
         try {
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
-            session.createQuery("DELETE FROM UserTokenTable ut WHERE ut.user.id = :id")
+            List<UserTokenTable> results = session.createQuery(
+                            "FROM UserTokenTable WHERE user.id = :id", UserTokenTable.class)
                     .setParameter("id", id)
-                    .executeUpdate();
+                    .list();
             transaction.commit();
+            return results;
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
@@ -110,16 +90,14 @@ public class UserTokenDAO {
         }
     }
 
-
-    public List<UserTokenTable> findAllByUserId (UUID id){
+    public List<UserTokenTable> findExpiredToken() {
         Session session = null;
         Transaction transaction = null;
         try {
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
             List<UserTokenTable> results = session.createQuery(
-                            "FROM UserTokenTable WHERE user.id = :id", UserTokenTable.class)
-                    .setParameter("id", id)
+                            "FROM UserTokenTable WHERE isExpired = true AND status = 'ACTIVE'", UserTokenTable.class)
                     .list();
             transaction.commit();
             return results;

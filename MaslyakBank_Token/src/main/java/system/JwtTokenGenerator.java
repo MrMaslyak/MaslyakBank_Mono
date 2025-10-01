@@ -13,6 +13,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -20,6 +21,7 @@ import java.security.Key;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -43,12 +45,6 @@ public class JwtTokenGenerator {
         String refresh = generateRefreshToken();
 
        UserTokenTable tokenTable = saveAccessToken(user, access);
-        redisTemplate.opsForValue().set(
-                "token: " + access,
-                user.getLogin(),
-                1000 * 60 * 1000,
-                TimeUnit.MILLISECONDS
-        );
        saveRefreshToken(tokenTable, refresh);
 
         return new TokenPair(access, refresh);
@@ -66,7 +62,7 @@ public class JwtTokenGenerator {
                 .compact();
     }
 
-    private String generateRefreshToken(){//256-бит случайных байтов
+    private String generateRefreshToken(){
         byte[] randomBytes = new byte[32];
         new SecureRandom().nextBytes(randomBytes);
         return Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
@@ -86,5 +82,19 @@ public class JwtTokenGenerator {
                 .token(refreshToken)
                 .build();
         refreshTokenDAO.saveToken(refreshTokenEntity);
+    }
+
+    @Scheduled(fixedRate = 60000)// каждую минуту
+    public void saveExpiredListTokenRedis() {
+        List<UserTokenTable> expiredTokens = userTokenDAO.findExpiredToken();
+        System.out.println("Expired token: " + expiredTokens);
+        for (UserTokenTable token : expiredTokens) {
+            redisTemplate.opsForValue().set(
+                    "token: " + token.getToken(),
+                    token.getUser().getLogin(),
+                    5 * 60 * 1000, //5 минут храниться токен в блек листе
+                    TimeUnit.MILLISECONDS
+            );
+        }
     }
 }
