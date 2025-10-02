@@ -34,8 +34,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             String token = header.substring(7);
             if (jwtProvider.isValid(token)){
 
+                String redisKey = "token: " + token;
+                Object usernameFromRedis = redisTemplate.opsForValue().get(redisKey);
+
+                if (usernameFromRedis != null) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getWriter().write("Token logout");
+                    return;
+                }
+
                 String username =  jwtProvider.extractUsername(token);
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
 
                 UsernamePasswordAuthenticationToken auth =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

@@ -33,7 +33,7 @@ public class JwtTokenGenerator {
     private Key secret;
     private final UserTokenDAO userTokenDAO;
     private final RefreshTokenDAO refreshTokenDAO;
-    private final RedisTemplate<String, Object> redisTemplate;
+
 
     @PostConstruct
     public void init() {
@@ -82,19 +82,5 @@ public class JwtTokenGenerator {
                 .token(refreshToken)
                 .build();
         refreshTokenDAO.saveToken(refreshTokenEntity);
-    }
-
-    @Scheduled(fixedRate = 60000)// каждую минуту
-    public void saveExpiredListTokenRedis() {
-        List<UserTokenTable> expiredTokens = userTokenDAO.findExpiredToken();
-        System.out.println("Expired token: " + expiredTokens);
-        for (UserTokenTable token : expiredTokens) {
-            redisTemplate.opsForValue().set(
-                    "token: " + token.getToken(),
-                    token.getUser().getLogin(),
-                    5 * 60 * 1000, //5 минут храниться токен в блек листе
-                    TimeUnit.MILLISECONDS
-            );
-        }
     }
 }
