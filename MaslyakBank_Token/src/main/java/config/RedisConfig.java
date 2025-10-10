@@ -1,12 +1,9 @@
 package config;
 
-<<<<<<< HEAD
-=======
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Value;
->>>>>>> feature-refactor/redis
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -18,12 +15,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class RedisConfig {
 
-<<<<<<< HEAD
-    @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
-        // host и port подхватятся из application.yml
-        return new LettuceConnectionFactory();
-=======
     @Value("${spring.data.redis.host}")
     private String redisHost;
 
@@ -33,29 +24,10 @@ public class RedisConfig {
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         return new LettuceConnectionFactory(redisHost, redisPort);
->>>>>>> feature-refactor/redis
     }
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
-<<<<<<< HEAD
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(connectionFactory);
-
-        // Ключи в строках
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setHashKeySerializer(new StringRedisSerializer());
-
-        // Значения в JSON
-        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-        template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
-
-        template.afterPropertiesSet();
-        return template;
-    }
-
-}
-=======
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule()); // поддержка LocalDate, LocalDateTime
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -71,7 +43,4 @@ public class RedisConfig {
         template.afterPropertiesSet();
         return template;
     }
-    }
-
-
->>>>>>> feature-refactor/redis
+}

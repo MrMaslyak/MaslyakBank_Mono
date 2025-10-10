@@ -111,14 +111,14 @@ public class TransactionService {
         Set<String> keysDetails = detailsRedisTemplate.keys("details:*");
         if (keysTransaction != null && keysDetails != null) {
             for (String key : keysTransaction) {
-                TransactionTable transaction =  transactionRedisTemplate.opsForValue().get(key);
+                TransactionTable transaction = transactionRedisTemplate.opsForValue().get(key);
                 if (transaction != null) {
                     transactionDAO.save(transaction);
                     transactionRedisTemplate.delete(key);
                 }
             }
             for (String key : keysDetails) {
-                TransactionDetailsTable details =  detailsRedisTemplate.opsForValue().get(key);
+                TransactionDetailsTable details = detailsRedisTemplate.opsForValue().get(key);
                 if (details != null) {
                     detailsDAO.save(details);
                     detailsRedisTemplate.delete(key);
@@ -126,6 +126,7 @@ public class TransactionService {
             }
         }
     }
+
 
 
     private void transferOperation(TransferDTO dto){
