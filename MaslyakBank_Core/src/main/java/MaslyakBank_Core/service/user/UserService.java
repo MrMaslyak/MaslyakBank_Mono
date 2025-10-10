@@ -55,7 +55,7 @@ public class UserService {
         redisTemplate.opsForValue().set(
                     "token: " + token,
                     login,
-                    20 * 60 * 1000, //5 минут храниться токен в блек листе
+                    5 * 60 * 1000, //5 минут храниться токен в блек листе
                     TimeUnit.MILLISECONDS
             );
         tokenRestClient.post()

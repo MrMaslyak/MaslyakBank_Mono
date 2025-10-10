@@ -57,7 +57,7 @@ public class JwtTokenGenerator {
                 .setSubject(user.getLogin())
                 .claim("user_id", user.getId())
                 .setIssuedAt(new Date())
-                .setExpiration( new Date(System.currentTimeMillis() + 1000 * 60 * 1000))//5 min
+                .setExpiration( new Date(System.currentTimeMillis() + 5 * 60 * 1000))//5 min
                 .signWith(secret, SignatureAlgorithm.HS256)
                 .compact();
     }
