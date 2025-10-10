@@ -12,6 +12,8 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -19,6 +21,8 @@ import java.security.Key;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @RequiredArgsConstructor
@@ -29,6 +33,7 @@ public class JwtTokenGenerator {
     private Key secret;
     private final UserTokenDAO userTokenDAO;
     private final RefreshTokenDAO refreshTokenDAO;
+
 
     @PostConstruct
     public void init() {
@@ -52,12 +57,12 @@ public class JwtTokenGenerator {
                 .setSubject(user.getLogin())
                 .claim("user_id", user.getId())
                 .setIssuedAt(new Date())
-                .setExpiration( new Date(System.currentTimeMillis() + 20 * 60 * 1000))//5 min
+                .setExpiration( new Date(System.currentTimeMillis() + 5 * 60 * 1000))//5 min
                 .signWith(secret, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    private String generateRefreshToken(){//256-бит случайных байтов
+    private String generateRefreshToken(){
         byte[] randomBytes = new byte[32];
         new SecureRandom().nextBytes(randomBytes);
         return Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);

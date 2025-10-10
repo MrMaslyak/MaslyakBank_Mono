@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 public class TransactionBuilder {
@@ -23,7 +24,8 @@ public class TransactionBuilder {
     }
 
 
-    public TransactionBuilder transaction(TransferDTO dto,Currency currency, TransactionType transactionType) {
+    public TransactionBuilder transaction(UUID id, TransferDTO dto, Currency currency, TransactionType transactionType) {
+       transaction.setId(id);
         transaction.setCurrency(currency);
         transaction.setStatus(TransactionStatus.PENDING);
         transaction.setTransactionType(transactionType);

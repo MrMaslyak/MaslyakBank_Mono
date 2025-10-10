@@ -13,17 +13,25 @@ import MaslyakBank_Transaction.enums.TransactionType;
 import MaslyakBank_Transaction.system.DetailsBuilder;
 import MaslyakBank_Transaction.system.TransactionBuilder;
 import MaslyakBank_Transaction.system.exception.TransactionException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import entity.AccountTable;
 import entity.CardTable;
 import enums.Currency;
+import io.micrometer.core.aop.CountedAspect;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientResponseException;
 import util.SecurityUtil;
 
 import java.math.BigDecimal;
+import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class TransactionService {
@@ -34,57 +42,91 @@ public class TransactionService {
     private final DetailsDAO detailsDAO;
     private final RestClient cardManagmentService;
     private final RestClient accountManagmentService;
+    private final RedisTemplate<String, TransactionTable> transactionRedisTemplate;
+    private final RedisTemplate<String, TransactionDetailsTable> detailsRedisTemplate;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
 
     public TransactionService(TransactionBuilder transactionBuilder, TransactionDAO transactionDAO, DetailsBuilder detailsBuilder, DetailsDAO detailsDAO,
                               @Qualifier("cardRestClient") RestClient cardManagmentService,
-                              @Qualifier("accountRestClient") RestClient accountManagmentService) {
+                              @Qualifier("accountRestClient") RestClient accountManagmentService,
+                              RedisTemplate<String, TransactionTable> transactionRedisTemplate,
+                              RedisTemplate<String, TransactionDetailsTable> detailsRedisTemplate) {
         this.transactionBuilder = transactionBuilder;
         this.transactionDAO = transactionDAO;
         this.detailsBuilder = detailsBuilder;
         this.detailsDAO = detailsDAO;
         this.cardManagmentService = cardManagmentService;
         this.accountManagmentService = accountManagmentService;
+        this.transactionRedisTemplate = transactionRedisTemplate;
+        this.detailsRedisTemplate = detailsRedisTemplate;
     }
 
-    @Transactional
+
     public void transferCardToCard(TransferDTO dto) {
-       TransactionTable transaction = saveTransaction(dto,Currency.UAH, TransactionType.CardToCard);
-        CardValidationResultDTO validation = checkCards(dto, transaction);
-        if (validation == null) {
-            transaction.setStatus(TransactionStatus.FAILED);
-            transactionDAO.update(transaction);
-            throw new TransactionException(HttpStatus.BAD_REQUEST,"Cards is not valid");
+        TransactionTable transaction = null;
+
+        try {
+            CardValidationResultDTO validation = checkCards(dto);
+
+            transaction = saveTransactionRedis(
+                    dto,
+                    validation.getFromCard().getAccount().getCurrency(),
+                    TransactionType.CardToCard
+            );
+
+            checkBalance(dto, transaction);
+
+            transferOperation(dto);
+
+            transaction.setStatus(TransactionStatus.SUCCESS);
+            updateTransactionRedis(transaction);
+
+            saveDetailsRedis(transaction,
+                    validation.getFromCard().getAccount(),
+                    validation.getFromCard(),
+                    BigDecimal.valueOf(dto.getAmount()),
+                    BigDecimal.valueOf(validation.getFromCard().getAccount().getBalance() - dto.getAmount()),
+                    TransactionDirectionType.debit);
+
+            saveDetailsRedis(transaction,
+                    validation.getToCard().getAccount(),
+                    validation.getToCard(),
+                    BigDecimal.valueOf(dto.getAmount()),
+                    BigDecimal.valueOf(validation.getToCard().getAccount().getBalance() + dto.getAmount()),
+                    TransactionDirectionType.credit);
+
+        } catch (TransactionException ex) {
+            saveFailedTransaction(transaction, dto, ex.getMessage(), Currency.UAH);
+            throw ex;
+        } catch (Exception ex) {
+            saveFailedTransaction(transaction, dto, "Unexpected error", Currency.UAH);
+            throw new TransactionException(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error");
         }
-
-        transaction.setCurrency(validation.getFromCard().getAccount().getCurrency());
-        transactionDAO.update(transaction);
-
-        if (!checkBalance(dto, transaction)) {
-            transaction.setStatus(TransactionStatus.FAILED);
-            transactionDAO.update(transaction);
-            throw new TransactionException(HttpStatus.BAD_REQUEST,"Not enough money");
-        }
-        saveDetails(transaction,
-                validation.getFromCard().getAccount(),
-                validation.getFromCard(),
-                BigDecimal.valueOf(dto.getAmount()),
-                BigDecimal.valueOf(validation.getFromCard().getAccount().getBalance() - dto.getAmount()),
-                TransactionDirectionType.debit);
-
-        saveDetails(transaction,
-                validation.getToCard().getAccount(),
-                validation.getToCard(),
-                BigDecimal.valueOf(dto.getAmount()),
-                BigDecimal.valueOf(validation.getToCard().getAccount().getBalance() + dto.getAmount()),
-                TransactionDirectionType.credit);
-
-        transferOperation(dto);
-
-        transaction.setStatus(TransactionStatus.SUCCESS);
-        transactionDAO.update(transaction);
-
     }
+
+    @Scheduled(fixedRate = 60000) // куждую минуту
+    public void schedulerRedisToDB() {
+        Set<String> keysTransaction = transactionRedisTemplate.keys("transaction:*");
+        Set<String> keysDetails = detailsRedisTemplate.keys("details:*");
+        if (keysTransaction != null && keysDetails != null) {
+            for (String key : keysTransaction) {
+                TransactionTable transaction =  transactionRedisTemplate.opsForValue().get(key);
+                if (transaction != null) {
+                    transactionDAO.save(transaction);
+                    transactionRedisTemplate.delete(key);
+                }
+            }
+            for (String key : keysDetails) {
+                TransactionDetailsTable details =  detailsRedisTemplate.opsForValue().get(key);
+                if (details != null) {
+                    detailsDAO.save(details);
+                    detailsRedisTemplate.delete(key);
+                }
+            }
+        }
+    }
+
 
     private void transferOperation(TransferDTO dto){
         String token = SecurityUtil.getCurrentToken();
@@ -96,42 +138,56 @@ public class TransactionService {
                 .toBodilessEntity();
     }
 
+    private void updateTransactionRedis (TransactionTable transaction){
+        transactionRedisTemplate.opsForValue().set("transaction:" + transaction.getId(), transaction);
+    }
 
-    private TransactionTable saveTransaction(TransferDTO dto,Currency currency, TransactionType transactionType) {
+
+    private TransactionTable saveTransactionRedis(TransferDTO dto,Currency currency, TransactionType transactionType) {
         TransactionTable transaction = transactionBuilder
                 .newTransaction()
-                .transaction(dto, currency, transactionType )
+                .transaction(UUID.randomUUID(), dto, currency, transactionType )
                 .build();
 
-        transactionDAO.save(transaction);
+        transactionRedisTemplate.opsForValue().set("transaction:" + transaction.getId(), transaction);
         return transaction;
     }
 
-    private TransactionDetailsTable saveDetails(TransactionTable transaction, AccountTable account, CardTable card,BigDecimal amount, BigDecimal balanceAfter, TransactionDirectionType transactionDirectionType){
-        TransactionDetailsTable details = detailsBuilder
-                .newDetails()
-                .details(transaction,account,card,amount, balanceAfter,transactionDirectionType)
-                .build();
-        detailsDAO.save(details);
-        return details;
+    private void saveDetailsRedis(TransactionTable transaction,
+                                  AccountTable account,
+                                  CardTable card,
+                                  BigDecimal amount,
+                                  BigDecimal balanceAfter,
+                                  TransactionDirectionType transactionDirectionType) {
+
+            TransactionDetailsTable details = detailsBuilder
+                    .newDetails()
+                    .details(transaction, account, card, amount, balanceAfter, transactionDirectionType)
+                    .build();
+
+            String key = "details:" + transaction.getId() + ":" + UUID.randomUUID();
+            detailsRedisTemplate.opsForValue().set(key, details);
+
     }
 
-    private boolean checkBalance(TransferDTO dto, TransactionTable transaction) {
-        double fromBalance = getBalance(dto.getFromCardNumber());
-
-        if (fromBalance < dto.getAmount()) {
-            transaction.setStatus(TransactionStatus.FAILED);
-            transactionDAO.update(transaction);
-            throw new TransactionException(HttpStatus.BAD_REQUEST, "Not enough money on the card");
+    private void saveFailedTransaction(TransactionTable transaction, TransferDTO dto,
+                                       String reason, Currency currency) {
+        if (transaction == null) {
+            transaction = transactionBuilder
+                    .newTransaction()
+                    .transaction(UUID.randomUUID(), dto, currency, TransactionType.CardToCard)
+                    .build();
         }
-
-        return true;
+        transaction.setStatus(TransactionStatus.FAILED);
+        transaction.setFailedReason(reason);
+        transactionDAO.save(transaction);
     }
 
-    private CardValidationResultDTO checkCards(TransferDTO dto, TransactionTable transaction) {
+
+    private CardValidationResultDTO checkCards(TransferDTO dto) {
         String token = SecurityUtil.getCurrentToken();
         try {
-            CardValidationResultDTO result = cardManagmentService.get()
+            return cardManagmentService.get()
                     .uri(uriBuilder -> uriBuilder
                             .path("/validate")
                             .queryParam("fromCardNumber", dto.getFromCardNumber())
@@ -140,14 +196,31 @@ public class TransactionService {
                     .header("Authorization", "Bearer " + token)
                     .retrieve()
                     .body(CardValidationResultDTO.class);
+        } catch (RestClientResponseException ex) {
+            String response = ex.getResponseBodyAsString();
+            String message = response;
+            try {
+                JsonNode json = objectMapper.readTree(response);
+                if (json.has("message")) {
+                    message = json.get("message").asText();
+                }
+            } catch (Exception ignored) {
+            }
+            throw new TransactionException(
+                    HttpStatus.valueOf(ex.getRawStatusCode()),
+                    message
+            );
+        }
+    }
 
-            transaction.setStatus(result != null ? TransactionStatus.PENDING : TransactionStatus.FAILED);
-            transactionDAO.update(transaction);
-            return result;
-        } catch (Exception e) {
+    private void checkBalance(TransferDTO dto, TransactionTable transaction) {
+        double fromBalance = getBalance(dto.getFromCardNumber());
+        if (fromBalance < dto.getAmount()) {
             transaction.setStatus(TransactionStatus.FAILED);
-            transactionDAO.update(transaction);
-            throw new TransactionException(HttpStatus.BAD_REQUEST, "Error in validation card");
+            transaction.setFailedReason("Not enough money");
+            transactionDAO.save(transaction);
+            transactionRedisTemplate.delete("transaction:" + transaction.getId());
+            throw new TransactionException(HttpStatus.BAD_REQUEST, "Not enough money");
         }
     }
 

@@ -10,10 +10,13 @@ import entity.UsersTable;
 import enums.UserRole;
 import enums.UserStatus;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import util.SecurityUtil;
+
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserService {
@@ -22,13 +25,15 @@ public class UserService {
     private final UserSecurityDAO userDAO;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final RedisTemplate<String, Object> redisTemplate;
 
 
-    public UserService(@Qualifier("tokenRestClient") RestClient tokenRestClient, UserSecurityDAO userDAO, UserMapper userMapper, PasswordEncoder passwordEncoder) {
+    public UserService(@Qualifier("tokenRestClient") RestClient tokenRestClient, UserSecurityDAO userDAO, UserMapper userMapper, PasswordEncoder passwordEncoder, RedisTemplate<String, Object> redisTemplate) {
         this.tokenRestClient = tokenRestClient;
         this.userDAO = userDAO;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
+        this.redisTemplate = redisTemplate;
     }
 
     public TokenPair requestRegistrationToken(RegistrationRequestDTO dto) {
@@ -46,6 +51,13 @@ public class UserService {
 
     public void sendLogoutRequest() {
         String token = SecurityUtil.getCurrentToken();
+        String login = SecurityUtil.getCurrentUser().getLogin();
+        redisTemplate.opsForValue().set(
+                    "token: " + token,
+                    login,
+                    5 * 60 * 1000, //5 минут храниться токен в блек листе
+                    TimeUnit.MILLISECONDS
+            );
         tokenRestClient.post()
                 .uri("/logout")
                 .header("Authorization", "Bearer " + token)

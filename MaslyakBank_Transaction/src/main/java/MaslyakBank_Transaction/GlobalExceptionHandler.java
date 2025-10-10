@@ -12,7 +12,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(TransactionException.class)
     public ResponseEntity<String> handleTransactionException(TransactionException ex) {
         return ResponseEntity
-                .status(ex.getStatusCode())
+                .status(ex.getStatus())
                 .body(ex.getMessage());
     }
 

@@ -38,6 +38,7 @@ services:
 
   redis:
     image: redis:latest
+    container_name: maslyakbank_infrastructure-redis-1
     restart: always
     ports:
       - "6666:6379"
@@ -46,6 +47,11 @@ services:
     volumes:
       - ./redis-data:/data
       - ./redis.conf:/usr/local/etc/redis/redis.conf
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 networks:
   MaslyakBankNetwork:

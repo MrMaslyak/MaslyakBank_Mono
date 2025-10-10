@@ -1,4 +1,4 @@
-package MaslyakBank_Transaction.system.exception;
+package MaslyakBank_Account.system.validators.exception;
 
 
 import lombok.Getter;

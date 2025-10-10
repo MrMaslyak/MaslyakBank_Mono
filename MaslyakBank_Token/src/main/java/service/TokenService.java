@@ -70,7 +70,7 @@ public class TokenService {
         invalidateTokens(user);
 
         if (refreshToken == null || refreshToken.isBlank()) {
-            return null; // чистый logout
+            return null;
         }
 
 

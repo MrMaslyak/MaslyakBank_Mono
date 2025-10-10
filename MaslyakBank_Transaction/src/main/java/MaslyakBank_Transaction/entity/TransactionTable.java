@@ -5,6 +5,7 @@ package MaslyakBank_Transaction.entity;
 import MaslyakBank_Transaction.enums.TransactionDirectionType;
 import MaslyakBank_Transaction.enums.TransactionStatus;
 import MaslyakBank_Transaction.enums.TransactionType;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import enums.Currency;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -18,8 +19,8 @@ import java.util.UUID;
 @Table(name = "transactions")
 @Data
 public class TransactionTable {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     private UUID id;
 
@@ -29,6 +30,9 @@ public class TransactionTable {
 
     @Column(name = "description")
     private String description;
+
+    @Column(name = "failed_reason")
+    private String failedReason;
 
     @Column(name = "amount", nullable = false, precision = 15, scale = 2)
     private BigDecimal amount;
