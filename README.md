@@ -1,29 +1,29 @@
-# MaslyakBank_Mono — Документация
+# 💳 MaslyakBank_Mono — Документация
 
 ---
 
-## Описание
+## 🏦 Описание
 
 **MaslyakBank** — это модульное монолитное банковское приложение на Spring Boot. Оно симулирует основные функции банка: управление пользователями, счета и карты, финансовые транзакции — всё внутри одного репозитория. Проект разбит на отдельные модули, каждый отвечает за свою доменную область и общается с другими через REST API.
 
 ---
 
-## Архитектура
+## ⚙️ Архитектура
 
-- **MaslyakBank_Core**: Центральный сервис для управления пользователями, регистрацией, входом, профилями и админ-функциями (включая SUPER_ADMIN).
-- **MaslyakBank_Account**: Управление счетами и картами — создание, выпуск, проверка баланса, переводы. Использует iban4j для IBAN.
-- **MaslyakBank_Token**: Сервис для аутентификации и управления токенами (JWT).
-- **MaslyakBank_Transaction**: Обработка финансовых транзакций, валидация, логирование истории.
-- **MaslyakBank_SecurityKernel**, **MaslyakBank_Model**: Shared Kernel модули — общие компоненты безопасности (JwtAuthFilter, CustomUserDetailsService и др.), модели данных (JPA-сущности, DTO).
-- **MaslyakBank_Infrastructure**: Docker и база данных (Docker Compose для PostgreSQL, Redis, Liquibase миграций).
+- **MaslyakBank_Core**: 👤 Центральный сервис для управления пользователями, регистрацией, входом, профилями и админ-функциями (включая SUPER_ADMIN).
+- **MaslyakBank_Account**: 💰 Управление счетами и картами — создание, выпуск, проверка баланса, переводы. Использует iban4j для IBAN.
+- **MaslyakBank_Token**: 🔒 Сервис для аутентификации и управления токенами (JWT).
+- **MaslyakBank_Transaction**: 🔄 Обработка финансовых транзакций, валидация, логирование истории.
+- **MaslyakBank_SecurityKernel**, **MaslyakBank_Model**: 🛡️ Shared Kernel модули — общие компоненты безопасности (JwtAuthFilter, CustomUserDetailsService и др.), модели данных (JPA-сущности, DTO).
+- **MaslyakBank_Infrastructure**: 🐳 Docker и база данных (Docker Compose для PostgreSQL, Redis, Liquibase миграций).
 
 ---
 
-## Ключевые возможности
+## 🚀 Ключевые возможности
 
 - **Модульный монолит**: Простота монолита, чистое разделение по сервисам.
 - **Управление пользователями и профилями**: Безопасная регистрация, вход, создание профиля.
-- **Ролевой доступ**: USER, ADMIN, SUPER_ADMIN.
+- **Ролевой доступ**: 👤 USER, 🛡️ ADMIN, 👑 SUPER_ADMIN.
 - **Счета и карты**: Создание счетов, выпуск дебетовых карт.
 - **Транзакции**: Переводы карта-карта, валидация, логирование.
 - **JWT авторизация**: Stateless, access/refresh токены.
@@ -35,7 +35,7 @@
 
 ---
 
-## Использованные технологии
+## 🛠️ Использованные технологии
 
 - **Backend**: Java 21, Spring Boot 3
 - **Database**: PostgreSQL
@@ -49,45 +49,45 @@
 
 ---
 
-## Роли и доступ к эндпоинтам
+## 👥 Роли и доступ к эндпоинтам
 
-| Модуль     | Эндпоинт                                                          | USER | ADMIN | SUPER ADMIN | SYSTEM |
-|------------|--------------------------------------------------------------------|------|-------|-------------|--------|
-| CORE       | `/maslyakbank/user/registration`                                   | ✅   | ✅    | ❌          |        |
-| CORE       | `/maslyakbank/user/login`                                          | ✅   | ✅    | ❌          |        |
-| CORE       | `/maslyakbank/user/logout`                                         | ✅   | ✅    | ✅          |        |
-| CORE       | `/maslyakbank/admin/delete`                                        | ❌   | ✅    | ❌          |        |
-| CORE       | `/maslyakbank/profilemanagment/profile`                            | ✅   | ✅    | ❌          |        |
-| CORE       | `/actuator`                                                        | ❌   | ✅    | ❌          |        |
-| CORE       | `/maslyakbank/super-admin/grand-admin`                             | ❌   | ❌    | ✅          |        |
-| CORE       | `/maslyakbank/super-admin/revoke-admin`                            | ❌   | ❌    | ✅          |        |
-| ACCOUNT    | `/maslyakbank/accountmanagment/account/create`                     | ✅   | ✅    | ❌          |        |
-| ACCOUNT    | `/maslyakbank/accountmanagment/card/create`                        | ✅   | ✅    | ❌          |        |
-| ACCOUNT    | `/maslyakbank/accountmanagment/account/balance?cardNumber=`        | ✅   | ✅    | ❌          |        |
-| TOKEN      | `/maslyakbank/tokenmanagment/token/auth/create`                    | SYS  | SYS   | NONE        |        |
-| TOKEN      | `/maslyakbank/tokenmanagment/token/registration/create`            | SYS  | SYS   | NONE        |        |
-| TOKEN      | `/maslyakbank/tokenmanagment/token/refresh`                        | ✅   | ✅    | ✅          |        |
-| TOKEN      | `/maslyakbank/tokenmanagment/token/logout`                         | ✅   | ✅    | ✅          |        |
-| TOKEN      | `/maslyakbank/tokenmanagment/token/superadmin/create`              | NONE | NONE  | SYS         |        |
-| TRANSACTION| `/maslyakbank/transactionmanagment/transaction/transfer/card`      | ✅   | ✅    | ❌          |        |
+| Модуль     | Эндпоинт                                                          | 👤 USER | 🛡️ ADMIN | 👑 SUPER_ADMIN | 🤖 SYSTEM |
+|------------|--------------------------------------------------------------------|---------|----------|---------------|-----------|
+| CORE       | `/maslyakbank/user/registration`                                   | ✅      | ✅       | ❌            |           |
+| CORE       | `/maslyakbank/user/login`                                          | ✅      | ✅       | ❌            |           |
+| CORE       | `/maslyakbank/user/logout`                                         | ✅      | ✅       | ✅            |           |
+| CORE       | `/maslyakbank/admin/delete`                                        | ❌      | ✅       | ❌            |           |
+| CORE       | `/maslyakbank/profilemanagment/profile`                            | ✅      | ✅       | ❌            |           |
+| CORE       | `/actuator`                                                        | ❌      | ✅       | ❌            |           |
+| CORE       | `/maslyakbank/super-admin/grand-admin`                             | ❌      | ❌      | ✅            |           |
+| CORE       | `/maslyakbank/super-admin/revoke-admin`                            | ❌      | ❌      | ✅            |           |
+| ACCOUNT    | `/maslyakbank/accountmanagment/account/create`                     | ✅      | ✅       | ❌            |           |
+| ACCOUNT    | `/maslyakbank/accountmanagment/card/create`                        | ✅      | ✅       | ❌            |           |
+| ACCOUNT    | `/maslyakbank/accountmanagment/account/balance?cardNumber=`        | ✅      | ✅       | ❌            |           |
+| TOKEN      | `/maslyakbank/tokenmanagment/token/auth/create`                    | 🤖      | 🤖      | NONE          |           |
+| TOKEN      | `/maslyakbank/tokenmanagment/token/registration/create`            | 🤖      | 🤖      | NONE          |           |
+| TOKEN      | `/maslyakbank/tokenmanagment/token/refresh`                        | ✅      | ✅       | ✅            |           |
+| TOKEN      | `/maslyakbank/tokenmanagment/token/logout`                         | ✅      | ✅       | ✅            |           |
+| TOKEN      | `/maslyakbank/tokenmanagment/token/superadmin/create`              | NONE    | NONE     | 🤖            |           |
+| TRANSACTION| `/maslyakbank/transactionmanagment/transaction/transfer/card`      | ✅      | ✅       | ❌            |           |
 
 - ✅ — доступ разрешён
 - ❌ — доступ запрещён
-- SYS — используется системой (служебные запросы между сервисами)
+- 🤖 — используется системой (служебные запросы между сервисами)
 - NONE — недоступен для этой роли
 
 ---
 
-## Описание ролей
+## 🧑‍💼 Описание ролей
 
-- **USER** — обычный пользователь, имеет доступ к регистрации, логину, транзакциям, просмотру баланса, созданию аккаунта/карты, обновлению токенов, логауту.
-- **ADMIN** — расширенные права, может дополнительно удалять пользователей, видеть технические эндпоинты (`/actuator`).
-- **SUPER_ADMIN** — максимальные права, может назначать/снимать роль админа.
-- **SYSTEM** — служебные эндпоинты для взаимодействия между сервисами, не доступны пользователю напрямую.
+- **👤 USER** — обычный пользователь, имеет доступ к регистрации, логину, транзакциям, просмотру баланса, созданию аккаунта/карты, обновлению токенов, логауту.
+- **🛡️ ADMIN** — расширенные права, может дополнительно удалять пользователей, видеть технические эндпоинты (`/actuator`).
+- **👑 SUPER_ADMIN** — максимальные права, может назначать/снимать роль админа.
+- **🤖 SYSTEM** — служебные эндпоинты для взаимодействия между сервисами, не доступны пользователю напрямую.
 
 ---
 
-## Пошаговый деплой
+## 📦 Пошаговый деплой
 
 1. **Установить зависимости:**
     - JDK 21+
@@ -137,7 +137,7 @@
 
 ---
 
-## Локальные адреса сервисов
+## 🌐 Локальные адреса сервисов
 
 - **Core Service**: http://localhost:1200
 - **Account Service**: http://localhost:1210
@@ -146,6 +146,6 @@
 
 ---
 
-## Лицензия
+## 📝 Лицензия
 
 Proprietary for MaslyakBank.
