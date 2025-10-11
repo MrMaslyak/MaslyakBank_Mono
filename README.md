@@ -148,4 +148,5 @@
 
 ## 📝 Лицензия
 
-Proprietary for MaslyakBank.
+Proprietary for Ilya Maslyanyi.
+P.S. Maslyak
