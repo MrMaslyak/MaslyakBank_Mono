@@ -148,5 +148,4 @@
 
 ## 📝 Лицензия
 
-Proprietary for Ilya Maslyanyi.
-P.S. Maslyak
+Proprietary for Ilya Maslyanyi (Maslyak)
