@@ -51,25 +51,25 @@
 
 ## 👥 Роли и доступ к эндпоинтам
 
-| Модуль     | Эндпоинт                                                          | 👤 USER | 🛡️ ADMIN | 👑 SUPER_ADMIN | 🤖 SYSTEM |
-|------------|--------------------------------------------------------------------|---------|----------|---------------|-----------|
-| CORE       | `/maslyakbank/user/registration`                                   | ✅      | ✅       | ❌            |           |
-| CORE       | `/maslyakbank/user/login`                                          | ✅      | ✅       | ❌            |           |
-| CORE       | `/maslyakbank/user/logout`                                         | ✅      | ✅       | ✅            |           |
-| CORE       | `/maslyakbank/admin/delete`                                        | ❌      | ✅       | ❌            |           |
-| CORE       | `/maslyakbank/profilemanagment/profile`                            | ✅      | ✅       | ❌            |           |
-| CORE       | `/actuator`                                                        | ❌      | ✅       | ❌            |           |
-| CORE       | `/maslyakbank/super-admin/grand-admin`                             | ❌      | ❌      | ✅            |           |
-| CORE       | `/maslyakbank/super-admin/revoke-admin`                            | ❌      | ❌      | ✅            |           |
-| ACCOUNT    | `/maslyakbank/accountmanagment/account/create`                     | ✅      | ✅       | ❌            |           |
-| ACCOUNT    | `/maslyakbank/accountmanagment/card/create`                        | ✅      | ✅       | ❌            |           |
-| ACCOUNT    | `/maslyakbank/accountmanagment/account/balance?cardNumber=`        | ✅      | ✅       | ❌            |           |
-| TOKEN      | `/maslyakbank/tokenmanagment/token/auth/create`                    | 🤖      | 🤖      | NONE          |           |
-| TOKEN      | `/maslyakbank/tokenmanagment/token/registration/create`            | 🤖      | 🤖      | NONE          |           |
-| TOKEN      | `/maslyakbank/tokenmanagment/token/refresh`                        | ✅      | ✅       | ✅            |           |
-| TOKEN      | `/maslyakbank/tokenmanagment/token/logout`                         | ✅      | ✅       | ✅            |           |
-| TOKEN      | `/maslyakbank/tokenmanagment/token/superadmin/create`              | NONE    | NONE     | 🤖            |           |
-| TRANSACTION| `/maslyakbank/transactionmanagment/transaction/transfer/card`      | ✅      | ✅       | ❌            |           |
+| Модуль     | Эндпоинт                                                          | 👤 USER | 🛡️ ADMIN | 👑 SUPER_ADMIN |  
+|------------|--------------------------------------------------------------------|---------|----------|---------------|
+| CORE       | `/maslyakbank/user/registration`                                   | ✅      | ✅       | ❌            |           
+| CORE       | `/maslyakbank/user/login`                                          | ✅      | ✅       | ❌            |           
+| CORE       | `/maslyakbank/user/logout`                                         | ✅      | ✅       | ✅            |           
+| CORE       | `/maslyakbank/admin/delete`                                        | ❌      | ✅       | ❌            |           
+| CORE       | `/maslyakbank/profilemanagment/profile`                            | ✅      | ✅       | ❌            |           
+| CORE       | `/actuator`                                                        | ❌      | ✅       | ❌            |           
+| CORE       | `/maslyakbank/super-admin/grand-admin`                             | ❌      | ❌      | ✅            |           
+| CORE       | `/maslyakbank/super-admin/revoke-admin`                            | ❌      | ❌      | ✅            |           
+| ACCOUNT    | `/maslyakbank/accountmanagment/account/create`                     | ✅      | ✅       | ❌            |           
+| ACCOUNT    | `/maslyakbank/accountmanagment/card/create`                        | ✅      | ✅       | ❌            |           
+| ACCOUNT    | `/maslyakbank/accountmanagment/account/balance?cardNumber=`        | ✅      | ✅       | ❌            |           
+| TOKEN      | `/maslyakbank/tokenmanagment/token/auth/create`                    | 🤖      | 🤖      | NONE          |           
+| TOKEN      | `/maslyakbank/tokenmanagment/token/registration/create`            | 🤖      | 🤖      | NONE          |           
+| TOKEN      | `/maslyakbank/tokenmanagment/token/refresh`                        | ✅      | ✅       | ✅            |           
+| TOKEN      | `/maslyakbank/tokenmanagment/token/logout`                         | ✅      | ✅       | ✅            |           
+| TOKEN      | `/maslyakbank/tokenmanagment/token/superadmin/create`              | NONE    | NONE     | 🤖            |           
+| TRANSACTION| `/maslyakbank/transactionmanagment/transaction/transfer/card`      | ✅      | ✅       | ❌            |           
 
 - ✅ — доступ разрешён
 - ❌ — доступ запрещён
