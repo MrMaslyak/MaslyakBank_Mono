@@ -3,7 +3,6 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !MaslyakBank_Token/src/main/**/target/
 !MaslyakBank_Token/src/test/**/target/
-.env
 
 ### STS ###
 .apt_generated
