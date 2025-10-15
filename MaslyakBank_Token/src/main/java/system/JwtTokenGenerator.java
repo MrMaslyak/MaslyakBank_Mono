@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 public class JwtTokenGenerator {
 
     @Value("${jwt.secret}")
-    private String secretKey;
+    public String secretKey;
     private Key secret;
     private final UserTokenDAO userTokenDAO;
     private final RefreshTokenDAO refreshTokenDAO;
