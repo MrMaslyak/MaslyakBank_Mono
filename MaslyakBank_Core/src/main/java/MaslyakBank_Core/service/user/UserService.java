@@ -41,7 +41,7 @@ public class UserService {
         return sendTokenRequest(dto.getLogin(), "/create");
     }
 
-    private void registerUser(RegistrationRequestDTO dto) {
+    public void registerUser(RegistrationRequestDTO dto) {
         UsersTable user = userMapper.toEntity(dto);
         user.setPasswordSalt(passwordEncoder.encode(dto.getPassword()));
         user.setStatus(UserStatus.REGISTERED);
