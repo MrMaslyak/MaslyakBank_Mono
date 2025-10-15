@@ -34,7 +34,6 @@ public class TokenService {
     private final RefreshTokenDAO refreshTokenDAO;
     private final JwtTokenGenerator tokenGenerator;
 
-    private final RedisTemplate<String, Object> redisTemplate;
 
 
     public TokenPair getToken(String login) {
