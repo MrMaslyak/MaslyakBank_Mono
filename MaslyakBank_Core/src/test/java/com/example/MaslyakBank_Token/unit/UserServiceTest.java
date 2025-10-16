@@ -42,6 +42,8 @@ class UserServiceTest {
         when(userMapper.toEntity(dto)).thenReturn(user);
         when(passwordEncoder.encode(dto.getPassword())).thenReturn("encodedPassword");
 
+
+
         // act
         userService.registerUser(dto);
 
