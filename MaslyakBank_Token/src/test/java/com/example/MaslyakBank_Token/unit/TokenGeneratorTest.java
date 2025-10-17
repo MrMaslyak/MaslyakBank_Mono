@@ -19,7 +19,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import system.JwtTokenGenerator;
 
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -49,6 +49,15 @@ public class UserService {
         userDAO.registrationUser(user);
     }
 
+
+    public TokenPair sendAuthRequest(JwtTokenRequestDTO dto) {
+        return tokenRestClient.post()
+                .uri("/auth/create")
+                .body(dto)
+                .retrieve()
+                .body(TokenPair.class);
+    }
+
     public void sendLogoutRequest() {
         String token = SecurityUtil.getCurrentToken();
         String login = SecurityUtil.getCurrentUser().getLogin();
@@ -63,14 +72,6 @@ public class UserService {
                 .header("Authorization", "Bearer " + token)
                 .retrieve()
                 .toBodilessEntity();
-    }
-
-    public TokenPair sendAuthRequest(JwtTokenRequestDTO dto) {
-        return tokenRestClient.post()
-                .uri("/auth/create")
-                .body(dto)
-                .retrieve()
-                .body(TokenPair.class);
     }
 
     private TokenPair sendTokenRequest(String login, String uri) {
