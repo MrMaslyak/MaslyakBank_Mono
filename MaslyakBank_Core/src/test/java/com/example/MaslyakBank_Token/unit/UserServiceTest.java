@@ -9,8 +9,6 @@ import dto.TokenPair;
 import entity.UsersTable;
 import enums.UserRole;
 import enums.UserStatus;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
@@ -22,7 +20,6 @@ import org.springframework.web.client.RestClient;
 import util.SecurityUtil;
 
 
-import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 import static org.mockito.Mockito.*;
