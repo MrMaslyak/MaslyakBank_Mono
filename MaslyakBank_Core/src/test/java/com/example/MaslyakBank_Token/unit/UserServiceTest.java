@@ -16,11 +16,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.RestClient;
+import util.SecurityUtil;
 
 
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeUnit;
 
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.*;
@@ -95,6 +98,52 @@ class UserServiceTest {
         verify(bodySpec).retrieve();
         verify(responseSpec).body(TokenPair.class);
 
+    }
+
+    @Test
+    void sendLogoutRequest() {
+        // arrange
+        String token = "jwtToken";
+        String login = "Test";
+
+        try (MockedStatic<SecurityUtil> mockedSecurityUtil = mockStatic(SecurityUtil.class)) {
+            mockedSecurityUtil.when(SecurityUtil::getCurrentToken).thenReturn(token);
+            mockedSecurityUtil.when(SecurityUtil::getCurrentUser)
+                    .thenReturn(new UsersTable() {{
+                        setLogin(login);
+                    }});
+
+            // Мокаем цепочку RestClient
+            RestClient.RequestBodyUriSpec postSpec = mock(RestClient.RequestBodyUriSpec.class);
+            RestClient.RequestBodySpec bodySpec = mock(RestClient.RequestBodySpec.class);
+            RestClient.ResponseSpec responseSpec = mock(RestClient.ResponseSpec.class);
+
+            //  Мокаем объект, который возвращает redisTemplate.opsForValue()
+            ValueOperations valueOperations = mock(ValueOperations.class);
+            when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+
+            // Цепочка вызовов RestClient
+            when(tokenRestClient.post()).thenReturn(postSpec);
+            when(postSpec.uri("/logout")).thenReturn(bodySpec);
+            when(bodySpec.header("Authorization", "Bearer " + token)).thenReturn(bodySpec);
+            when(bodySpec.retrieve()).thenReturn(responseSpec);
+            when(responseSpec.toBodilessEntity()).thenReturn(null);
+
+            // act
+            userService.sendLogoutRequest();
+
+            // assert
+            verify(tokenRestClient).post();
+            verify(postSpec).uri("/logout");
+            verify(bodySpec).header("Authorization", "Bearer " + token);
+            verify(bodySpec).retrieve();
+            verify(redisTemplate.opsForValue(), times(1)).set(
+                    eq("token: " + token),
+                    eq(login),
+                    eq(5 * 60 * 1000L),
+                    eq(TimeUnit.MILLISECONDS)
+            );
+        }
     }
 
 }
