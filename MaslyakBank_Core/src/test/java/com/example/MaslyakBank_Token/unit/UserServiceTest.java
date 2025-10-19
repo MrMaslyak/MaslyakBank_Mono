@@ -22,6 +22,7 @@ import util.SecurityUtil;
 
 import java.util.concurrent.TimeUnit;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.*;
 
@@ -47,8 +48,6 @@ class UserServiceTest {
         when(userMapper.toEntity(dto)).thenReturn(user);
         when(passwordEncoder.encode(dto.getPassword())).thenReturn("encodedPassword");
 
-
-
         // act
         userService.registerUser(dto);
 
@@ -67,7 +66,7 @@ class UserServiceTest {
     void sendAuthRequest(){
         //arrange
         JwtTokenRequestDTO requestDTO = new JwtTokenRequestDTO("Test", "password123");
-        TokenPair expectedPair = new TokenPair("accessToken", "refreshToken");
+        TokenPair pair = new TokenPair("accessToken", "refreshToken");
 
         // Мокаем цепочку вызовов RestClient
         RestClient.RequestBodyUriSpec postSpec = mock(RestClient.RequestBodyUriSpec.class);
@@ -78,7 +77,7 @@ class UserServiceTest {
         when(postSpec.uri("/auth/create")).thenReturn(bodySpec);
         when(bodySpec.body(requestDTO)).thenReturn(bodySpec);
         when(bodySpec.retrieve()).thenReturn(responseSpec);
-        when(responseSpec.body(TokenPair.class)).thenReturn(expectedPair);
+        when(responseSpec.body(TokenPair.class)).thenReturn(pair);
 
 
         //act
@@ -96,6 +95,8 @@ class UserServiceTest {
         verify(responseSpec).body(TokenPair.class);
 
     }
+
+
 
     @Test
     void sendLogoutRequest() {
