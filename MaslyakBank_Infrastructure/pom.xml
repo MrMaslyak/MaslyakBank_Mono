@@ -72,6 +72,10 @@
 
 	<build>
 		<plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+            </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -79,7 +83,7 @@
 				<executions>
 					<execution>
 						<id>copy-jar</id>
-						<phase>process-resources</phase>
+						<phase>package</phase>
 						<goals>
 							<goal>copy</goal>
 						</goals>

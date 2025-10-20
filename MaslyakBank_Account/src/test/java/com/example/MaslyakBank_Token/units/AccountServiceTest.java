@@ -3,6 +3,7 @@ package com.example.MaslyakBank_Token.units;
 
 import MaslyakBank_Account.dao.AccountDAO;
 import MaslyakBank_Account.dao.CardDAO;
+import MaslyakBank_Account.dto.TransferDTO;
 import MaslyakBank_Account.service.AccountService;
 import MaslyakBank_Account.service.CardService;
 import MaslyakBank_Account.system.account.AccountFactory;
@@ -62,6 +63,135 @@ public class AccountServiceTest {
 
             assertThat(result).isEqualTo(accountTable);
         }
-
     }
+
+    @Test
+    void checkBalance(){
+        // arrange
+        String cardNumber = "1234567890123456";
+        CardTable cardTable = new CardTable();
+        AccountTable accountTable = new AccountTable();
+        accountTable.setBalance(1000.0);
+        cardTable.setAccount(accountTable);
+
+        when(cardDAO.getCardByNumber(cardNumber)).thenReturn(cardTable);
+
+        // act
+        double result = accountService.checkBalance(cardNumber);
+
+        // assert
+        verify(cardDAO, times(1)).getCardByNumber(cardNumber);
+        assertThat(result).isEqualTo(1000.0);
+        assertThat(result).isNotNegative();
+    }
+
+    @Test
+    void transfer_positive() {
+        // arrange
+        TransferDTO transferDTO = new TransferDTO(
+                "1111222233334444",
+                "5555666677778888",
+                100.0,
+                "test"
+        );
+
+        CardTable fromUserCard = new CardTable();
+        CardTable toUserCard = new CardTable();
+
+        AccountTable fromAccount = new AccountTable();
+        AccountTable toAccount = new AccountTable();
+
+        fromAccount.setBalance(500.0);
+        toAccount.setBalance(200.0);
+
+        fromUserCard.setAccount(fromAccount);
+        toUserCard.setAccount(toAccount);
+
+        when(cardDAO.getCardByNumber(transferDTO.getFromCardNumber())).thenReturn(fromUserCard);
+        when(cardDAO.getCardByNumber(transferDTO.getToCardNumber())).thenReturn(toUserCard);
+
+        // act
+        accountService.transfer(transferDTO);
+
+        // assert
+        verify(cardDAO, times(1)).getCardByNumber(transferDTO.getFromCardNumber());
+        verify(cardDAO, times(1)).getCardByNumber(transferDTO.getToCardNumber());
+        verify(accountDAO, times(1)).update(fromAccount);
+        verify(accountDAO, times(1)).update(toAccount);
+
+
+        assertThat(fromAccount.getBalance()).isEqualTo(400.0);
+        assertThat(toAccount.getBalance()).isEqualTo(300.0);
+    }
+
+    @Test
+    void transfer_fromBalanceUnderAmount() {
+        // arrange
+        TransferDTO transferDTO = new TransferDTO(
+                "1111222233334444",
+                "5555666677778888",
+                1000.0,
+                "test"
+        );
+
+        CardTable fromUserCard = new CardTable();
+        CardTable toUserCard = new CardTable();
+
+        AccountTable fromAccount = new AccountTable();
+        AccountTable toAccount = new AccountTable();
+
+        fromAccount.setBalance(500.0);
+        toAccount.setBalance(200.0);
+
+        fromUserCard.setAccount(fromAccount);
+        toUserCard.setAccount(toAccount);
+
+        when(cardDAO.getCardByNumber(transferDTO.getFromCardNumber())).thenReturn(fromUserCard);
+        when(cardDAO.getCardByNumber(transferDTO.getToCardNumber())).thenReturn(toUserCard);
+
+        // act + assert
+        assertThatThrownBy(() -> accountService.transfer(transferDTO))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Недостаточно средств для перевода");
+
+        // проверяем, что обновления не было
+        verify(accountDAO, never()).update(any());
+    }
+
+    @Test
+    void transfer_toCardEqualFromCard() {
+        // arrange
+        TransferDTO transferDTO = new TransferDTO(
+                "5555666677778888",
+                "5555666677778888",
+                100,
+                "test"
+        );
+
+        CardTable fromUserCard = new CardTable();
+        CardTable toUserCard = new CardTable();
+
+        AccountTable fromAccount = new AccountTable();
+        AccountTable toAccount = new AccountTable();
+
+        fromAccount.setBalance(500.0);
+        toAccount.setBalance(200.0);
+
+        fromUserCard.setAccount(fromAccount);
+        toUserCard.setAccount(toAccount);
+
+        when(cardDAO.getCardByNumber(transferDTO.getFromCardNumber())).thenReturn(fromUserCard);
+        when(cardDAO.getCardByNumber(transferDTO.getToCardNumber())).thenReturn(toUserCard);
+
+        // act + assert
+        assertThatThrownBy(() -> accountService.transfer(transferDTO))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Перевод на ту же карту невозможен");
+
+        // проверяем, что обновления не было
+        verify(accountDAO, never()).update(any());
+    }
+
+
+
 }
