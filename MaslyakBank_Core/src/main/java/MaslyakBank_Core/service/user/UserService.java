@@ -58,7 +58,7 @@ public class UserService {
                 .body(TokenPair.class);
     }
 
-    public void sendLogoutRequest() {
+    public void sendLogoutRequest() {//todo refactor method (not SRP)
         String token = SecurityUtil.getCurrentToken();
         String login = SecurityUtil.getCurrentUser().getLogin();
         redisTemplate.opsForValue().set(
