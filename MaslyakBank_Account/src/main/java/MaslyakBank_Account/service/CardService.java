@@ -13,6 +13,7 @@ import entity.CardTable;
 import entity.UsersTable;
 import io.micrometer.common.lang.Nullable;
 import lombok.AllArgsConstructor;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import util.SecurityUtil;
@@ -21,13 +22,13 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
+@Setter
 public class CardService {
 
     private final CardBuilder cardBuilder;
     private final AccountSystem accountSystem;
     private final CardDAO cardDAO;
-    private final List<CardValidator> cardValidators;
-
+    private  List<CardValidator> cardValidators;
 
     public CardTable createCard(UsersTable user, CardRequestDTO dto) {
         AccountTable account = accountSystem.ensureAccount(user.getId(), dto);
@@ -57,4 +58,6 @@ public class CardService {
         }
         return new CardValidationResultDTO(fromCard, toCard);
     }
+
+
 }
