@@ -16,7 +16,9 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.web.server.ResponseStatusException;
 import service.TokenService;
 import system.JwtTokenGenerator;
 import system.validators.RefreshTokenValidator;
@@ -24,6 +26,7 @@ import util.SecurityUtil;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
@@ -63,7 +66,7 @@ public class TokenServiceTest {
 
 
     @Test
-    void getAuthToken(){
+    void getAuthToken_positive(){
         //arrange
         JwtTokenRequestDTO requestDTO = new JwtTokenRequestDTO("Test", "password123");
         TokenPair expectedPair = new TokenPair("access", "refresh");
@@ -86,6 +89,24 @@ public class TokenServiceTest {
                 .authenticate(any(UsernamePasswordAuthenticationToken.class));
         verify(tokenDAO, times(1)).findTokensByUser(user);
         verify(tokenGenerator, times(1)).generateTokenPair(user);
+
+    }
+
+    @Test
+    void getAuthToken_negative(){
+        //arrange
+        JwtTokenRequestDTO requestDTO = new JwtTokenRequestDTO("Test", "password123");
+        UsersTable user = new UsersTable();
+
+        when(userDAO.findByLogin(requestDTO.getLogin())).thenReturn(user);
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenThrow(new BadCredentialsException("Bad credentials"));
+
+        // act + assert
+        assertThatThrownBy(() -> tokenService.getAuthToken(requestDTO))
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessageContaining("401 UNAUTHORIZED")
+                .hasMessageContaining("Bad credentials");
 
     }
 
