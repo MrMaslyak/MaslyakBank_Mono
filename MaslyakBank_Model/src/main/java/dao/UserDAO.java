@@ -81,5 +81,45 @@ public class UserDAO {
         }
     }
 
+    public void saveUser(UsersTable user) {
+        Transaction   transaction = null;
+        Session  session = null;
+        try {
+            session = sessionFactory.openSession();
+            transaction = session.beginTransaction();
+            session.persist(user);
+            transaction.commit();
+        }catch (Exception e){
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
+        }finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+    public void deleteAll() {
+        Transaction   transaction = null;
+        Session  session = null;
+        try {
+            session = sessionFactory.openSession();
+            transaction = session.beginTransaction();
+            session.createQuery("DELETE FROM UsersTable").executeUpdate();
+            transaction.commit();
+        }catch (Exception e){
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
+        }finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
 
 }

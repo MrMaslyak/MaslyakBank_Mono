@@ -66,15 +66,13 @@ public class RefreshTokenDAO {
     }
 
 
-    public void deleteByUserId (UUID id){
+    public void deleteAll (){
         Session session = null;
         Transaction transaction = null;
         try {
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
-            session.createQuery("DELETE FROM RefreshTokenTable rt WHERE rt.userTokenTable.user.id = :id")
-                    .setParameter("id", id)
-                    .executeUpdate();
+            session.createQuery("DELETE FROM RefreshTokenTable").executeUpdate();
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -86,6 +84,7 @@ public class RefreshTokenDAO {
                 session.close();
             }
         }
+
     }
 
 

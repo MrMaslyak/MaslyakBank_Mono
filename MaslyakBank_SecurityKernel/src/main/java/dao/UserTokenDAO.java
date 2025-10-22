@@ -90,17 +90,14 @@ public class UserTokenDAO {
         }
     }
 
-    public List<UserTokenTable> findExpiredToken() {
+  public void deleteAll(){
         Session session = null;
         Transaction transaction = null;
         try {
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
-            List<UserTokenTable> results = session.createQuery(
-                            "FROM UserTokenTable WHERE isExpired = true AND status = 'ACTIVE'", UserTokenTable.class)
-                    .list();
+            session.createQuery("DELETE FROM UserTokenTable").executeUpdate();
             transaction.commit();
-            return results;
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
@@ -111,6 +108,6 @@ public class UserTokenDAO {
                 session.close();
             }
         }
-    }
+  }
 
 }
