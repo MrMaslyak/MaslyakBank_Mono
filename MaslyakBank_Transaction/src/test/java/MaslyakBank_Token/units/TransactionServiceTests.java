@@ -1,8 +1,7 @@
-package com.example.MaslyakBank_Token.units;
+package MaslyakBank_Token.units;
 
 import MaslyakBank_Transaction.dao.DetailsDAO;
 import MaslyakBank_Transaction.dao.TransactionDAO;
-import MaslyakBank_Transaction.dto.CardValidationResultDTO;
 import MaslyakBank_Transaction.dto.TransferDTO;
 import MaslyakBank_Transaction.entity.TransactionDetailsTable;
 import MaslyakBank_Transaction.entity.TransactionTable;

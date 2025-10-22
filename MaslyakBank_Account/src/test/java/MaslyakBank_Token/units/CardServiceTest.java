@@ -1,4 +1,4 @@
-package com.example.MaslyakBank_Token.units;
+package MaslyakBank_Token.units;
 
 import MaslyakBank_Account.dao.CardDAO;
 import MaslyakBank_Account.dto.CardRequestDTO;

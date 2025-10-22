@@ -1,4 +1,4 @@
-package com.example.MaslyakBank_Token.unit;
+package MaslyakBank_Token.unit;
 
 
 import dao.RefreshTokenDAO;

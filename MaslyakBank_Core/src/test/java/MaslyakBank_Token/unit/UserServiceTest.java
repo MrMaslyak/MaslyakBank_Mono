@@ -1,4 +1,4 @@
-package com.example.MaslyakBank_Token.unit;
+package MaslyakBank_Token.unit;
 
 import MaslyakBank_Core.dao.UserSecurityDAO;
 import MaslyakBank_Core.dto.requests.JwtTokenRequestDTO;
