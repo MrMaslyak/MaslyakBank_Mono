@@ -1,4 +1,4 @@
-package MaslyakBank_Token;
+package MaslyakBank_Core;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {
-        "MaslyakBank_Token",
+        "MaslyakBank_Core",
         "MaslyakBank_Model",
         "MaslyakBank_SecurityKernel",
         "util",

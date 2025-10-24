@@ -49,6 +49,20 @@
 			<version>3.5.0</version>
 		</dependency>
 
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock-jre8</artifactId>
+            <version>3.2.0</version> <!-- последняя стабильная версия -->
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock-jre8-standalone</artifactId>
+            <version>2.35.0</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- основной тестовый набор от Spring (включает JUnit 5, AssertJ и Mockito) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -57,6 +71,7 @@
             <version> 3.5.0</version>
         </dependency>
         <!-- если хотите мокать final/static - опционально -->
+
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-inline</artifactId>

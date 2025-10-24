@@ -12,7 +12,7 @@
 
 - **MaslyakBank_Core**: 👤 Центральный сервис для управления пользователями, регистрацией, входом, профилями и админ-функциями (включая SUPER_ADMIN).
 - **MaslyakBank_Account**: 💰 Управление счетами и картами — создание, выпуск, проверка баланса, переводы. Использует iban4j для IBAN.
-- **MaslyakBank_Token**: 🔒 Сервис для аутентификации и управления токенами (JWT).
+- **MaslyakBank_Core**: 🔒 Сервис для аутентификации и управления токенами (JWT).
 - **MaslyakBank_Transaction**: 🔄 Обработка финансовых транзакций, валидация, логирование истории.
 - **MaslyakBank_SecurityKernel**, **MaslyakBank_Model**: 🛡️ Shared Kernel модули — общие компоненты безопасности (JwtAuthFilter, CustomUserDetailsService и др.), модели данных (JPA-сущности, DTO).
 - **MaslyakBank_Infrastructure**: 🐳 Docker и база данных (Docker Compose для PostgreSQL, Redis, Liquibase миграций).
@@ -126,7 +126,7 @@
     docker-compose -f MaslyakBank_Core/compose-core.yaml up -d --build
 
     # Token Service (JWT Management)
-    docker-compose -f MaslyakBank_Token/compose-token.yaml up -d --build
+    docker-compose -f MaslyakBank_Core/compose-token.yaml up -d --build
 
     # Account Service
     docker-compose -f MaslyakBank_Account/compose-account.yaml up -d --build

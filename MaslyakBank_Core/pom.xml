@@ -21,6 +21,12 @@
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
 
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock-jre8-standalone</artifactId>
+            <scope>test</scope>
+        </dependency>
+
         <!-- основной тестовый набор от Spring (включает JUnit 5, AssertJ и Mockito) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -33,7 +39,6 @@
         <artifactId>mockito-inline</artifactId>
         <scope>test</scope>
         </dependency>
-
 
         <dependency>
             <groupId>com.h2database</groupId>

@@ -1,4 +1,4 @@
-package MaslyakBank_Token.units;
+package MaslyakBank_Core.units;
 
 
 import MaslyakBank_Account.dao.AccountDAO;

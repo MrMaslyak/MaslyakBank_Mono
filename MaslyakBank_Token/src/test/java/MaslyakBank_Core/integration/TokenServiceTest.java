@@ -1,4 +1,4 @@
-package MaslyakBank_Token.integration;
+package MaslyakBank_Core.integration;
 
 import dao.RefreshTokenDAO;
 import dao.UserTokenDAO;
@@ -13,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,8 +21,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
 import service.TokenService;
 import dao.UserDAO;
-import system.JwtTokenGenerator;
-import system.validators.RefreshTokenValidator;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
@@ -111,7 +108,6 @@ class TokenServiceTest {
                 .hasMessageContaining("401 UNAUTHORIZED")
                 .hasMessageContaining("Bad credentials");
     }
-
 
     @Test
     void refreshOrLogout_replaceRes() {
