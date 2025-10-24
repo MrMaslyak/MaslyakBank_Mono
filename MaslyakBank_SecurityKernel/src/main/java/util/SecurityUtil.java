@@ -2,8 +2,11 @@ package util;
 
 import details.CustomUserDetails;
 import entity.UsersTable;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.List;
 
 public class SecurityUtil {
 
@@ -26,4 +29,7 @@ public class SecurityUtil {
         }
         throw new IllegalStateException("User not Authorized (utils)");
     }
+
+
+
 }

@@ -25,7 +25,7 @@ public class UserTokenTable {
     @JoinColumn(name = "user_id", nullable = false)
     private UsersTable user;
 
-    @Column(name = "token",  unique = true, nullable = false)
+    @Column(name = "token", nullable = false)
     private String token;
 
     @Column(name = "is_valid")
@@ -43,4 +43,6 @@ public class UserTokenTable {
 
     @Column(name = "updated_at")
     private Date updatedAt;
+
+
 }

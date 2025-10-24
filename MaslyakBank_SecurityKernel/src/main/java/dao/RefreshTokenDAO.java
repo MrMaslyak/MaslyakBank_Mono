@@ -42,6 +42,7 @@ public class RefreshTokenDAO {
         }
     }
 
+
     public Optional<RefreshTokenTable> findByToken(String refresh){
         Session session = null;
         Transaction transaction = null;
@@ -65,6 +66,26 @@ public class RefreshTokenDAO {
         }
     }
 
+    public RefreshTokenTable findById(UUID id){
+        Session session = null;
+        Transaction transaction = null;
+        try {
+            session = sessionFactory.openSession();
+            transaction = session.beginTransaction();
+            RefreshTokenTable token = session.get(RefreshTokenTable.class, id);
+            transaction.commit();
+            return token;
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
 
     public void deleteAll (){
         Session session = null;
