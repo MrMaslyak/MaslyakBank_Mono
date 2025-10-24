@@ -47,6 +47,7 @@ public class ProfileServiceTest {
 
     @Autowired private ProfileService profileService;
 
+
     private WireMockServer wireMockServer;
 
 
