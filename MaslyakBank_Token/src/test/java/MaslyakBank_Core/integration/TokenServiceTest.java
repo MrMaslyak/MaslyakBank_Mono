@@ -119,7 +119,7 @@ class TokenServiceTest {
         user.setRole(UserRole.USER);
         userDAO.saveUser(user);
 
-        // сразу сгенерим пару токенов, чтобы refresh уже существовал
+        // генерим пару токенов, чтобы refresh уже существовал
         TokenPair tokens = tokenService.getToken("testuser");
 
         // act

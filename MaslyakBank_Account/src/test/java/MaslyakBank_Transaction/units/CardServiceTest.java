@@ -1,4 +1,4 @@
-package MaslyakBank_Core.units;
+package MaslyakBank_Transaction.units;
 
 import MaslyakBank_Account.dao.CardDAO;
 import MaslyakBank_Account.dto.CardRequestDTO;

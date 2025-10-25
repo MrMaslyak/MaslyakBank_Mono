@@ -1,4 +1,4 @@
-package MaslyakBank_Core.units;
+package MaslyakBank_Transaction.units;
 
 import MaslyakBank_Transaction.dao.DetailsDAO;
 import MaslyakBank_Transaction.dao.TransactionDAO;
@@ -19,7 +19,7 @@ import org.springframework.web.client.RestClient;
 import static reactor.core.publisher.Mono.when;
 
 @ExtendWith(MockitoExtension.class)
-public class TransactionServiceTests {
+public class TransactionServiceTest {
 
     @Mock private  TransactionBuilder transactionBuilder;
     @Mock private  DetailsBuilder detailsBuilder;
