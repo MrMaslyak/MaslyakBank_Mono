@@ -6,6 +6,7 @@ import MaslyakBank_Core.entity.ProfileTable;
 import MaslyakBank_Core.mappers.ProfileMapper;
 import MaslyakBank_Core.service.user.ProfileService;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import dao.UserDAO;
 import entity.UsersTable;
@@ -25,16 +26,18 @@ import system.VerificationUserStatus;
 
 import java.util.Date;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.*;
 
 import util.SecurityUtil;
 
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)//один экземпляр класса теста на все методы, удобно для совместного использования ресурсов
 public class ProfileServiceTest {
 
     @Autowired
@@ -50,12 +53,12 @@ public class ProfileServiceTest {
 
     @RegisterExtension
     static WireMockExtension wireMockExtension = WireMockExtension.newInstance()
-            .options(com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig().dynamicPort())
+            .options(wireMockConfig().dynamicPort())
             .build();
 
     @Test
     void createProfile_success() {
-        // Создаём пользователя
+        //arrange
         UsersTable user = new UsersTable();
         user.setLogin("ivan");
         user.setPasswordSalt("encodedPass");
@@ -86,8 +89,10 @@ public class ProfileServiceTest {
                     "г. Киев", "ул. Леси Украинки", new Date()
             );
 
+            //act
             ProfileTable profile = profileService.createProfile(dto);
 
+            //assert
             assertNotNull(profile);
             assertEquals(user.getId(), profile.getUser().getId());
         }
@@ -95,6 +100,7 @@ public class ProfileServiceTest {
 
     @Test
     void createProfile_accountCreationFails() {
+        //arrange
         UsersTable user = new UsersTable();
         user.setLogin("testuser");
         user.setPasswordSalt("encodedPass");
@@ -106,19 +112,23 @@ public class ProfileServiceTest {
             mocked.when(SecurityUtil::getCurrentUser).thenReturn(user);
             mocked.when(SecurityUtil::getCurrentToken).thenReturn("fake-jwt");
 
-            // Мокаем RestClient, чтобы выбрасывал исключение
-            RestClient mockRestClient = org.mockito.Mockito.mock(RestClient.class);
-            org.mockito.Mockito.when(mockRestClient.post())
-                    .thenThrow(new RuntimeException("Сервис недоступен"));
+            wireMockExtension.stubFor(WireMock.post(WireMock.urlEqualTo("/maslyakbank/accountmanagment/account/create"))
+                    .willReturn(WireMock.aResponse()
+                            .withStatus(500)));
 
-            ReflectionTestUtils.setField(profileService, "accountRestClient", mockRestClient);
+            ReflectionTestUtils.setField(profileService, "accountRestClient",
+                    RestClient.builder()
+                            .baseUrl(wireMockExtension.baseUrl() + "/maslyakbank/accountmanagment/account")
+                            .build());
 
             ProfileRequestDTO dto = new ProfileRequestDTO(
                     "Иван", "Иванов", "Петрович",
                     "г. Киев", "ул. Леси Украинки", new Date()
             );
 
-            org.assertj.core.api.Assertions.assertThatThrownBy(() -> profileService.createProfile(dto))
+
+            //act+assert
+          assertThatThrownBy(() -> profileService.createProfile(dto))
                     .isInstanceOf(IllegalStateException.class)
                     .hasMessageContaining("Профиль создан, но не удалось создать счёт");
         }
