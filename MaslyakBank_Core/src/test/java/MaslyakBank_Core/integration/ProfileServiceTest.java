@@ -52,6 +52,7 @@ public class ProfileServiceTest {
         user.setRole(UserRole.USER);
         userDAO.saveUser(user);
 
+
         // Мокаем SecurityUtil
         try (MockedStatic<SecurityUtil> mocked = mockStatic(SecurityUtil.class)) {
             mocked.when(SecurityUtil::getCurrentUser).thenReturn(user);

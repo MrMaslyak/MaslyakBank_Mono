@@ -5,10 +5,7 @@ import MaslyakBank_Transaction.service.TransactionService;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import dao.UserDAO;
-import entity.AccountTable;
-import entity.CardTable;
 import entity.UsersTable;
-import enums.Currency;
 import enums.UserRole;
 import enums.UserStatus;
 import jakarta.transaction.Transactional;
@@ -22,7 +19,6 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestTemplate;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
