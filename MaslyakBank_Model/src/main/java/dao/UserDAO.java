@@ -81,8 +81,8 @@ public class UserDAO {
         }
     }
 
-    public void saveUser(UsersTable user) {
-        Transaction   transaction = null;
+    public void save(UsersTable user) {
+        Transaction  transaction = null;
         Session  session = null;
         try {
             session = sessionFactory.openSession();

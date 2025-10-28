@@ -1,5 +1,6 @@
 package MaslyakBank_Core.integration;
 
+import MaslyakBank_Core.dao.UserSecurityDAO;
 import MaslyakBank_Core.dto.requests.ProfileRequestDTO;
 import MaslyakBank_Core.entity.ProfileTable;
 import MaslyakBank_Core.service.user.ProfileService;
@@ -34,7 +35,7 @@ import util.SecurityUtil;
 @Transactional
 public class ProfileServiceTest {
 
-    @Autowired private UserDAO userDAO;
+    @Autowired private UserSecurityDAO userDAO;
     @Autowired private ProfileService profileService;
 
     @RegisterExtension
@@ -50,7 +51,7 @@ public class ProfileServiceTest {
         user.setPasswordSalt("encodedPass");
         user.setStatus(UserStatus.PARTIALLY_COMPLETED);
         user.setRole(UserRole.USER);
-        userDAO.saveUser(user);
+        userDAO.registrationUser(user);
 
 
         // Мокаем SecurityUtil
@@ -93,7 +94,7 @@ public class ProfileServiceTest {
         user.setPasswordSalt("encodedPass");
         user.setStatus(UserStatus.PARTIALLY_COMPLETED);
         user.setRole(UserRole.USER);
-        userDAO.saveUser(user);
+        userDAO.registrationUser(user);
 
         try (MockedStatic<SecurityUtil> mocked = mockStatic(SecurityUtil.class)) {
             mocked.when(SecurityUtil::getCurrentUser).thenReturn(user);

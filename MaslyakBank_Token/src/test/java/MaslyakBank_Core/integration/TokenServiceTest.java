@@ -53,7 +53,7 @@ class TokenServiceTest {
         user.setPasswordSalt(passwordEncoder.encode("1234567890"));
         user.setStatus(UserStatus.COMPLETED);
         user.setRole(UserRole.USER);
-        userDAO.saveUser(user);
+        userDAO.save(user);
 
         //act
         TokenPair tokenPair = tokenService.getToken("testuser");
@@ -75,7 +75,7 @@ class TokenServiceTest {
         user.setPasswordSalt(passwordEncoder.encode("1234567890"));
         user.setStatus(UserStatus.COMPLETED);
         user.setRole(UserRole.USER);
-        userDAO.saveUser(user);
+        userDAO.save(user);
         JwtTokenRequestDTO dto = new JwtTokenRequestDTO("testuser", "1234567890");
 
         // act
@@ -99,7 +99,7 @@ class TokenServiceTest {
         user.setPasswordSalt(passwordEncoder.encode("1234567890"));
         user.setStatus(UserStatus.COMPLETED);
         user.setRole(UserRole.USER);
-        userDAO.saveUser(user);
+        userDAO.save(user);
         JwtTokenRequestDTO dto = new JwtTokenRequestDTO("testuser", "12345");
 
         // act + assert
@@ -117,7 +117,7 @@ class TokenServiceTest {
         user.setPasswordSalt(passwordEncoder.encode("1234567890"));
         user.setStatus(UserStatus.COMPLETED);
         user.setRole(UserRole.USER);
-        userDAO.saveUser(user);
+        userDAO.save(user);
 
         // генерим пару токенов, чтобы refresh уже существовал
         TokenPair tokens = tokenService.getToken("testuser");
@@ -142,7 +142,7 @@ class TokenServiceTest {
         user.setPasswordSalt(passwordEncoder.encode("1234567890"));
         user.setStatus(UserStatus.COMPLETED);
         user.setRole(UserRole.USER);
-        userDAO.saveUser(user);
+        userDAO.save(user);
 
         // имитация успешной аутентификации
         CustomUserDetails userDetails = new CustomUserDetails(user);
