@@ -115,6 +115,7 @@ public class ProfileServiceTest {
             );
 
 
+
             //act+assert
           assertThatThrownBy(() -> profileService.createProfile(dto))
                     .isInstanceOf(IllegalStateException.class)

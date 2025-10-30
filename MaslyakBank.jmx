@@ -69,7 +69,7 @@ vars.put(&quot;password&quot;, randomPassword);
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <ResultCollector guiclass="TableVisualizer" testclass="ResultCollector" testname="View Results in Table">
+          <ResultCollector guiclass="TableVisualizer" testclass="ResultCollector" testname="View Results in Table" enabled="true">
             <boolProp name="ResultCollector.error_logging">false</boolProp>
             <objProp>
               <name>saveConfig</name>
@@ -106,7 +106,7 @@ vars.put(&quot;password&quot;, randomPassword);
             <stringProp name="filename"></stringProp>
           </ResultCollector>
           <hashTree/>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager">
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
             <collectionProp name="HeaderManager.headers">
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Content-Type</stringProp>
@@ -117,45 +117,56 @@ vars.put(&quot;password&quot;, randomPassword);
           <hashTree/>
         </hashTree>
         <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="JDBC Request">
-          <stringProp name="dataSource"></stringProp>
+          <stringProp name="dataSource">MyDB</stringProp>
           <stringProp name="query">SELECT token
 FROM user_token
-WHERE user_id = (SELECT id FROM users WHERE login=&apos;${login}&apos;)
+WHERE user_id = (SELECT id FROM users WHERE login = ?)
 ORDER BY created_at DESC
-LIMIT 1;</stringProp>
-          <stringProp name="queryArguments"></stringProp>
-          <stringProp name="queryArgumentsTypes"></stringProp>
+LIMIT 1;
+</stringProp>
+          <stringProp name="queryArguments">${login}</stringProp>
+          <stringProp name="queryArgumentsTypes">VARCHAR</stringProp>
           <stringProp name="queryTimeout"></stringProp>
           <stringProp name="queryType">Select Statement</stringProp>
           <stringProp name="resultSetHandler">Store as String</stringProp>
           <stringProp name="resultSetMaxRows"></stringProp>
-          <stringProp name="resultVariable"></stringProp>
-          <stringProp name="variableNames"></stringProp>
+          <stringProp name="resultVariable">token</stringProp>
+          <stringProp name="variableNames">token</stringProp>
         </JDBCSampler>
         <hashTree/>
         <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="FileWriter">
           <stringProp name="cacheKey">true</stringProp>
           <stringProp name="filename"></stringProp>
           <stringProp name="parameters"></stringProp>
-          <stringProp name="script">import java.io.FileWriter;
+          <stringProp name="script">import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.BufferedWriter;
 
 String login = vars.get(&quot;login&quot;);
 String password = vars.get(&quot;password&quot;);
 String token = vars.get(&quot;token&quot;);
 
-// Проверка и очистка токена
+// Очистка токена от возможных лишних символов
 if (token == null || token.trim().isEmpty() || token.equals(&quot;&lt;EOF&gt;&quot;)) {
     token = &quot;NO_TOKEN&quot;;
     log.warn(&quot;⚠️ Токен не найден для пользователя &quot; + login);
 } else {
-    token = token.trim().replace(&quot;\n&quot;,&quot;&quot;).replace(&quot;\r&quot;,&quot;&quot;);
+    token = token.trim();
     log.info(&quot;✅ Токен найден для пользователя &quot; + login + &quot; =&gt; &apos;&quot; + token + &quot;&apos;&quot;);
 }
 
-// Запись в CSV
-FileWriter fw = new FileWriter(&quot;/Users/maslyak/IdeaProjects/MaslyakBank_Mono1/tmp/users.csv&quot;, true);
-fw.write(login + &quot;,&quot; + password + &quot;,&quot; + token + &quot;\n&quot;);
-fw.close();
+// Путь к CSV
+File file = new File(&quot;/Users/maslyak/IdeaProjects/MaslyakBank_Mono1/tmp/users.csv&quot;);
+
+// Используем BufferedWriter и UTF-8
+BufferedWriter writer = new BufferedWriter(
+    new OutputStreamWriter(new FileOutputStream(file, true), &quot;UTF-8&quot;)
+);
+
+writer.write(login + &quot;,&quot; + password + &quot;,&quot; + token + &quot;\n&quot;);
+writer.flush();
+writer.close();
 </stringProp>
           <stringProp name="scriptLanguage">java</stringProp>
         </JSR223Sampler>
@@ -183,7 +194,7 @@ fw.close();
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager">
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
             <collectionProp name="HeaderManager.headers">
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Content-Type</stringProp>
@@ -196,7 +207,7 @@ fw.close();
             </collectionProp>
           </HeaderManager>
           <hashTree/>
-          <ResultCollector guiclass="TableVisualizer" testclass="ResultCollector" testname="View Results in Table">
+          <ResultCollector guiclass="TableVisualizer" testclass="ResultCollector" testname="View Results in Table" enabled="true">
             <boolProp name="ResultCollector.error_logging">false</boolProp>
             <objProp>
               <name>saveConfig</name>
@@ -233,7 +244,7 @@ fw.close();
             <stringProp name="filename"></stringProp>
           </ResultCollector>
           <hashTree/>
-          <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config">
+          <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
             <stringProp name="delimiter">,</stringProp>
             <stringProp name="fileEncoding"></stringProp>
             <stringProp name="filename">/Users/maslyak/IdeaProjects/MaslyakBank_Mono1/tmp/users.csv</stringProp>
@@ -246,26 +257,63 @@ fw.close();
           </CSVDataSet>
           <hashTree/>
         </hashTree>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <JDBCDataSource guiclass="TestBeanGUI" testclass="JDBCDataSource" testname="JDBC Connection Configuration">
+          <boolProp name="autocommit">true</boolProp>
+          <stringProp name="checkQuery"></stringProp>
+          <stringProp name="connectionAge">5000</stringProp>
+          <stringProp name="connectionProperties">10</stringProp>
+          <stringProp name="dataSource">MyDB</stringProp>
+          <stringProp name="dbUrl">jdbc:postgresql://localhost:7777/postgres</stringProp>
+          <stringProp name="driver">org.postgresql.Driver</stringProp>
+          <stringProp name="initQuery"></stringProp>
+          <boolProp name="keepAlive">true</boolProp>
+          <stringProp name="password">1234567890</stringProp>
+          <stringProp name="poolMax">0</stringProp>
+          <boolProp name="preinit">false</boolProp>
+          <stringProp name="timeout">10000</stringProp>
+          <stringProp name="transactionIsolation">DEFAULT</stringProp>
+          <stringProp name="trimInterval">60000</stringProp>
+          <stringProp name="username">Maslyak</stringProp>
+        </JDBCDataSource>
+        <hashTree/>
       </hashTree>
-      <JDBCDataSource guiclass="TestBeanGUI" testclass="JDBCDataSource" testname="JDBC Connection Configuration">
-        <boolProp name="autocommit">true</boolProp>
-        <stringProp name="checkQuery"></stringProp>
-        <stringProp name="connectionAge">5000</stringProp>
-        <stringProp name="connectionProperties"></stringProp>
-        <stringProp name="dataSource">db</stringProp>
-        <stringProp name="dbUrl">jdbc:postgresql://db:5432/postgres</stringProp>
-        <stringProp name="driver">org.postgresql.Driver</stringProp>
-        <stringProp name="initQuery"></stringProp>
-        <boolProp name="keepAlive">true</boolProp>
-        <stringProp name="password">1234567890</stringProp>
-        <stringProp name="poolMax">0</stringProp>
-        <boolProp name="preinit">false</boolProp>
-        <stringProp name="timeout">10000</stringProp>
-        <stringProp name="transactionIsolation">DEFAULT</stringProp>
-        <stringProp name="trimInterval">60000</stringProp>
-        <stringProp name="username">Maslyak</stringProp>
-      </JDBCDataSource>
-      <hashTree/>
     </hashTree>
   </hashTree>
 </jmeterTestPlan>

@@ -132,8 +132,6 @@ class TokenServiceTest {
     }
 
 
-
-
     @Test
     void refreshOrLogout_logoutOnly() {
         //arrange
