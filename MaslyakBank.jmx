@@ -8,7 +8,7 @@
     </TestPlan>
     <hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Core Module">
-        <intProp name="ThreadGroup.num_threads">20</intProp>
+        <intProp name="ThreadGroup.num_threads">1</intProp>
         <intProp name="ThreadGroup.ramp_time">1</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
@@ -22,25 +22,24 @@
           <stringProp name="cacheKey">true</stringProp>
           <stringProp name="filename"></stringProp>
           <stringProp name="parameters"></stringProp>
-          <stringProp name="script">import java.util.UUID;
-import java.io.FileWriter;
+          <stringProp name="script">import java.util.UUID
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStreamWriter
+import java.io.BufferedWriter
 
-// Генерация случайных данных
-String randomLogin = &quot;user_&quot; + UUID.randomUUID().toString().substring(0, 8);
-String randomEmail = randomLogin + &quot;@test.com&quot;;
-String randomPassword = &quot;pass_&quot; + UUID.randomUUID().toString().substring(0, 6);
+if (vars.get(&quot;login&quot;) == null) {
 
-// Сохраняем переменные
-vars.put(&quot;login&quot;, randomLogin);
-vars.put(&quot;email&quot;, randomEmail);
-vars.put(&quot;password&quot;, randomPassword);
+    String randomLogin = &quot;user_&quot; + UUID.randomUUID().toString().substring(0, 8)
+    String randomEmail = randomLogin + &quot;@test.com&quot;
+    String randomPassword = &quot;pass_&quot; + UUID.randomUUID().toString().substring(0, 6)
 
+    vars.put(&quot;login&quot;, randomLogin)
+    vars.put(&quot;email&quot;, randomEmail)
+    vars.put(&quot;password&quot;, randomPassword)
 
-
-
-
-
-</stringProp>
+    log.info(&quot;Создан пользователь: &quot; + randomLogin + &quot; / &quot; + randomPassword + &quot; / &quot; + randomEmail)
+}</stringProp>
           <stringProp name="scriptLanguage">java</stringProp>
         </JSR223PreProcessor>
         <hashTree/>
@@ -106,7 +105,7 @@ vars.put(&quot;password&quot;, randomPassword);
             <stringProp name="filename"></stringProp>
           </ResultCollector>
           <hashTree/>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager">
             <collectionProp name="HeaderManager.headers">
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Content-Type</stringProp>
@@ -115,62 +114,90 @@ vars.put(&quot;password&quot;, randomPassword);
             </collectionProp>
           </HeaderManager>
           <hashTree/>
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor">
+            <stringProp name="JSONPostProcessor.referenceNames">accessToken</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.token.accessToken</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers">1</stringProp>
+            <stringProp name="JSONPostProcessor.defaultValues">NO_TOKEN</stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
         </hashTree>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="JDBC Request">
-          <stringProp name="dataSource">MyDB</stringProp>
-          <stringProp name="query">SELECT token
-FROM user_token
-WHERE user_id = (SELECT id FROM users WHERE login = ?)
-ORDER BY created_at DESC
-LIMIT 1;
-</stringProp>
-          <stringProp name="queryArguments">${login}</stringProp>
-          <stringProp name="queryArgumentsTypes">VARCHAR</stringProp>
-          <stringProp name="queryTimeout"></stringProp>
-          <stringProp name="queryType">Select Statement</stringProp>
-          <stringProp name="resultSetHandler">Store as String</stringProp>
-          <stringProp name="resultSetMaxRows"></stringProp>
-          <stringProp name="resultVariable">token</stringProp>
-          <stringProp name="variableNames">token</stringProp>
-        </JDBCSampler>
-        <hashTree/>
         <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="FileWriter">
           <stringProp name="cacheKey">true</stringProp>
           <stringProp name="filename"></stringProp>
           <stringProp name="parameters"></stringProp>
-          <stringProp name="script">import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.BufferedWriter;
+          <stringProp name="script">import java.io.File; 
+import java.io.FileOutputStream; 
+import java.io.OutputStreamWriter; 
+import java.io.BufferedWriter; 
 
-String login = vars.get(&quot;login&quot;);
-String password = vars.get(&quot;password&quot;);
-String token = vars.get(&quot;token&quot;);
+String login = vars.get(&quot;login&quot;).trim()
+String password = vars.get(&quot;password&quot;).trim()
+String token = vars.get(&quot;accessToken&quot;).trim() // этот токен должен быть установлен после запроса регистрации
 
-// Очистка токена от возможных лишних символов
-if (token == null || token.trim().isEmpty() || token.equals(&quot;&lt;EOF&gt;&quot;)) {
-    token = &quot;NO_TOKEN&quot;;
-    log.warn(&quot;⚠️ Токен не найден для пользователя &quot; + login);
+if (token == null || token.trim().isEmpty()) {
+    token = &quot;NO_TOKEN&quot;
+    log.warn(&quot;⚠️ Токен не найден для пользователя &quot; + login)
 } else {
-    token = token.trim();
-    log.info(&quot;✅ Токен найден для пользователя &quot; + login + &quot; =&gt; &apos;&quot; + token + &quot;&apos;&quot;);
+    token = token.trim()
+    log.info(&quot;✅ Токен найден для пользователя &quot; + login + &quot; =&gt; &apos;&quot; + token + &quot;&apos;&quot;)
 }
 
-// Путь к CSV
-File file = new File(&quot;/Users/maslyak/IdeaProjects/MaslyakBank_Mono1/tmp/users.csv&quot;);
+File file = new File(&quot;/Users/maslyak/IdeaProjects/MaslyakBank_Mono1/tmp/users.csv&quot;)
+if (!file.exists()) file.createNewFile()
 
-// Используем BufferedWriter и UTF-8
-BufferedWriter writer = new BufferedWriter(
-    new OutputStreamWriter(new FileOutputStream(file, true), &quot;UTF-8&quot;)
-);
+BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, true), &quot;UTF-8&quot;))
+writer.write(login + &quot;,&quot; + password + &quot;,&quot; + token + &quot;\n&quot;)
+writer.flush()
+writer.close()
 
-writer.write(login + &quot;,&quot; + password + &quot;,&quot; + token + &quot;\n&quot;);
-writer.flush();
-writer.close();
-</stringProp>
+vars.put(&quot;login&quot;, login)
+vars.put(&quot;password&quot;, password)
+vars.put(&quot;accessToken&quot;, token)</stringProp>
           <stringProp name="scriptLanguage">java</stringProp>
         </JSR223Sampler>
         <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Profile">
+          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.port">1200</stringProp>
+          <stringProp name="HTTPSampler.protocol">http</stringProp>
+          <stringProp name="HTTPSampler.path">/maslyakbank/profilemanagment/profile/create</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;firstName&quot;: &quot;Ilya&quot;,&#xd;
+    &quot;lastName&quot;: &quot;Maslyak&quot;,&#xd;
+    &quot;city&quot;: &quot;Dnipro&quot;,&#xd;
+    &quot;avatarUrl&quot;: &quot;some_url&quot;,&#xd;
+    &quot;bio&quot;: &quot;Java Developer&quot;,&#xd;
+    &quot;birthDay&quot;: &quot;2008-06-26&quot;&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${accessToken}</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+        </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">1200</stringProp>
@@ -194,20 +221,16 @@ writer.close();
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager">
             <collectionProp name="HeaderManager.headers">
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Content-Type</stringProp>
                 <stringProp name="Header.value">application/json</stringProp>
               </elementProp>
-              <elementProp name="" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${token}</stringProp>
-              </elementProp>
             </collectionProp>
           </HeaderManager>
           <hashTree/>
-          <ResultCollector guiclass="TableVisualizer" testclass="ResultCollector" testname="View Results in Table" enabled="true">
+          <ResultCollector guiclass="TableVisualizer" testclass="ResultCollector" testname="View Results in Table">
             <boolProp name="ResultCollector.error_logging">false</boolProp>
             <objProp>
               <name>saveConfig</name>
@@ -244,7 +267,7 @@ writer.close();
             <stringProp name="filename"></stringProp>
           </ResultCollector>
           <hashTree/>
-          <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
+          <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config">
             <stringProp name="delimiter">,</stringProp>
             <stringProp name="fileEncoding"></stringProp>
             <stringProp name="filename">/Users/maslyak/IdeaProjects/MaslyakBank_Mono1/tmp/users.csv</stringProp>
@@ -257,6 +280,18 @@ writer.close();
           </CSVDataSet>
           <hashTree/>
         </hashTree>
+        <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor">
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="script">vars.remove(&quot;login&quot;)
+vars.remove(&quot;password&quot;)
+vars.remove(&quot;email&quot;)
+vars.remove(&quot;accessToken&quot;)
+log.info(&quot;✅ Переменные потока очищены&quot;)</stringProp>
+          <stringProp name="scriptLanguage">java</stringProp>
+        </JSR223PostProcessor>
+        <hashTree/>
         <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>
