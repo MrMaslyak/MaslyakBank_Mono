@@ -32,7 +32,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/maslyakbank/user/registration",
-                                "/maslyakbank/user/login"
+                                "/maslyakbank/user/login",
+                                "/maslyakbank/user/get"
                         ).permitAll()
                         .requestMatchers(
                                 "/maslyakbank/admin/delete",

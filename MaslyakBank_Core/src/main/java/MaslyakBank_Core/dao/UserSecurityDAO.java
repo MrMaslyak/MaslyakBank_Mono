@@ -69,32 +69,6 @@ public class UserSecurityDAO {
         }
     }
 
-    public void deleteUser(String login) {
-        Transaction   transaction = null;
-        Session  session = null;
-        try {
-            session = sessionFactory.openSession();
-            transaction = session.beginTransaction();
-            UsersTable user = session.createQuery("FROM UsersTable WHERE login = :login", UsersTable.class)
-                    .setParameter("login", login).getResultList()
-                    .stream().findFirst().orElse(null);
-            if (user != null) {
-                session.remove(user);
-            }
-            transaction.commit();
-        }catch (Exception e){
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw e;
-        }finally {
-            if (session != null) {
-                session.close();
-            }
-        }
-    }
-
-
     public UsersTable login(JwtTokenRequestDTO dto) {
         Transaction   transaction = null;
         Session  session = null;
@@ -175,7 +149,7 @@ public class UserSecurityDAO {
 
 
     public void updateUser(UsersTable existingUser) {
-        Transaction   transaction = null;
+        Transaction  transaction = null;
         Session  session = null;
         try {
             session = sessionFactory.openSession();
