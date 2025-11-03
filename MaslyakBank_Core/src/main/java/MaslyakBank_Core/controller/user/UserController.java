@@ -22,6 +22,8 @@ public class UserController {
         return new ResponseDTO("Registration successful", true, token);
     }
 
+
+
     @PostMapping("/login")
     public ResponseDTO login(@RequestBody JwtTokenRequestDTO dto) {
         TokenPair token = userService.sendAuthRequest(dto);
