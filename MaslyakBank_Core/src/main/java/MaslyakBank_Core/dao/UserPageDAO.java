@@ -42,16 +42,16 @@ public class UserPageDAO {
     }
 
 
-    public List<UsersTable> findUsersPage (int size, int page) {
+    public List<UsersTable> findUsersPage(int size, int offset) {
         Transaction transaction = null;
         Session session = null;
         try {
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
             List<UsersTable> users = session.createQuery(
-                            "FROM UsersTable u ORDER BY u.createdAt", UsersTable.class)
-                    .setFirstResult((page - 1) * size)  // OFFSET
-                    .setMaxResults(size)                // LIMIT
+                            "FROM UsersTable u ORDER BY u.createdAt ASC, u.id ASC", UsersTable.class)
+                    .setFirstResult(offset)
+                    .setMaxResults(size)
                     .list();
             transaction.commit();
             return users;
@@ -66,4 +66,56 @@ public class UserPageDAO {
             }
         }
     }
+
+    public List<UsersTable> getFirstPage(int limit){
+        Transaction transaction = null;
+        Session session = null;
+        try {
+            session = sessionFactory.openSession();
+            transaction = session.beginTransaction();
+            List<UsersTable> users = session.createQuery(
+                            "FROM UsersTable u ORDER BY u.createdAt ASC, u.id ASC", UsersTable.class)
+                    .setMaxResults(limit)
+                    .list();
+            transaction.commit();
+            return users;
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+    public List<UsersTable> getNextPage (int limit, UsersTable lastUser){
+        Transaction transaction = null;
+        Session session = null;
+        try {
+            session = sessionFactory.openSession();
+            transaction = session.beginTransaction();
+            List<UsersTable> users = session.createQuery(
+                            "FROM UsersTable u WHERE u.createdAt > :createdAt OR (u.createdAt = :createdAt AND u.id > :id) ORDER BY u.createdAt ASC, u.id ASC", UsersTable.class)
+                    .setParameter("createdAt", lastUser.getCreatedAt())
+                    .setParameter("id", lastUser.getId())
+                    .setMaxResults(limit)
+                    .list();
+            transaction.commit();
+            return users;
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+
+    }
+
 }

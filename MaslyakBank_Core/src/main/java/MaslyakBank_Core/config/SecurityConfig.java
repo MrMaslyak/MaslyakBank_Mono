@@ -33,7 +33,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/maslyakbank/user/registration",
                                 "/maslyakbank/user/login",
-                                "/maslyakbank/user/get"
+                                "/maslyakbank/user/pagination/offset/get",
+                                "/maslyakbank/user/pagination/cursor/get"
                         ).permitAll()
                         .requestMatchers(
                                 "/maslyakbank/admin/delete",

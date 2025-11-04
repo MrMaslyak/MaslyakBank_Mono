@@ -9,7 +9,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Data
-public class ResponsePaginationDTO {
+public class ResponsePaginationOffsetDTO {
 
     private int page;
     private int size;

@@ -1,6 +1,7 @@
 package MaslyakBank_Core.service.user;
 
 
+import MaslyakBank_Core.dao.UserPageDAO;
 import MaslyakBank_Core.dao.UserSecurityDAO;
 import MaslyakBank_Core.dto.requests.JwtTokenRequestDTO;
 import MaslyakBank_Core.dto.requests.RegistrationRequestDTO;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import util.SecurityUtil;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -23,14 +25,16 @@ public class UserService {
 
     private final RestClient tokenRestClient;
     private final UserSecurityDAO userDAO;
+    private final UserPageDAO userPageDAO;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final RedisTemplate<String, Object> redisTemplate;
 
 
-    public UserService(@Qualifier("tokenRestClient") RestClient tokenRestClient, UserSecurityDAO userDAO, UserMapper userMapper, PasswordEncoder passwordEncoder, RedisTemplate<String, Object> redisTemplate) {
+    public UserService(@Qualifier("tokenRestClient") RestClient tokenRestClient, UserSecurityDAO userDAO, UserPageDAO userPageDAO, UserMapper userMapper, PasswordEncoder passwordEncoder, RedisTemplate<String, Object> redisTemplate) {
         this.tokenRestClient = tokenRestClient;
         this.userDAO = userDAO;
+        this.userPageDAO = userPageDAO;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
         this.redisTemplate = redisTemplate;
@@ -81,4 +85,14 @@ public class UserService {
                 .retrieve()
                 .body(TokenPair.class);
     }
+
+    public List<UsersTable> getFirstPage(int limit) {
+        return userPageDAO.getFirstPage(limit);
+    }
+    public List<UsersTable> getNextPage(int limit, String cursor) {
+        UsersTable lastUser = userDAO.findByLogin(cursor);
+        return userPageDAO.getNextPage(limit, lastUser);
+    }
+
+
 }

@@ -5,7 +5,8 @@ import MaslyakBank_Core.dao.UserPageDAO;
 import MaslyakBank_Core.dto.requests.JwtTokenRequestDTO;
 import MaslyakBank_Core.dto.requests.RegistrationRequestDTO;
 import MaslyakBank_Core.dto.response.ResponseDTO;
-import MaslyakBank_Core.dto.response.ResponsePaginationDTO;
+import MaslyakBank_Core.dto.response.ResponsePaginationCursorDTO;
+import MaslyakBank_Core.dto.response.ResponsePaginationOffsetDTO;
 import MaslyakBank_Core.service.user.UserService;
 import dto.TokenPair;
 import entity.UsersTable;
@@ -40,8 +41,8 @@ public class UserController {
         return new ResponseDTO("Logout successful", true, null);
     }
 
-    @GetMapping("/get")
-    public ResponsePaginationDTO getUsers(@RequestParam(defaultValue = "1")  int page) {
+    @GetMapping("pagination/offset/get")
+    public ResponsePaginationOffsetDTO getUsersOffset(@RequestParam(defaultValue = "1")  int page) {
         int size = 10;
         int offset = (page - 1) * size;
 
@@ -50,8 +51,30 @@ public class UserController {
         int totalElements = userPageDAO.countUsers();
         int totalPages = (int) Math.ceil((double) totalElements / size);
 
-        return new ResponsePaginationDTO(page, size, totalPages, totalElements, users);
+        return new ResponsePaginationOffsetDTO(page, size, totalPages, totalElements, users);
     }
+
+    @GetMapping("pagination/cursor/get")
+    public ResponsePaginationCursorDTO getUsersCursor(
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(required = false) String cursor) {
+
+        int totalElements = userPageDAO.countUsers();
+
+        List<UsersTable> users;
+        String nextCursor;
+
+        if (cursor == null) {
+            users = userService.getFirstPage(limit);
+        } else {
+            users = userService.getNextPage(limit, cursor);
+        }
+
+        nextCursor = users.isEmpty() ? null : users.getLast().getLogin();
+
+        return new ResponsePaginationCursorDTO(limit, totalElements, users, nextCursor);
+    }
+
 
 
 
