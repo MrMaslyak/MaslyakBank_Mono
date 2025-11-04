@@ -15,8 +15,6 @@ public class UserPageDAO {
 
     private final SessionFactory sessionFactory;
 
-
-
     public int countUsers() {
         Transaction transaction = null;
         Session session = null;
@@ -40,7 +38,6 @@ public class UserPageDAO {
             }
         }
     }
-
 
     public List<UsersTable> findUsersPage(int size, int offset) {
         Transaction transaction = null;

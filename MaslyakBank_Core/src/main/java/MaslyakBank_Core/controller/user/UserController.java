@@ -1,16 +1,22 @@
 package MaslyakBank_Core.controller.user;
 
 
+import MaslyakBank_Core.dao.UserFilterRepository;
 import MaslyakBank_Core.dao.UserPageDAO;
 import MaslyakBank_Core.dto.requests.JwtTokenRequestDTO;
 import MaslyakBank_Core.dto.requests.RegistrationRequestDTO;
+import MaslyakBank_Core.dto.requests.UserFilterDTO;
 import MaslyakBank_Core.dto.response.ResponseDTO;
 import MaslyakBank_Core.dto.response.ResponsePaginationCursorDTO;
 import MaslyakBank_Core.dto.response.ResponsePaginationOffsetDTO;
 import MaslyakBank_Core.service.user.UserService;
+import MaslyakBank_Core.system.UserSpecifications;
 import dto.TokenPair;
 import entity.UsersTable;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,16 +48,9 @@ public class UserController {
     }
 
     @GetMapping("pagination/offset/get")
-    public ResponsePaginationOffsetDTO getUsersOffset(@RequestParam(defaultValue = "1")  int page) {
-        int size = 10;
-        int offset = (page - 1) * size;
-
-        List<UsersTable> users = userPageDAO.findUsersPage(size, offset);
-
-        int totalElements = userPageDAO.countUsers();
-        int totalPages = (int) Math.ceil((double) totalElements / size);
-
-        return new ResponsePaginationOffsetDTO(page, size, totalPages, totalElements, users);
+    public ResponsePaginationOffsetDTO getUsersOffset(UserFilterDTO filter,
+                                                      @RequestParam(defaultValue = "1")  int page) {
+        return userService.getUsersOffset(filter, page);
     }
 
     @GetMapping("pagination/cursor/get")
