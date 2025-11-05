@@ -49,8 +49,10 @@ public class UserController {
 
     @GetMapping("pagination/offset/get")
     public ResponsePaginationOffsetDTO getUsersOffset(UserFilterDTO filter,
-                                                      @RequestParam(defaultValue = "1")  int page) {
-        return userService.getUsersOffset(filter, page);
+                                                      @RequestParam(defaultValue = "1")  int page,
+                                                      @RequestParam(defaultValue = "createdAt")  String sortBy,
+                                                      @RequestParam(defaultValue = "asc")  String sortDir) {
+        return userService.getUsersOffset(filter, page, sortBy, sortDir);
     }
 
     @GetMapping("pagination/cursor/get")
