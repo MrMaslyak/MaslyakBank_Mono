@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HibernateConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MaslyakBank_Core</a> &gt; <a href="index.source.html" class="el_package">MaslyakBank_Core.config</a> &gt; <span class="el_source">HibernateConfig.java</span></div><h1>HibernateConfig.java</h1><pre class="source lang-java linenums">package MaslyakBank_Core.config;
+
+
+import jakarta.persistence.EntityManagerFactory;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+
+import javax.sql.DataSource;
+import java.util.Properties;
+
+@Configuration
+@PropertySource(&quot;classpath:/application_core.properties&quot;)
+<span class="fc" id="L20">public class HibernateConfig {</span>
+
+    @Value(&quot;${spring.datasource.url}&quot;)
+    private String URL;
+
+    @Value(&quot;${spring.datasource.username}&quot;)
+    private String USER;
+
+    @Value(&quot;${spring.datasource.password}&quot;)
+    private String PASSWORD;
+
+    @Value(&quot;${spring.datasource.driver-class-name}&quot;)
+    private String DRIVER;
+
+    @Value(&quot;${spring.jpa.hibernate.ddl-auto}&quot;)
+    private String DDL_AUTO;
+
+    @Value(&quot;${spring.jpa.show-sql}&quot;)
+    private String SHOW_SQL;
+
+    @Value(&quot;${spring.jpa.database-platform}&quot;)
+    private String DIALECT;
+
+
+    @Bean
+    public DataSource datasource(){
+<span class="fc" id="L46">        DriverManagerDataSource dataSource = new DriverManagerDataSource();</span>
+<span class="fc" id="L47">        dataSource.setDriverClassName(DRIVER);</span>
+<span class="fc" id="L48">        dataSource.setUrl(URL);</span>
+<span class="fc" id="L49">        dataSource.setUsername(USER);</span>
+<span class="fc" id="L50">        dataSource.setPassword(PASSWORD);</span>
+<span class="fc" id="L51">        return dataSource;</span>
+    }
+
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
+<span class="fc" id="L56">        LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();</span>
+<span class="fc" id="L57">        factory.setDataSource(dataSource);</span>
+<span class="fc" id="L58">        factory.setPackagesToScan(&quot;MaslyakBank_Core.entity&quot;, &quot;entity&quot;);</span>
+<span class="fc" id="L59">        factory.setJpaVendorAdapter(new HibernateJpaVendorAdapter());</span>
+<span class="fc" id="L60">        factory.setJpaProperties(getHibernateProperties());</span>
+<span class="fc" id="L61">        return factory;</span>
+    }
+
+    private Properties getHibernateProperties() {
+<span class="fc" id="L65">        Properties properties = new Properties();</span>
+<span class="fc" id="L66">        properties.setProperty(&quot;hibernate.dialect&quot;,DIALECT);</span>
+<span class="fc" id="L67">        properties.setProperty(&quot;hibernate.show_sql&quot;, SHOW_SQL);</span>
+<span class="fc" id="L68">        properties.setProperty(&quot;hibernate.hbm2ddl.auto&quot;,DDL_AUTO);</span>
+<span class="fc" id="L69">        return properties;</span>
+    }
+
+    @Bean
+    @Primary
+    public SessionFactory sessionFactory(EntityManagerFactory entityManagerFactory) {
+<span class="fc" id="L75">        return entityManagerFactory.unwrap(SessionFactory.class);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

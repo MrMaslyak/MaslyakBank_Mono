@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MaslyakBank_Core</a> &gt; <a href="index.source.html" class="el_package">MaslyakBank_Core.service.user</a> &gt; <span class="el_source">UserService.java</span></div><h1>UserService.java</h1><pre class="source lang-java linenums">package MaslyakBank_Core.service.user;
+
+
+import MaslyakBank_Core.dao.UserFilterRepository;
+import MaslyakBank_Core.dao.UserPageDAO;
+import MaslyakBank_Core.dao.UserSecurityDAO;
+import MaslyakBank_Core.dto.requests.JwtTokenRequestDTO;
+import MaslyakBank_Core.dto.requests.RegistrationRequestDTO;
+import MaslyakBank_Core.dto.requests.UserFilterDTO;
+import MaslyakBank_Core.dto.response.ResponsePaginationOffsetDTO;
+import MaslyakBank_Core.mappers.UserMapper;
+import MaslyakBank_Core.system.UserSpecifications;
+import dto.TokenPair;
+import entity.UsersTable;
+import enums.UserRole;
+import enums.UserStatus;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.RestClient;
+import util.SecurityUtil;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+
+
+@Service
+public class UserService {
+
+    private final RestClient tokenRestClient;
+    private final UserSecurityDAO userDAO;
+    private final UserPageDAO userPageDAO;
+    private final UserFilterRepository userFilterRepository;
+    private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final RedisTemplate&lt;String, Object&gt; redisTemplate;
+
+
+<span class="fc" id="L46">    public UserService(@Qualifier(&quot;tokenRestClient&quot;) RestClient tokenRestClient, UserSecurityDAO userDAO, UserPageDAO userPageDAO, UserFilterRepository userFilterRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, RedisTemplate&lt;String, Object&gt; redisTemplate) {</span>
+<span class="fc" id="L47">        this.tokenRestClient = tokenRestClient;</span>
+<span class="fc" id="L48">        this.userDAO = userDAO;</span>
+<span class="fc" id="L49">        this.userPageDAO = userPageDAO;</span>
+<span class="fc" id="L50">        this.userFilterRepository = userFilterRepository;</span>
+<span class="fc" id="L51">        this.userMapper = userMapper;</span>
+<span class="fc" id="L52">        this.passwordEncoder = passwordEncoder;</span>
+<span class="fc" id="L53">        this.redisTemplate = redisTemplate;</span>
+<span class="fc" id="L54">    }</span>
+
+    public TokenPair requestRegistrationToken(RegistrationRequestDTO dto) {
+<span class="nc" id="L57">        registerUser(dto);</span>
+<span class="nc" id="L58">        return sendTokenRequest(dto.getLogin(), &quot;/create&quot;);</span>
+    }
+
+    public void registerUser(RegistrationRequestDTO dto) {
+<span class="fc" id="L62">        UsersTable user = userMapper.toEntity(dto);</span>
+<span class="fc" id="L63">        user.setPasswordSalt(passwordEncoder.encode(dto.getPassword()));</span>
+<span class="fc" id="L64">        user.setStatus(UserStatus.REGISTERED);</span>
+<span class="fc" id="L65">        user.setRole(UserRole.USER);</span>
+<span class="fc" id="L66">        userDAO.registrationUser(user);</span>
+<span class="fc" id="L67">    }</span>
+
+
+    public TokenPair sendAuthRequest(JwtTokenRequestDTO dto) {
+<span class="fc" id="L71">        return tokenRestClient.post()</span>
+<span class="fc" id="L72">                .uri(&quot;/auth/create&quot;)</span>
+<span class="fc" id="L73">                .body(dto)</span>
+<span class="fc" id="L74">                .retrieve()</span>
+<span class="fc" id="L75">                .body(TokenPair.class);</span>
+    }
+
+    public void sendLogoutRequest() {//todo refactor method (not SRP)
+<span class="fc" id="L79">        String token = SecurityUtil.getCurrentToken();</span>
+<span class="fc" id="L80">        String login = SecurityUtil.getCurrentUser().getLogin();</span>
+<span class="fc" id="L81">        redisTemplate.opsForValue().set(</span>
+                    &quot;token: &quot; + token,
+                    login,
+                    5 * 60 * 1000, //5 минут храниться токен в блек листе
+                    TimeUnit.MILLISECONDS
+            );
+<span class="fc" id="L87">        tokenRestClient.post()</span>
+<span class="fc" id="L88">                .uri(&quot;/logout&quot;)</span>
+<span class="fc" id="L89">                .header(&quot;Authorization&quot;, &quot;Bearer &quot; + token)</span>
+<span class="fc" id="L90">                .retrieve()</span>
+<span class="fc" id="L91">                .toBodilessEntity();</span>
+<span class="fc" id="L92">    }</span>
+
+    private TokenPair sendTokenRequest(String login, String uri) {
+<span class="nc" id="L95">        return tokenRestClient.post()</span>
+<span class="nc" id="L96">                .uri(uri)</span>
+<span class="nc" id="L97">                .body(login)</span>
+<span class="nc" id="L98">                .retrieve()</span>
+<span class="nc" id="L99">                .body(TokenPair.class);</span>
+    }
+
+    public ResponsePaginationOffsetDTO getUsersOffset(UserFilterDTO filter, int page, String sortBy, String sortDir) {
+<span class="nc" id="L103">        int size = 10;</span>
+
+<span class="nc bnc" id="L105" title="All 2 branches missed.">        Sort sort = sortDir.equalsIgnoreCase(&quot;desc&quot;) ?</span>
+<span class="nc" id="L106">                Sort.by(sortBy).descending() :</span>
+<span class="nc" id="L107">                Sort.by(sortBy).ascending();</span>
+
+<span class="nc" id="L109">        Pageable pageable = PageRequest.of(page - 1, size, sort);</span>
+
+<span class="nc" id="L111">        Specification&lt;UsersTable&gt; spec = UserSpecifications.buildFromFilter(filter);</span>
+
+<span class="nc" id="L113">        int totalElements = (int) userFilterRepository.count(spec);</span>
+<span class="nc" id="L114">        int totalPages = (int) Math.ceil((double) totalElements / size);</span>
+
+<span class="nc" id="L116">        List&lt;UsersTable&gt; users = userFilterRepository.findAll(spec, pageable).getContent();</span>
+
+<span class="nc" id="L118">        return new ResponsePaginationOffsetDTO(page, size, totalPages, totalElements, users);</span>
+    }
+
+    public List&lt;UsersTable&gt; getFirstPage(int limit) {
+<span class="nc" id="L122">        return userPageDAO.getFirstPage(limit);</span>
+    }
+    public List&lt;UsersTable&gt; getNextPage(int limit, String cursor) {
+<span class="nc" id="L125">        UsersTable lastUser = userDAO.findByLogin(cursor);</span>
+<span class="nc" id="L126">        return userPageDAO.getNextPage(limit, lastUser);</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

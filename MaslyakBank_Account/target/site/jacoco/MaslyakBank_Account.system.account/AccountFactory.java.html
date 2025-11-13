@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AccountFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MaslyakBank_Account</a> &gt; <a href="index.source.html" class="el_package">MaslyakBank_Account.system.account</a> &gt; <span class="el_source">AccountFactory.java</span></div><h1>AccountFactory.java</h1><pre class="source lang-java linenums">package MaslyakBank_Account.system.account;
+
+import MaslyakBank_Account.dao.AccountDAO;
+import MaslyakBank_Account.dto.CardRequestDTO;
+import MaslyakBank_Account.system.builder.AccountBuilder;
+import dao.UserDAO;
+import entity.AccountTable;
+import entity.UsersTable;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+import java.util.UUID;
+
+@Component
+@RequiredArgsConstructor
+public class AccountFactory {
+
+    private final UserDAO userDAO;
+    private final AccountDAO accountDAO;
+    private final AccountBuilder accountBuilder;
+
+
+    public AccountTable createAccount(UUID userId, CardRequestDTO dto){
+<span class="nc" id="L24">        UsersTable user = userDAO.findById(userId);</span>
+
+<span class="nc" id="L26">        AccountTable account = accountBuilder</span>
+<span class="nc" id="L27">                .newAccount()</span>
+<span class="nc" id="L28">                .withUser(user)</span>
+<span class="nc" id="L29">                .account(dto)</span>
+<span class="nc" id="L30">                .build();</span>
+
+<span class="nc" id="L32">        return accountDAO.saveAccount(account);</span>
+    }
+
+    public AccountTable createAccountFor(UsersTable user) {
+<span class="nc" id="L36">        AccountTable account = accountBuilder</span>
+<span class="nc" id="L37">                .newAccount()</span>
+<span class="nc" id="L38">                .withUser(user)</span>
+<span class="nc" id="L39">                .account()</span>
+<span class="nc" id="L40">                .build();</span>
+
+<span class="nc" id="L42">        return accountDAO.saveAccount(account);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

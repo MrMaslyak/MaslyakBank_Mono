@@ -1,8 +1,6 @@
 HELP.md
-target/
 !.mvn/wrapper/maven-wrapper.jar
-!MaslyakBank_Token/src/main/**/target/
-!MaslyakBank_Token/src/test/**/target/
+
 
 ### STS ###
 .apt_generated
@@ -35,7 +33,6 @@ build/
 
 
 # Maven
-target/
 *.iml
 
 # Logs

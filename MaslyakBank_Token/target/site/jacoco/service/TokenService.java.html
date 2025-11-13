@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TokenService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MaslyakBank_Core</a> &gt; <a href="index.source.html" class="el_package">service</a> &gt; <span class="el_source">TokenService.java</span></div><h1>TokenService.java</h1><pre class="source lang-java linenums">package service;
+
+import dao.RefreshTokenDAO;
+import dao.UserTokenDAO;
+import dto.JwtTokenRequestDTO;
+import dto.TokenPair;
+import entity.RefreshTokenTable;
+import entity.UserTokenTable;
+import entity.UsersTable;
+import enums.TokenStatus;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.web.server.ResponseStatusException;
+import dao.UserDAO;
+import lombok.AllArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.stereotype.Service;
+import system.JwtTokenGenerator;
+import system.validators.RefreshTokenValidator;
+import util.SecurityUtil;
+
+import java.util.List;
+
+@Service
+@AllArgsConstructor
+public class TokenService {
+
+    private final RefreshTokenValidator refreshTokenValidator;
+    private final AuthenticationManager authenticationManager;
+    private final UserDAO userDAO;
+    private final UserTokenDAO tokenDAO;
+    private final RefreshTokenDAO refreshTokenDAO;
+    private final JwtTokenGenerator tokenGenerator;
+
+
+
+    public TokenPair getToken(String login) {
+<span class="fc" id="L40">        UsersTable user = userDAO.findByLogin(login);</span>
+<span class="fc" id="L41">        return tokenGenerator.generateTokenPair(user);</span>
+    }
+
+    public TokenPair getAuthToken(JwtTokenRequestDTO dto) {
+        try {
+<span class="fc" id="L46">            UsersTable user = userDAO.findByLogin(dto.getLogin());</span>
+<span class="fc" id="L47">            authenticationManager.authenticate(</span>
+<span class="fc" id="L48">                    new UsernamePasswordAuthenticationToken(dto.getLogin(), dto.getPassword())</span>
+            );
+<span class="fc" id="L50">            List&lt;UserTokenTable&gt; tokens = tokenDAO.findTokensByUser(user);</span>
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">            if (!tokens.isEmpty()) {</span>
+<span class="nc" id="L52">                invalidateTokens(user);</span>
+            }
+<span class="fc" id="L54">            return getToken(dto.getLogin());</span>
+<span class="fc" id="L55">        } catch (BadCredentialsException e) {</span>
+<span class="fc" id="L56">            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, &quot;Bad credentials&quot;);</span>
+        }
+    }
+    public TokenPair refreshOrLogout(String refreshToken) {
+        UsersTable user;
+
+<span class="fc bfc" id="L62" title="All 4 branches covered.">        if (refreshToken == null || refreshToken.isBlank()) {</span>
+<span class="fc" id="L63">            user = SecurityUtil.getCurrentUser();</span>
+        } else {
+<span class="fc" id="L65">            RefreshTokenTable token = refreshTokenValidator.validate(refreshToken);</span>
+<span class="fc" id="L66">            user = token.getUserTokenTable().getUser();</span>
+        }
+
+<span class="fc" id="L69">        invalidateTokens(user);</span>
+
+<span class="fc bfc" id="L71" title="All 4 branches covered.">        if (refreshToken == null || refreshToken.isBlank()) {</span>
+<span class="fc" id="L72">            return null;</span>
+        }
+
+
+<span class="fc" id="L76">        return tokenGenerator.generateTokenPair(user);</span>
+    }
+
+
+
+    private void invalidateTokens(UsersTable user) {
+        // access
+<span class="fc" id="L83">        tokenDAO.findAllByUserId(user.getId()).forEach(token -&gt; {</span>
+<span class="fc" id="L84">            token.setExpired(true);</span>
+<span class="fc" id="L85">            token.setValid(false);</span>
+<span class="fc" id="L86">            token.setStatus(TokenStatus.EXPIRED);</span>
+<span class="fc" id="L87">            tokenDAO.saveToken(token);</span>
+<span class="fc" id="L88">        });</span>
+
+        // refresh
+<span class="fc" id="L91">        refreshTokenDAO.findAllByUserId(user.getId()).forEach(refresh -&gt; {</span>
+<span class="fc" id="L92">            refresh.setRevoked(true);</span>
+<span class="fc" id="L93">            refreshTokenDAO.saveToken(refresh);</span>
+<span class="fc" id="L94">        });</span>
+<span class="fc" id="L95">    }</span>
+
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,0 +1,13 @@
+/Users/maslyak/IdeaProjects/MaslyakBank_Mono1/MaslyakBank_Model/src/main/java/config/HibernateConfig.java
+/Users/maslyak/IdeaProjects/MaslyakBank_Mono1/MaslyakBank_Model/src/main/java/dao/UserDAO.java
+/Users/maslyak/IdeaProjects/MaslyakBank_Mono1/MaslyakBank_Model/src/main/java/dto/TokenPair.java
+/Users/maslyak/IdeaProjects/MaslyakBank_Mono1/MaslyakBank_Model/src/main/java/dto/TokenRequestDTO.java
+/Users/maslyak/IdeaProjects/MaslyakBank_Mono1/MaslyakBank_Model/src/main/java/entity/AccountTable.java
+/Users/maslyak/IdeaProjects/MaslyakBank_Mono1/MaslyakBank_Model/src/main/java/entity/CardTable.java
+/Users/maslyak/IdeaProjects/MaslyakBank_Mono1/MaslyakBank_Model/src/main/java/entity/UsersTable.java
+/Users/maslyak/IdeaProjects/MaslyakBank_Mono1/MaslyakBank_Model/src/main/java/enums/AccountStatus.java
+/Users/maslyak/IdeaProjects/MaslyakBank_Mono1/MaslyakBank_Model/src/main/java/enums/CardType.java
+/Users/maslyak/IdeaProjects/MaslyakBank_Mono1/MaslyakBank_Model/src/main/java/enums/Currency.java
+/Users/maslyak/IdeaProjects/MaslyakBank_Mono1/MaslyakBank_Model/src/main/java/enums/UserRole.java
+/Users/maslyak/IdeaProjects/MaslyakBank_Mono1/MaslyakBank_Model/src/main/java/enums/UserStatus.java
+/Users/maslyak/IdeaProjects/MaslyakBank_Mono1/MaslyakBank_Model/src/main/java/system/VerificationUserStatus.java

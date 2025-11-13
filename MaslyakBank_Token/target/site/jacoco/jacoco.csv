@@ -1,0 +1,16 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+MaslyakBank_Core,default,GlobalExceptionHandler,28,0,0,0,7,0,4,0,4,0
+MaslyakBank_Core,default,MaslyakBankTokenApplication,8,0,0,0,3,0,2,0,2,0
+MaslyakBank_Core,default,ServletInitializer,12,0,0,0,2,0,2,0,2,0
+MaslyakBank_Core,enums,TokenStatus,0,21,0,0,0,4,0,1,0,1
+MaslyakBank_Core,controller,TokenController,22,0,0,0,5,0,4,0,4,0
+MaslyakBank_Core,system,UserTokenBuilder,0,39,0,0,0,10,0,3,0,3
+MaslyakBank_Core,system,RefreshTokenBuilder,0,37,0,0,0,9,0,3,0,3
+MaslyakBank_Core,system,JwtTokenGenerator,0,97,0,0,0,28,0,6,0,6
+MaslyakBank_Core,service,TokenService,3,120,1,9,1,29,1,10,0,6
+MaslyakBank_Core,system.validators,RefreshTokenValidator,15,33,3,3,2,10,4,4,1,4
+MaslyakBank_Core,config,HibernateConfig,0,84,0,0,0,19,0,5,0,5
+MaslyakBank_Core,config,RedisConfig,0,57,0,0,0,14,0,3,0,3
+MaslyakBank_Core,config,SecurityConfig,0,73,0,0,0,17,0,5,0,5
+MaslyakBank_Core,mappers,UserMapperImpl,40,3,2,0,11,1,2,1,1,1
+MaslyakBank_Core,errors,RefreshTokenException,8,0,0,0,4,0,2,0,2,0
