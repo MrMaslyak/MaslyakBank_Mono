@@ -86,6 +86,10 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+
+      - name: Create Docker network
+        run: docker network create MaslyakBankNetwork || true
+
       # --- Запуск сервисов через Docker Compose ---
       - name: Start Token service
         run: docker compose -f MaslyakBank_Token/compose-token.yaml up -d
