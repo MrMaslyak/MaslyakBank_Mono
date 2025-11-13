@@ -1,4 +1,6 @@
-FROM eclipse-temurin:21-jdk-alpine
+FROM openjdk:21-jdk-slim
+
+ARG LIQUIBASE_VERSION=4.25.1
 
 WORKDIR /app
 
