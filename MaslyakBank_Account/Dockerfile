@@ -1,6 +1,5 @@
 FROM openjdk:21-ea-slim
 
-
 WORKDIR /app
 
 # Копируем JAR-файл в контейнер
