@@ -31,8 +31,8 @@ jobs:
       # --- 4. Сборка и Docker для Token ---
       - name: Build and dockerize Token service
         run: |
-           mvn -B clean package -DskipTests -f MaslyakBank_Token/pom.xml
-           docker build -t maslyakbank-token ./MaslyakBank_Token
+          mvn -B clean package -DskipTests -f MaslyakBank_Token/pom.xml
+         docker build -t maslyakbank-token -f MaslyakBank_Token/Dockerfile MaslyakBank_Token
       # --- 5. Сборка и Docker для Core ---
       - name: Build and dockerize Core service
         run: |
