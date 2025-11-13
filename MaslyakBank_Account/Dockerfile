@@ -1,6 +1,4 @@
-FROM openjdk:21-jdk-slim
-
-ARG LIQUIBASE_VERSION=4.25.1
+FROM openjdk:24-ea-21-jdk-slim
 
 WORKDIR /app
 

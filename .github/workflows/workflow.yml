@@ -61,10 +61,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and start infrastructure
-        run: |
-          docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml down
-          docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml up -d --build
+
 
       - name: Build and start transaction service
         run: |
@@ -85,3 +82,8 @@ jobs:
         run: |
           docker compose -f MaslyakBank_Account/compose-account.yaml down
           docker compose -f MaslyakBank_Account/compose-account.yaml up -d --build
+
+      - name: Build and start infrastructure
+        run: |
+          docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml down
+          docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml up -d --build
