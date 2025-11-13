@@ -89,10 +89,14 @@ jobs:
 
       # --- Запуск сервисов через Docker Compose ---
       - name: Start Token service
-        run: docker compose -f MaslyakBank_Token/compose-token.yaml up -d
+        run: | 
+          cd MaslyakBank_Token
+          docker compose -f MaslyakBank_Token/compose-token.yaml up -d
 
       - name: Start Core service
-        run: docker compose -f MaslyakBank_Core/compose-core.yaml up -d
+        run:
+          cd MaslyakBank_Core
+          docker compose -f MaslyakBank_Core/compose-core.yaml up -d
 
       - name: Start Account service
         run: docker compose -f MaslyakBank_Account/compose-account.yaml up -d
