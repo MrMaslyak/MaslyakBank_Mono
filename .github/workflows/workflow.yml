@@ -80,20 +80,20 @@ jobs:
 
       - name: Start transaction service
         run: |
-          docker compose -f MaslyakBank_Transaction/compose-transaction.yaml build --no-cache
+          docker compose -f MaslyakBank_Transaction/compose-transaction.yaml up --build -d
 
       - name: Start token service
         run: |
-          docker compose -f MaslyakBank_Token/compose-token.yaml build --no-cache
+          docker compose -f MaslyakBank_Token/compose-token.yaml up --build -d
 
       - name: Start core service
         run: |
-          docker compose -f MaslyakBank_Core/compose-core.yaml build --no-cache
+          docker compose -f MaslyakBank_Core/compose-core.yaml up --build -d
 
       - name: Start account service
         run: |
-          docker compose -f MaslyakBank_Account/compose-account.yaml build --no-cache
+          docker compose -f MaslyakBank_Account/compose-account.yaml up --build -d
 
       - name: Start infrastructure
         run: |
-             docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml build --no-cache
+             docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml up --build -d
