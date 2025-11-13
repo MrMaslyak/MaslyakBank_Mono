@@ -1,4 +1,4 @@
-FROM openjdk:21-ea-slim
+FROM openjdk:21-ea-slim-bookworm
 
 WORKDIR /app
 
