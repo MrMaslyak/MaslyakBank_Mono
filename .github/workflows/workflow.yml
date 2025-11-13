@@ -32,11 +32,11 @@ jobs:
       # --- Шаг 2: Билдим Docker-образы для каждого сервиса ---
       - name: Build Docker images
         run: |
-          docker build -t maslyakbank-transaction -f MaslyakBank_Transaction/Dockerfile MaslyakBank_Transaction
-          docker build -t maslyakbank-token -f MaslyakBank_Token/Dockerfile MaslyakBank_Token
-          docker build -t maslyakbank-core -f MaslyakBank_Core/Dockerfile MaslyakBank_Core
-          docker build -t maslyakbank-account -f MaslyakBank_Account/Dockerfile MaslyakBank_Account
-          docker build -t maslyakbank-liquibase -f MaslyakBank_Infrastructure/liquibase-docker/Dockerfile MaslyakBank_Infrastructure
+          docker builder prune -af maslyakbank-transaction -f MaslyakBank_Transaction/Dockerfile MaslyakBank_Transaction
+          docker builder prune -af maslyakbank-token -f MaslyakBank_Token/Dockerfile MaslyakBank_Token
+          docker builder prune -af maslyakbank-core -f MaslyakBank_Core/Dockerfile MaslyakBank_Core
+          docker builder prune -af maslyakbank-account -f MaslyakBank_Account/Dockerfile MaslyakBank_Account
+          docker builder prune -af maslyakbank-liquibase -f MaslyakBank_Infrastructure/liquibase-docker/Dockerfile MaslyakBank_Infrastructure
 
 
   # --- Шаг 2: Запуск тестов ---
