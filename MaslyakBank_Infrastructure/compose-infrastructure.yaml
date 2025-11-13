@@ -2,7 +2,7 @@ version: '2.4'
 
 services:
   db:
-    image: postgres:latest
+    image: postgres:15
     container_name: maslyakbank-database
     restart: always
     environment:
@@ -17,7 +17,7 @@ services:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
     volumes:
       - pgdata:/var/lib/postgresql/data
     mem_limit: 1024m   # ограничение памяти

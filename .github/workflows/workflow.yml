@@ -45,11 +45,6 @@ jobs:
           mvn -B clean package -DskipTests -f MaslyakBank_Account/pom.xml
           docker build -t maslyakbank-account -f MaslyakBank_Account/Dockerfile MaslyakBank_Account
 
-      # --- 7. Docker для Liquibase (инфраструктура) ---
-#      - name: Dockerize Liquibase
-#        run: |
-#          docker build -t maslyakbank-liquibase -f MaslyakBank_Infrastructure/liquibase-docker/Dockerfile MaslyakBank_Infrastructure
-
   # --- Шаг 2: Запуск тестов ---
   test:
     runs-on: ubuntu-latest
@@ -105,3 +100,7 @@ jobs:
 
       - name: Start infrastructure
         run: docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml up -d
+        env:
+          DB_USER: Maslyak
+          DB_PASSWORD: 1234567890
+          DB_NAME: postgres
