@@ -1,4 +1,4 @@
-FROM openjdk:21-slim
+FROM openjdk:21-ea-slim
 
 ARG LIQUIBASE_VERSION=4.25.1
 ARG SPRING_BOOT_VERSION=3.4.5
