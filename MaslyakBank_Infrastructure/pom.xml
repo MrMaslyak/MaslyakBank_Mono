@@ -115,11 +115,11 @@
 								</artifactItem>
 								<artifactItem>
 									<groupId>com.example</groupId>
-									<artifactId>Transaction</artifactId>
+									<artifactId>MaslyakBank_Transaction</artifactId>
 									<version>0.0.1-SNAPSHOT</version>
 									<type>jar</type>
 									<outputDirectory>target/libs</outputDirectory>
-									<destFileName>Transaction-0.0.1-SNAPSHOT.jar</destFileName>
+									<destFileName>MaslyakBank_Transaction-0.0.1-SNAPSHOT.jar</destFileName>
 								</artifactItem>
 							</artifactItems>
 						</configuration>
