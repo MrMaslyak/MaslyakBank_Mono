@@ -22,14 +22,6 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Prepare libs for Liquibase
-        run: |
-          mkdir -p MaslyakBank_Infrastructure/target/libs
-          cp MaslyakBank_Core/target/MaslyakBank_Core-0.0.1-SNAPSHOT.jar MaslyakBank_Infrastructure/target/libs/
-          cp MaslyakBank_Account/target/MaslyakBank_Account-0.0.1-SNAPSHOT.jar MaslyakBank_Infrastructure/target/libs/
-          cp MaslyakBank_Token/target/MaslyakBank_Token-0.0.1-SNAPSHOT.jar MaslyakBank_Infrastructure/target/libs/
-          cp MaslyakBank_Transaction/target/MaslyakBank_Transaction-0.0.1-SNAPSHOT.jar MaslyakBank_Infrastructure/target/libs/
-
       # --- 3. Сборка и Docker для Transaction ---
       - name: Build and dockerize Transaction service
         run: |
@@ -55,9 +47,9 @@ jobs:
           docker build -t maslyakbank-account -f MaslyakBank_Account/Dockerfile MaslyakBank_Account
 
       # --- 7. Docker для Liquibase (инфраструктура) ---
-      - name: Dockerize Liquibase
-        run: |
-          docker build -t maslyakbank-liquibase -f MaslyakBank_Infrastructure/liquibase-docker/Dockerfile MaslyakBank_Infrastructure
+#      - name: Dockerize Liquibase
+#        run: |
+#          docker build -t maslyakbank-liquibase -f MaslyakBank_Infrastructure/liquibase-docker/Dockerfile MaslyakBank_Infrastructure
 
   # --- Шаг 2: Запуск тестов ---
   test:
@@ -96,8 +88,6 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       # --- Запуск сервисов через Docker Compose ---
-      - name: Start infrastructure
-        run: docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml up -d
 
       - name: Start Transaction service
         run: docker compose -f MaslyakBank_Transaction/compose-transaction.yaml up -d
@@ -110,3 +100,6 @@ jobs:
 
       - name: Start Account service
         run: docker compose -f MaslyakBank_Account/compose-account.yaml up -d
+
+      - name: Start infrastructure
+        run: docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml up -d
