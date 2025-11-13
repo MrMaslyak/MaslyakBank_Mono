@@ -1,7 +1,7 @@
 services:
   spring_app:
     build:
-      context: .
+      context: ./MaslyakBank_Transaction
       dockerfile: Dockerfile
     container_name: maslyakbank-transaction
     environment:

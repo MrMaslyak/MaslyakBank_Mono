@@ -1,7 +1,7 @@
 services:
   spring_app:
     build:
-      context: .
+      context: ./MaslyakBank_Core
       dockerfile: Dockerfile
     container_name: maslyakbank-core
     environment:

@@ -25,7 +25,7 @@ services:
 
   liquibase-cli:
     build:
-      context: .
+      context: ./MaslyakBank_Infrastructure
       dockerfile: liquibase-docker/Dockerfile
     container_name: maslyakbank-liquibase
     depends_on:
