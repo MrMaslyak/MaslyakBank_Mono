@@ -54,15 +54,27 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and start all services
+      - name: Build and start infrastructure
         run: |
-          docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml \
-                -f MaslyakBank_Transaction/compose-transaction.yaml \
-                -f MaslyakBank_Token/compose-token.yaml \
-                -f MaslyakBank_Core/compose-core.yaml \
-                -f MaslyakBank_Account/compose-account.yaml down
-          docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml \
-                 -f MaslyakBank_Transaction/compose-transaction.yaml \
-                 -f MaslyakBank_Token/compose-token.yaml \
-                 -f MaslyakBank_Core/compose-core.yaml \
-                 -f MaslyakBank_Account/compose-account.yaml up -d --build
+          docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml down
+          docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml up -d --build
+
+      - name: Build and start transaction service
+        run: |
+          docker compose -f MaslyakBank_Transaction/compose-transaction.yaml down
+          docker compose -f MaslyakBank_Transaction/compose-transaction.yaml up -d --build
+
+      - name: Build and start token service
+        run: |
+          docker compose -f MaslyakBank_Token/compose-token.yaml down
+          docker compose -f MaslyakBank_Token/compose-token.yaml up -d --build
+
+      - name: Build and start core service
+        run: |
+          docker compose -f MaslyakBank_Core/compose-core.yaml down
+          docker compose -f MaslyakBank_Core/compose-core.yaml up -d --build
+
+      - name: Build and start account service
+        run: |
+          docker compose -f MaslyakBank_Account/compose-account.yaml down
+          docker compose -f MaslyakBank_Account/compose-account.yaml up -d --build
