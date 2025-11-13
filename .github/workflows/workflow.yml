@@ -32,8 +32,10 @@ jobs:
       - name: Build and dockerize Token service
         run: |
           mvn -B clean package -DskipTests -f MaslyakBank_Token/pom.xml
-          docker build -t maslyakbank-token -f MaslyakBank_Token/Dockerfile MaslyakBank_Token
-
+          docker build \
+           -t maslyakbank-token \
+           -f MaslyakBank_Token/Dockerfile \
+           .
       # --- 5. Сборка и Docker для Core ---
       - name: Build and dockerize Core service
         run: |
@@ -89,14 +91,10 @@ jobs:
 
       # --- Запуск сервисов через Docker Compose ---
       - name: Start Token service
-        run: | 
-          cd MaslyakBank_Token
-          docker compose -f MaslyakBank_Token/compose-token.yaml up -d
+        run: docker compose -f MaslyakBank_Token/compose-token.yaml up -d
 
       - name: Start Core service
-        run:
-          cd MaslyakBank_Core
-          docker compose -f MaslyakBank_Core/compose-core.yaml up -d
+        run: docker compose -f MaslyakBank_Core/compose-core.yaml up -d
 
       - name: Start Account service
         run: docker compose -f MaslyakBank_Account/compose-account.yaml up -d
