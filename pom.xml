@@ -8,21 +8,23 @@
 		<version>3.4.5</version>
 		<relativePath/>
 	</parent>
-	<modules>
-		<module>MaslyakBank_Model</module>
-		<module>MaslyakBank_Account</module>
-		<module>MaslyakBank_Infrastructure</module>
-		<module>MaslyakBank_Token</module>
-		<module>MaslyakBank_Transaction</module>
-		<module>MaslyakBank_Core</module>
-		<module>MaslyakBank_SecurityKernel</module>
-	</modules>
 	<groupId>com.example</groupId>
 	<artifactId>MaslyakBank_Mono</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>MaslyakBank_Mono</name>
 	<description>MaslyakBank_Mono</description>
     <packaging>pom</packaging>
+
+
+    <modules>
+        <module>MaslyakBank_Model</module>
+        <module>MaslyakBank_Account</module>
+        <module>MaslyakBank_Infrastructure</module>
+        <module>MaslyakBank_Token</module>
+        <module>MaslyakBank_Transaction</module>
+        <module>MaslyakBank_Core</module>
+        <module>MaslyakBank_SecurityKernel</module>
+    </modules>
 
 	<url>https://github.com/MrMaslyak/MaslyakBank_Mono</url>
 
@@ -187,7 +189,7 @@
 		</dependency>
 
 
-	</dependencies>
+	  </dependencies>
 
 	</dependencyManagement>
 
