@@ -28,6 +28,11 @@ jobs:
           mvn -B clean package -DskipTests -f MaslyakBank_${{ matrix.service }}/pom.xml
           docker build -t maslyakbank-${{ matrix.docker-service }} -f MaslyakBank_${{ matrix.service }}/Dockerfile MaslyakBank_${{ matrix.service }}
 
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: maslyakbank-${{ matrix.docker-service }}-jar
+          path: MaslyakBank_${{ matrix.service }}/target/*.jar
   # --- Шаг 2: Запуск тестов ---
   test:
     runs-on: ubuntu-latest
