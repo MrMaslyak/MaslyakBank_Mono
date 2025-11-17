@@ -11,6 +11,7 @@ jobs:
     strategy: # Стратегия для сборки и тестирования
       matrix:
         service: [Transaction, Token, Core, Account]
+        docker-service: [transaction, token, core, account]
 
     steps:
       # --- 1. Клонируем репозиторий ---
@@ -25,7 +26,7 @@ jobs:
       - name: Build and dockerize services
         run: |
           mvn -B clean package -DskipTests -f MaslyakBank_${{ matrix.service }}/pom.xml
-          docker build -t maslyakbank-${{ matrix.service }} -f MaslyakBank_${{ matrix.service }}/Dockerfile MaslyakBank_${{ matrix.service }}
+          docker build -t maslyakbank-${{ matrix.docker-service }} -f MaslyakBank_${{ matrix.service }}/Dockerfile MaslyakBank_${{ matrix.service }}
 
   # --- Шаг 2: Запуск тестов ---
   test:
