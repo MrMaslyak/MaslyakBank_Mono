@@ -16,11 +16,7 @@ jobs:
 
       # --- 2. Настраиваем JDK 21 ---
       - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-          cache: maven
+        uses: ./.github/workflows/actions/setup-jdk
 
       # --- 3. Сборка и Docker для Transaction ---
       - name: Build and dockerize Transaction service
@@ -55,11 +51,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-          cache: maven
+        uses: ./.github/workflows/actions/setup-jdk
 
       - name: Run all tests
         run: mvn -B test
@@ -73,11 +65,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-          cache: maven
+        uses: ./.github/workflows/actions/setup-jdk
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
