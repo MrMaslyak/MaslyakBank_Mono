@@ -10,8 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy: # Стратегия для сборки и тестирования
       matrix:
-        service: [Transaction, Token, Core, Account]
-        docker-service: [transaction, token, core, account]
+        service:
+          - name: Transaction
+            docker: transaction
+          - name: Token
+            docker: token
+          - name: Core
+            docker: core
+          - name: Account
+            docker: account
 
     steps:
       # --- 1. Клонируем репозиторий ---
@@ -25,14 +32,14 @@ jobs:
       # --- 3. Сборка и Docker для Services ---
       - name: Build and dockerize services
         run: |
-          mvn -B clean package -DskipTests -f MaslyakBank_${{ matrix.service }}/pom.xml
-          docker build -t maslyakbank-${{ matrix.docker-service }} -f MaslyakBank_${{ matrix.service }}/Dockerfile MaslyakBank_${{ matrix.service }}
+          mvn -B clean package -DskipTests -f MaslyakBank_${{ matrix.service.name }}/pom.xml
+          docker build -t maslyakbank-${{ matrix.service.docker }} -f MaslyakBank_${{ matrix.service.name }}/Dockerfile MaslyakBank_${{ matrix.service.name }}
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: maslyakbank-${{ matrix.docker-service }}-jar
-          path: MaslyakBank_${{ matrix.service }}/target/*.jar
+          name: maslyakbank-${{ matrix.service.docker }}-jar
+          path: MaslyakBank_${{ matrix.service.name }}/target/*.jar
   # --- Шаг 2: Запуск тестов ---
   test:
     runs-on: ubuntu-latest
