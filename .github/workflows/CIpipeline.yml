@@ -8,6 +8,9 @@ on:
 jobs:
   build-and-docker:
     runs-on: ubuntu-latest
+    strategy: # Стратегия для сборки и тестирования
+      matrix:
+        service: [Transaction, Token, Core, Account]
 
     steps:
       # --- 1. Клонируем репозиторий ---
@@ -18,29 +21,11 @@ jobs:
       - name: Set up JDK 21
         uses: ./.github/workflows/actions/setup-jdk
 
-      # --- 3. Сборка и Docker для Transaction ---
-      - name: Build and dockerize Transaction service
+      # --- 3. Сборка и Docker для Services ---
+      - name: Build and dockerize services
         run: |
-          mvn -B clean package -DskipTests -f MaslyakBank_Transaction/pom.xml
-          docker build -t maslyakbank-transaction -f MaslyakBank_Transaction/Dockerfile MaslyakBank_Transaction
-
-      # --- 4. Сборка и Docker для Token ---
-      - name: Build and dockerize Token service
-        run: |
-          mvn -B clean package -DskipTests -f MaslyakBank_Token/pom.xml
-          docker build -t maslyakbank-token -f MaslyakBank_Token/Dockerfile MaslyakBank_Token
-
-      # --- 5. Сборка и Docker для Core ---
-      - name: Build and dockerize Core service
-        run: |
-          mvn -B clean package -DskipTests -f MaslyakBank_Core/pom.xml
-          docker build -t maslyakbank-core -f MaslyakBank_Core/Dockerfile MaslyakBank_Core
-
-      # --- 6. Сборка и Docker для Account ---
-      - name: Build and dockerize Account service
-        run: |
-          mvn -B clean package -DskipTests -f MaslyakBank_Account/pom.xml
-          docker build -t maslyakbank-account -f MaslyakBank_Account/Dockerfile MaslyakBank_Account
+          mvn -B clean package -DskipTests -f MaslyakBank_${{ matrix.service }}/pom.xml
+          docker build -t maslyakbank-${{ matrix.service }} -f MaslyakBank_${{ matrix.service }}/Dockerfile MaslyakBank_${{ matrix.service }}
 
   # --- Шаг 2: Запуск тестов ---
   test:
