@@ -48,8 +48,15 @@ jobs:
     needs: test
     strategy:
       matrix:
-        service: [Transaction, Token, Core, Account]
-        docker-service: [transaction, token, core, account]
+        service:
+          - name: Transaction
+            docker: transaction
+          - name: Token
+            docker: token
+          - name: Core
+            docker: core
+          - name: Account
+            docker: account
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -65,7 +72,7 @@ jobs:
 
       # --- Запуск сервисов через Docker Compose ---
       - name: Start services
-        run: docker compose -f MaslyakBank_${{matrix.service}}/compose-${{matrix.docker-service}}.yaml up -d
+        run: docker compose -f MaslyakBank_${{matrix.service.name}}/compose-${{matrix.service.docker}}.yaml up -d
         env:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
