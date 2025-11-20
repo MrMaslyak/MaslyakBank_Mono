@@ -41,6 +41,7 @@ jobs:
         with:
           name: maslyakbank-${{ matrix.service.docker }}-jar
           path: MaslyakBank_${{ matrix.service.name }}/target/*.jar
+
   # --- Шаг 2: Запуск тестов ---
   test:
     runs-on: ubuntu-latest
