@@ -27,8 +27,8 @@ jobs:
         uses: actions/checkout@v4
 
       # --- 2. Настраиваем JDK 21 ---
-      - name: Set up JDK 21
-        uses: ./.github/workflows/actions/setup-jdk
+#      - name: Set up JDK 21
+#        uses: ./.github/workflows/actions/setup-jdk
 
       # --- 3. Сборка и Docker для Services ---
       - name: Build and dockerize services
