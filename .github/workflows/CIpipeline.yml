@@ -20,6 +20,7 @@ jobs:
           - name: Account
             docker: account
 
+
     steps:
       # --- 1. Клонируем репозиторий ---
       - name: Checkout repository
