@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-and-docker:
-    runs-on: self-hosted
+    runs-on: PCMaslyak
     strategy: # Стратегия для сборки и тестирования
       matrix:
         service:
@@ -45,7 +45,7 @@ jobs:
 
   # --- Шаг 2: Запуск тестов ---
   test:
-    runs-on: self-hosted
+    runs-on: PCMaslyak
     needs: build-and-docker
     steps:
       - name: Checkout repository
@@ -59,7 +59,7 @@ jobs:
 
   # --- Шаг 3: Деплой через Docker Compose ---
   deploy:
-    runs-on: self-hosted
+    runs-on: PCMaslyak
     needs: test
     strategy:
       matrix:
