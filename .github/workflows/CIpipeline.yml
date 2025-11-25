@@ -50,6 +50,8 @@ jobs:
     strategy:
       matrix:
         service:
+          - name: Infrastructure
+            docker: infrastructure
           - name: Transaction
             docker: transaction
           - name: Token
