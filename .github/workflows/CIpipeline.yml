@@ -7,8 +7,8 @@ on:
 
 jobs:
   build-and-docker:
-    runs-on: PCMaslyak
-    strategy: # Стратегия для сборки и тестирования
+    runs-on: self-hosted
+    strategy:
       matrix:
         service:
           - name: Transaction
@@ -20,42 +20,30 @@ jobs:
           - name: Account
             docker: account
     steps:
-      # --- 1. Клонируем репозиторий ---
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # --- 2. Настраиваем JDK 21 ---
-#      - name: Set up JDK 21
-#        uses: ./.github/workflows/actions/setup-jdk
-
-      # --- 3. Сборка и Docker для Services ---
       - name: Build and dockerize services
         run: |
           mvn -B clean package -DskipTests -f MaslyakBank_${{ matrix.service.name }}/pom.xml
           docker build -t maslyakbank-${{ matrix.service.docker }} -f MaslyakBank_${{ matrix.service.name }}/Dockerfile MaslyakBank_${{ matrix.service.name }}
 
-      # --- 4. Загрузка Артефактов ---
-      - name: Upload build artifact
+      - name: Upload JAR artifact
         uses: actions/upload-artifact@v4
         with:
-          name: maslyakbank-${{ matrix.service.docker }}-jar
+          name: ${{ matrix.service.docker }}-jar
           path: MaslyakBank_${{ matrix.service.name }}/target/*.jar
 
-  # --- Шаг 2: Запуск тестов ---
   test:
-    runs-on: PCMaslyak
+    runs-on: self-hosted
     needs: build-and-docker
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-#      - name: Set up JDK 21
-#        uses: ./.github/workflows/actions/setup-jdk
-
       - name: Run all tests
         run: mvn -B test
 
-  # --- Шаг 3: Деплой через Docker Compose ---
   deploy:
     runs-on: PCMaslyak
     needs: test
@@ -74,8 +62,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-#      - name: Set up JDK 21
-#        uses: ./.github/workflows/actions/setup-jdk
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.service.docker }}-jar
+          path: MaslyakBank_${{ matrix.service.name }}/target/
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
