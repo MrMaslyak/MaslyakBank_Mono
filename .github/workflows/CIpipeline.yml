@@ -71,10 +71,14 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Create Docker network
-        shell: cmd
+#      - name: Create Docker network On Windows
+#        shell: cmd
+#        run: |
+#          docker network create MaslyakBankNetwork 2>nul || exit /b 0
+
+      - name: Create Docker network on Mac
         run: |
-          docker network create MaslyakBankNetwork 2>nul || exit /b 0
+          docker network create MaslyakBankNetwork 2>/dev/null || true
 
       # --- Запуск сервисов через Docker Compose ---
       - name: Start services
