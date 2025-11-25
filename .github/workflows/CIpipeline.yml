@@ -78,7 +78,7 @@ jobs:
 
       - name: Create Docker network on Mac
         run: |
-          docker network create MaslyakBankNetwork 2>/dev/null || true
+          docker network create MaslyakBankNetwork || true
 
       # --- Запуск сервисов через Docker Compose ---
       - name: Start services
