@@ -50,8 +50,6 @@ jobs:
     strategy:
       matrix:
         service:
-          - name: Infrastructure
-            docker: infrastructure
           - name: Transaction
             docker: transaction
           - name: Token
@@ -82,6 +80,13 @@ jobs:
 #        shell: bash
 #        run: |
 #          docker network create MaslyakBankNetwork 2>/dev/null || true
+
+      - name: Start Infrastructure DB
+        run: docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml up -d
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
 
       - name: Start services
         run: docker compose -f MaslyakBank_${{matrix.service.name}}/compose-${{matrix.service.docker}}.yaml up -d

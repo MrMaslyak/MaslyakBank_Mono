@@ -19,7 +19,7 @@ services:
       timeout: 5s
       retries: 10
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - maslyakbank-db-data:/var/lib/postgresql/data
     mem_limit: 1024m   # ограничение памяти
     cpus: 1.0          # CPU
 
