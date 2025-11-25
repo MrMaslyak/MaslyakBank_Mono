@@ -77,11 +77,11 @@ jobs:
 #          docker network create MaslyakBankNetwork 2>nul || exit /b 0
 
       - name: Create Docker network on Mac
+        shell: bash
         run: |
           docker network create MaslyakBankNetwork 2>/dev/null || true
-
-
-      # --- Запуск сервисов через Docker Compose ---
+            
+         # --- Запуск сервисов через Docker Compose ---
       - name: Start services
         run: docker compose -f MaslyakBank_${{matrix.service.name}}/compose-${{matrix.service.docker}}.yaml up -d
         env:
