@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-and-docker:
-    runs-on: self-hosted
+    runs-on: macOS
     strategy:
       matrix:
         service:
@@ -35,7 +35,7 @@ jobs:
           path: MaslyakBank_${{ matrix.service.name }}/target/*.jar
 
   test:
-    runs-on: self-hosted
+    runs-on: macOS
     needs: build-and-docker
     steps:
       - name: Checkout repository
@@ -45,7 +45,7 @@ jobs:
         run: mvn -B test
 
   deploy:
-    runs-on: self-hosted
+    runs-on: macOS
     needs: test
     strategy:
       matrix:
