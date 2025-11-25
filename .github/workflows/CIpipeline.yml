@@ -19,9 +19,6 @@ jobs:
             docker: core
           - name: Account
             docker: account
-
-
-
     steps:
       # --- 1. Клонируем репозиторий ---
       - name: Checkout repository
@@ -84,12 +81,9 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Create Docker network
-        shell: pwsh
+        shell: cmd
         run: |
-          if (-not (docker network ls --format "{{.Name}}" | Select-String -Pattern "MaslyakBankNetwork")) {
-              docker network create MaslyakBankNetwork
-          }
-
+          docker network create MaslyakBankNetwork 2>nul || exit /b 0
 
       # --- Запуск сервисов через Docker Compose ---
       - name: Start services
