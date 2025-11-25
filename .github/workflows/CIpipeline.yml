@@ -45,7 +45,7 @@ jobs:
         run: mvn -B test
 
   deploy:
-    runs-on: macOS
+    runs-on: PCMaslyak
     needs: test
     strategy:
       matrix:
@@ -62,30 +62,29 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-#      - name: Download artifact
-#        uses: actions/download-artifact@v4
-#        with:
-#          name: ${{ matrix.service.docker }}-jar
-#          path: MaslyakBank_${{ matrix.service.name }}/target/
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.service.docker }}-jar
+          path: MaslyakBank_${{ matrix.service.name }}/target/
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-#      - name: Create Docker network On Windows
-#        shell: cmd
-#        run: |
-#          docker network create MaslyakBankNetwork 2>nul || exit /b 0
-
-      - name: Create Docker network on Mac
-        shell: bash
+      - name: Create Docker network On Windows
+        shell: cmd
         run: |
-          docker network create MaslyakBankNetwork 2>/dev/null || true
-            
-         # --- Запуск сервисов через Docker Compose ---
+          docker network create MaslyakBankNetwork 2>nul || exit /b 0
+
+#      - name: Create Docker network on Mac
+#        shell: bash
+#        run: |
+#          docker network create MaslyakBankNetwork 2>/dev/null || true
+
       - name: Start services
         run: docker compose -f MaslyakBank_${{matrix.service.name}}/compose-${{matrix.service.docker}}.yaml up -d
         env:
           DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_PASSWORD: 1234567890
           DB_NAME: ${{ secrets.DB_NAME }}
 
