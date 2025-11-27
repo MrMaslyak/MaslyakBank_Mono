@@ -74,7 +74,8 @@ jobs:
       - name: Create Docker network On Windows
         shell: cmd
         run: |
-          docker network create MaslyakBankNetwork 2>nul || exit /b 0
+         docker network create MaslyakBankNetwork 2>nul || exit /b 0
+
 
 #      - name: Create Docker network on Mac
 #        shell: bash
