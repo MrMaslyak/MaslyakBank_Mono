@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: MaslyakBank_Core.unit.TokenServiceTest
 -------------------------------------------------------------------------------
-Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.753 s - in MaslyakBank_Core.unit.TokenServiceTest
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.832 s - in MaslyakBank_Core.unit.TokenServiceTest
