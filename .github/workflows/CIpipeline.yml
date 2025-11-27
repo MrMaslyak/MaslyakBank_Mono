@@ -62,24 +62,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-#      - name: Download artifact
-#        uses: actions/download-artifact@v4
-#        with:
-#          name: ${{ matrix.service.docker }}-jar
-#          path: MaslyakBank_${{ matrix.service.name }}/target/
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.service.docker }}-jar
+          path: MaslyakBank_${{ matrix.service.name }}/target/
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-#      - name: Create Docker network On Windows
-#        shell: cmd
-#        run: |
-#          docker network create MaslyakBankNetwork 2>nul || exit /b 0
-
-      - name: Create Docker network on Mac
-        shell: bash
+      - name: Create Docker network On Windows
+        shell: cmd
         run: |
-          docker network create MaslyakBankNetwork 2>/dev/null || true
+          docker network create MaslyakBankNetwork 2>nul || exit /b 0
+
+#      - name: Create Docker network on Mac
+#        shell: bash
+#        run: |
+#          docker network create MaslyakBankNetwork 2>/dev/null || true
 
       - name: Start Infrastructure DB
         run: docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml up -d
