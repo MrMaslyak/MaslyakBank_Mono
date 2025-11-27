@@ -45,7 +45,7 @@ jobs:
         run: mvn -B test
 
   deploy:
-    runs-on: macOS
+    runs-on: PCMaslyak
     needs: test
     strategy:
       matrix:
