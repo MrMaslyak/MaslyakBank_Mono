@@ -92,8 +92,14 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_NAME: ${{ secrets.DB_NAME }}
 
-      - name: Check log liquibase
-        run: docker logs maslyakbank-liquibase
+      - name: Run Liquibase update
+        run: |
+          docker run --rm \
+          --network MaslyakBankNetwork \
+          -v ${PWD}/liquibase-docker:/liquibase \
+          liquibase/liquibase \
+          --defaultsFile=/liquibase/liquibase.properties \
+          update
 
       - name: Start services
         run: docker compose -f MaslyakBank_${{matrix.service.name}}/compose-${{matrix.service.docker}}.yaml up -d
