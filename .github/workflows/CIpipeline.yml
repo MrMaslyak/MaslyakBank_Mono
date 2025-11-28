@@ -82,8 +82,7 @@ jobs:
 #        run: |
 #          docker network create MaslyakBankNetwork 2>/dev/null || true
 
-      - name: Print Docker networks
-        run: docker network ls
+
 
       - name: Start Infrastructure DB
         run: docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml up -d
@@ -93,6 +92,8 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_NAME: ${{ secrets.DB_NAME }}
 
+      - name: Check Docker volume
+        run: docker volume ls
 
       - name: Start services
         run: docker compose -f MaslyakBank_${{matrix.service.name}}/compose-${{matrix.service.docker}}.yaml up -d
