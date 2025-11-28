@@ -44,6 +44,33 @@ jobs:
       - name: Run all tests
         run: mvn -B test
 
+  deploy-infrastructure:
+    runs-on: PCMaslyak
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create Docker network
+        shell: cmd
+        run: |
+          docker network create MaslyakBankNetwork 2>nul || exit /b 0
+
+      - name: Start Postgres and Redis
+        shell: cmd
+        run: |
+          docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml up -d
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+
+      - name: Wait for Postgres to be ready
+        shell: cmd
+        run: |
+          powershell -Command ^
+            "while (-not (docker exec maslyakbank-database pg_isready -U $env:DB_USER -d $env:DB_NAME)) { Start-Sleep -Seconds 2 }"
+
+
   deploy:
     runs-on: PCMaslyak
     needs: test
@@ -71,10 +98,10 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Create Docker network On Windows
-        shell: cmd
-        run: |
-         docker network create MaslyakBankNetwork 2>nul || exit /b 0
+#      - name: Create Docker network On Windows
+#        shell: cmd
+#        run: |
+#         docker network create MaslyakBankNetwork 2>nul || exit /b 0
 
 
 #      - name: Create Docker network on Mac
@@ -82,25 +109,13 @@ jobs:
 #        run: |
 #          docker network create MaslyakBankNetwork 2>/dev/null || true
 
-      - name: Remove old Postgres volume
-        shell: cmd
-        run: |
-          docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml down -v
-
-
-      - name: Start Infrastructure DB
-        run: docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml up -d
-        shell: cmd
-        env:
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-
-      - name: Wait for Postgres to be ready
-        shell: cmd
-        run: |
-          powershell -Command ^
-          "while (-not (docker exec maslyakbank-database pg_isready -U $env:DB_USER -d $env:DB_NAME)) { Start-Sleep -Seconds 2 }"
+#      - name: Start Infrastructure DB
+#        run: docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml up -d
+#        shell: cmd
+#        env:
+#          DB_USER: ${{ secrets.DB_USER }}
+#          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+#          DB_NAME: ${{ secrets.DB_NAME }}
 
       - name: Start services
         run: docker compose -f MaslyakBank_${{matrix.service.name}}/compose-${{matrix.service.docker}}.yaml up -d
