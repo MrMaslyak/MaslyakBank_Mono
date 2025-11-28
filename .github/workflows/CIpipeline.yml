@@ -82,6 +82,9 @@ jobs:
 #        run: |
 #          docker network create MaslyakBankNetwork 2>/dev/null || true
 
+      - name: Print Docker networks
+        run: docker network ls
+
       - name: Start Infrastructure DB
         run: docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml up -d
         shell: cmd
