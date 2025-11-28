@@ -50,10 +50,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Create Docker network
+      - name: Create Docker network Windows
         shell: cmd
         run: |
           docker network create MaslyakBankNetwork 2>nul || exit /b 0
+
+      - name: Remove old Postgres volume
+        shell: cmd
+        run: |
+          docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml down -v
+          
+          
+          #      - name: Create Docker network on Mac
+      #        shell: bash
+      #        run: |
+      #          docker network create MaslyakBankNetwork 2>/dev/null || true
 
       - name: Start Postgres and Redis
         shell: cmd
@@ -69,7 +80,6 @@ jobs:
         run: |
           powershell -Command ^
             "while (-not (docker exec maslyakbank-database pg_isready -U $env:DB_USER -d $env:DB_NAME)) { Start-Sleep -Seconds 2 }"
-
 
   deploy:
     runs-on: PCMaslyak
@@ -97,25 +107,6 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
-#      - name: Create Docker network On Windows
-#        shell: cmd
-#        run: |
-#         docker network create MaslyakBankNetwork 2>nul || exit /b 0
-
-
-#      - name: Create Docker network on Mac
-#        shell: bash
-#        run: |
-#          docker network create MaslyakBankNetwork 2>/dev/null || true
-
-#      - name: Start Infrastructure DB
-#        run: docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml up -d
-#        shell: cmd
-#        env:
-#          DB_USER: ${{ secrets.DB_USER }}
-#          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-#          DB_NAME: ${{ secrets.DB_NAME }}
 
       - name: Start services
         run: docker compose -f MaslyakBank_${{matrix.service.name}}/compose-${{matrix.service.docker}}.yaml up -d
