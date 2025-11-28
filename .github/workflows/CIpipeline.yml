@@ -82,6 +82,10 @@ jobs:
 #        run: |
 #          docker network create MaslyakBankNetwork 2>/dev/null || true
 
+      - name: Remove old Postgres volume
+        shell: cmd
+        run: |
+          docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml down -v
 
 
       - name: Start Infrastructure DB
@@ -92,9 +96,11 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_NAME: ${{ secrets.DB_NAME }}
 
-      - name: Run Liquibase update
+      - name: Wait for Postgres to be ready
+        shell: cmd
         run: |
-          docker run --rm --network MaslyakBankNetwork -v ${PWD}/liquibase-docker:/liquibase liquibase/liquibase --defaultsFile=/liquibase/liquibase.properties update
+          powershell -Command ^
+          "while (-not (docker exec maslyakbank-database pg_isready -U $env:DB_USER -d $env:DB_NAME)) { Start-Sleep -Seconds 2 }"
 
       - name: Start services
         run: docker compose -f MaslyakBank_${{matrix.service.name}}/compose-${{matrix.service.docker}}.yaml up -d
