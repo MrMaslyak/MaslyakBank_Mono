@@ -82,26 +82,18 @@ jobs:
 #        run: |
 #          docker network create MaslyakBankNetwork 2>/dev/null || true
 
-      - name: Wait for Postgres to be ready
-        shell: cmd
-        run: |
-          echo Waiting for Postgres...
-          :loop
-          docker exec maslyakbank-database pg_isready -U %DB_USER% -d %DB_NAME%
-          if errorlevel 1 (
-          timeout /t 5
-          goto loop
-          )
-
       - name: Start Infrastructure DB
         run: docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml up -d
+        shell: cmd
         env:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_NAME: ${{ secrets.DB_NAME }}
 
+
       - name: Start services
         run: docker compose -f MaslyakBank_${{matrix.service.name}}/compose-${{matrix.service.docker}}.yaml up -d
+        shell: cmd
         env:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: 1234567890
