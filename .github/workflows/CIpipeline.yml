@@ -50,7 +50,7 @@ jobs:
     steps:
       - name: Dump PostgreSQL database
         run: |
-          docker exec maslyakbank-database pg_dump -U postgres -Fc maslyakbank > dump.backup
+          docker exec maslyakbank-database pg_dump -U Maslyak -Fc maslyakbank > dump.backup
 
       - name: Upload DB dump
         uses: actions/upload-artifact@v4
@@ -94,12 +94,6 @@ jobs:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_NAME: ${{ secrets.DB_NAME }}
-
-      - name: Wait for Postgres to be ready
-        shell: cmd
-        run: |
-          powershell -Command ^
-            "while (-not (docker exec maslyakbank-database pg_isready -U $env:DB_USER -d $env:DB_NAME)) { Start-Sleep -Seconds 2 }"
 
       - name: Download DB dump
         uses: actions/download-artifact@v4
