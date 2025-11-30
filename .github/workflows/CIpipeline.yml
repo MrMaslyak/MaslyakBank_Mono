@@ -61,7 +61,7 @@ jobs:
           docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml down -v
           
           
-          #      - name: Create Docker network on Mac
+     #      - name: Create Docker network on Mac
       #        shell: bash
       #        run: |
       #          docker network create MaslyakBankNetwork 2>/dev/null || true
