@@ -50,7 +50,7 @@ jobs:
     steps:
       - name: Dump PostgreSQL database
         run: |
-          docker exec maslyakbank-database pg_dump -U Maslyak -Fc maslyakbank > dump.backup
+          docker exec maslyakbank-database pg_dump -U Maslyak -Fc postgres > dump.backup
 
       - name: Upload DB dump
         uses: actions/upload-artifact@v4
