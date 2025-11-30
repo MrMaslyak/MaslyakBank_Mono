@@ -6,6 +6,9 @@ on:
       - main
 
 jobs:
+  # =======================
+  # 1. Build & Dockerize
+  # =======================
   build-and-docker:
     runs-on: macOS
     strategy:
@@ -19,14 +22,17 @@ jobs:
             docker: core
           - name: Account
             docker: account
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build and dockerize services
+      - name: Build service and Docker image
         run: |
           mvn -B clean package -DskipTests -f MaslyakBank_${{ matrix.service.name }}/pom.xml
-          docker build -t maslyakbank-${{ matrix.service.docker }} -f MaslyakBank_${{ matrix.service.name }}/Dockerfile MaslyakBank_${{ matrix.service.name }}
+          docker build -t maslyakbank-${{ matrix.service.docker }} \
+            -f MaslyakBank_${{ matrix.service.name }}/Dockerfile \
+            MaslyakBank_${{ matrix.service.name }}
 
       - name: Upload JAR artifact
         uses: actions/upload-artifact@v4
@@ -34,42 +40,56 @@ jobs:
           name: ${{ matrix.service.docker }}-jar
           path: MaslyakBank_${{ matrix.service.name }}/target/*.jar
 
-  test:
+  # =======================
+  # 2. Dump Database on Mac
+  # =======================
+  dump-database:
     runs-on: macOS
     needs: build-and-docker
+
+    steps:
+      - name: Dump PostgreSQL database
+        run: |
+          docker exec maslyakbank-database pg_dump -U postgres -Fc maslyakbank > dump.backup
+
+      - name: Upload DB dump
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-dump
+          path: dump.backup
+
+  # =======================
+  # 3. Run all tests
+  # =======================
+  test:
+    runs-on: macOS
+    needs: dump-database
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Run all tests
+      - name: Run tests
         run: mvn -B test
 
+  # =======================
+  # 4. Deploy Infrastructure (Windows)
+  # =======================
   deploy-infrastructure:
     runs-on: PCMaslyak
+    needs: test
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Create Docker network Windows
+      - name: Create Docker network (if not exists)
         shell: cmd
-        run: |
-          docker network create MaslyakBankNetwork 2>nul || exit /b 0
+        run: docker network create MaslyakBankNetwork 2>nul || exit /b 0
 
-      - name: Remove old Postgres volume
+      - name: Start Postgres & Redis
         shell: cmd
-        run: |
-          docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml down -v
-          
-          
-     #      - name: Create Docker network on Mac
-      #        shell: bash
-      #        run: |
-      #          docker network create MaslyakBankNetwork 2>/dev/null || true
-
-      - name: Start Postgres and Redis
-        shell: cmd
-        run: |
-          docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml up -d
+        run: docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml up -d
         env:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
@@ -81,9 +101,35 @@ jobs:
           powershell -Command ^
             "while (-not (docker exec maslyakbank-database pg_isready -U $env:DB_USER -d $env:DB_NAME)) { Start-Sleep -Seconds 2 }"
 
+      - name: Download DB dump
+        uses: actions/download-artifact@v4
+        with:
+          name: db-dump
+          path: .
+
+      # Рестор только если база пустая
+      - name: Restore DB if empty
+        shell: bash
+        run: |
+          COUNT=$(docker exec maslyakbank-database psql -U $DB_USER -d $DB_NAME -tAc "SELECT count(*) FROM information_schema.tables WHERE table_schema='public'")
+          echo "Tables in DB: $COUNT"
+          if [ "$COUNT" -eq "0" ]; then
+            echo "Database empty — restoring dump..."
+            docker exec -i maslyakbank-database pg_restore \
+              -U $DB_USER \
+              -d $DB_NAME \
+              --clean \
+              --if-exists < dump.backup
+          else
+            echo "Database already initialized — restoring skipped."
+          fi
+
+  # =======================
+  # 5. Deploy Services
+  # =======================
   deploy:
     runs-on: PCMaslyak
-    needs: test
+    needs: deploy-infrastructure
     strategy:
       matrix:
         service:
@@ -95,24 +141,24 @@ jobs:
             docker: core
           - name: Account
             docker: account
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Download artifact
+      - name: Download JAR artifact
         uses: actions/download-artifact@v4
         with:
           name: ${{ matrix.service.docker }}-jar
           path: MaslyakBank_${{ matrix.service.name }}/target/
 
-      - name: Set up Docker Buildx
+      - name: Set up Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Start services
-        run: docker compose -f MaslyakBank_${{matrix.service.name}}/compose-${{matrix.service.docker}}.yaml up -d
+      - name: Start service
         shell: cmd
+        run: docker compose -f MaslyakBank_${{matrix.service.name}}/compose-${{matrix.service.docker}}.yaml up -d
         env:
           DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: 1234567890
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_NAME: ${{ secrets.DB_NAME }}
-
