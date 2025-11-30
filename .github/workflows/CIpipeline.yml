@@ -101,22 +101,6 @@ jobs:
           name: db-dump
           path: .
 
-      # Рестор только если база пустая
-      - name: Restore DB if empty
-        shell: bash
-        run: |
-          COUNT=$(docker exec maslyakbank-database psql -U $DB_USER -d $DB_NAME -tAc "SELECT count(*) FROM information_schema.tables WHERE table_schema='public'")
-          echo "Tables in DB: $COUNT"
-          if [ "$COUNT" -eq "0" ]; then
-            echo "Database empty — restoring dump..."
-            docker exec -i maslyakbank-database pg_restore \
-              -U $DB_USER \
-              -d $DB_NAME \
-              --clean \
-              --if-exists < dump.backup
-          else
-            echo "Database already initialized — restoring skipped."
-          fi
 
   # =======================
   # 5. Deploy Services
