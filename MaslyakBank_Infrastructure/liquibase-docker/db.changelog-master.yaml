@@ -1,9 +1,9 @@
 databaseChangeLog:
 
   - include:
-      file: changelog/v1/main-changelog.xml
+      file: changelog/binding-ProfileUser-changelog.xml
       relativeToChangelogFile: true
 
   - include:
-      file: changelog/v2/main-changelog.xml
+      file: changelog/create-table-refreshToken.xml
       relativeToChangelogFile: true
