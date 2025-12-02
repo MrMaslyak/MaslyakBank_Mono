@@ -32,8 +32,8 @@ services:
         condition: service_healthy
     networks:
       - MaslyakBankNetwork
-#    stdin_open: true
-#    tty: true
+    stdin_open: true
+    tty: true
 
   redis:
     image: redis:latest
