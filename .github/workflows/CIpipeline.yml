@@ -77,7 +77,6 @@ jobs:
       - name: Init && Deploy Database Structure (Liquibase)
         shell: cmd
         run: |
-          docker exec maslyakbank-liquibase liquibase init project
           docker exec maslyakbank-liquibase liquibase --url=jdbc:postgresql://db:5432/%DB_NAME%  --username=%DB_USER% --password=%DB_PASSWORD% update
         env:
           DB_USER: ${{ secrets.DB_USER }}
