@@ -558,3 +558,54 @@ databaseChangeLog:
         referencedColumnNames: id
         referencedTableName: user_token
         validate: true
+
+    - changeSet:
+        id: 1-create-refresh-token
+        author: maslyak
+        changes:
+          - createTable:
+              tableName: refresh_token
+              columns:
+                - column:
+                    name: id
+                    type: uuid
+                    constraints:
+                      primaryKey: true
+                      nullable: false
+                - column:
+                    name: user_token_id
+                    type: uuid
+                    constraints:
+                      nullable: false
+                      unique: true
+                - column:
+                    name: token
+                    type: varchar(255)
+                    constraints:
+                      nullable: false
+                      unique: true
+                - column:
+                    name: revoked
+                    type: boolean
+                    defaultValueBoolean: false
+                - column:
+                    name: expired_at
+                    type: timestamp
+                - column:
+                    name: created_at
+                    type: timestamp
+                - column:
+                    name: updated_at
+                    type: timestamp
+
+    - changeSet:
+        id: 2-add-fk-refresh-token-user-token
+        author: maslyak
+        changes:
+          - addForeignKeyConstraint:
+              baseTableName: refresh_token
+              baseColumnNames: user_token_id
+              constraintName: fk_refresh_token_user_token
+              referencedTableName: user_token
+              referencedColumnNames: id
+              onDelete: CASCADE
