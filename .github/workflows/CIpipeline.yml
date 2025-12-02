@@ -73,10 +73,6 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_NAME: ${{ secrets.DB_NAME }}
 
-#      - name: Init liquibase
-#        shell: cmd
-#        run: |
-#
 
       - name: Init && Deploy Database Structure (Liquibase)
         shell: cmd
