@@ -4,3 +4,6 @@ databaseChangeLog:
       file: database-structure-versions/db.V1.yaml
       relativeToChangelogFile: true
 
+  - include:
+     file: changelog/create-table-refreshToken.xml
+     relativeToChangelogFile: true
