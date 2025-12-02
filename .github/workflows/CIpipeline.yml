@@ -73,6 +73,11 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_NAME: ${{ secrets.DB_NAME }}
 
+      - name: Init liquibase
+        shell: cmd
+        run: |
+          docker exec maslyakbank-liquibase liquibase liquibase init project
+
       - name: Deploy Database Structure (Liquibase)
         shell: cmd
         run: |
