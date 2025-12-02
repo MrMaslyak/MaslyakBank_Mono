@@ -66,7 +66,7 @@ jobs:
 
       - name: Start Postgres & Redis & Liquibase
         shell: cmd
-        run: docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml up -d
+        run: docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml up --build -d
         env:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
