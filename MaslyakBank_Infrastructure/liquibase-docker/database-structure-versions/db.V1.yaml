@@ -4,6 +4,7 @@ databaseChangeLog:
     author: root (generated)
     changes:
     - createTable:
+        ifNotExists: true
         columns:
         - column:
             name: balance
@@ -56,6 +57,7 @@ databaseChangeLog:
     author: root (generated)
     changes:
     - createTable:
+        ifNotExists: true
         columns:
         - column:
             constraints:
@@ -115,6 +117,7 @@ databaseChangeLog:
     author: root (generated)
     changes:
     - createTable:
+        ifNotExists: true
         columns:
         - column:
             constraints:
@@ -164,6 +167,7 @@ databaseChangeLog:
     author: root (generated)
     changes:
     - createTable:
+        ifNotExists: true
         columns:
         - column:
             constraints:
@@ -219,6 +223,7 @@ databaseChangeLog:
     author: root (generated)
     changes:
     - createTable:
+        ifNotExists: true
         columns:
         - column:
             name: is_expired
@@ -258,6 +263,7 @@ databaseChangeLog:
     author: root (generated)
     changes:
     - createTable:
+        ifNotExists: true
         columns:
         - column:
             name: created_at
@@ -299,6 +305,7 @@ databaseChangeLog:
     author: root (generated)
     changes:
     - createTable:
+        ifNotExists: true
         columns:
         - column:
             name: is_completed
@@ -343,6 +350,7 @@ databaseChangeLog:
     author: root (generated)
     changes:
     - createTable:
+        ifNotExists: true
         columns:
         - column:
             name: revoked
@@ -379,6 +387,7 @@ databaseChangeLog:
     author: root (generated)
     changes:
     - addUniqueConstraint:
+        ifNotExists: true
         columnNames: account_number
         constraintName: accounts_account_number_key
         tableName: accounts
@@ -387,6 +396,7 @@ databaseChangeLog:
     author: root (generated)
     changes:
     - addUniqueConstraint:
+        ifNotExists: true
         columnNames: card_number
         constraintName: cards_card_number_key
         tableName: cards
@@ -395,6 +405,7 @@ databaseChangeLog:
     author: root (generated)
     changes:
     - addUniqueConstraint:
+        ifNotExists: true
         columnNames: account_id
         constraintName: transaction_details_account_id_key
         tableName: transaction_details
@@ -403,6 +414,7 @@ databaseChangeLog:
     author: root (generated)
     changes:
     - addUniqueConstraint:
+        ifNotExists: true
         columnNames: card_id
         constraintName: transaction_details_card_id_key
         tableName: transaction_details
@@ -411,6 +423,7 @@ databaseChangeLog:
     author: root (generated)
     changes:
     - addUniqueConstraint:
+        ifNotExists: true
         columnNames: user_id
         constraintName: profiles_user_id_key
         tableName: profiles
@@ -419,6 +432,7 @@ databaseChangeLog:
     author: root (generated)
     changes:
     - addUniqueConstraint:
+        ifNotExists: true
         columnNames: user_id
         constraintName: uq_profiles_user_id
         tableName: profiles
@@ -427,6 +441,7 @@ databaseChangeLog:
     author: root (generated)
     changes:
     - addUniqueConstraint:
+        ifNotExists: true
         columnNames: token
         constraintName: refresh_token_token_key
         tableName: refresh_token
@@ -435,6 +450,7 @@ databaseChangeLog:
     author: root (generated)
     changes:
     - addUniqueConstraint:
+        ifNotExists: true
         columnNames: user_token_id
         constraintName: refresh_token_user_token_id_key
         tableName: refresh_token
@@ -443,6 +459,7 @@ databaseChangeLog:
     author: root (generated)
     changes:
     - addForeignKeyConstraint:
+        ifNotExists: true
         baseColumnNames: card_id
         baseTableName: transaction_details
         constraintName: fk31b5gf9jtmb3a3u668tyvw0wj
@@ -458,6 +475,7 @@ databaseChangeLog:
     author: root (generated)
     changes:
     - addForeignKeyConstraint:
+        ifNotExists: true
         baseColumnNames: user_id
         baseTableName: profiles
         constraintName: fk_profiles_users
@@ -473,6 +491,7 @@ databaseChangeLog:
     author: root (generated)
     changes:
     - addForeignKeyConstraint:
+        ifNotExists: true
         baseColumnNames: account_id
         baseTableName: cards
         constraintName: fkdjw7dinkpc0f01yk4m57uq2u2
@@ -488,6 +507,7 @@ databaseChangeLog:
     author: root (generated)
     changes:
     - addForeignKeyConstraint:
+        ifNotExists: true
         baseColumnNames: user_id
         baseTableName: user_token
         constraintName: fkfadr8tg4d19axmfe9fltvrmqt
@@ -503,6 +523,7 @@ databaseChangeLog:
     author: root (generated)
     changes:
     - addForeignKeyConstraint:
+        ifNotExists: true
         baseColumnNames: transaction_id
         baseTableName: transaction_details
         constraintName: fkm5vjjt9jqvf7y69innpgqnipr
@@ -518,6 +539,7 @@ databaseChangeLog:
     author: root (generated)
     changes:
     - addForeignKeyConstraint:
+        ifNotExists: true
         baseColumnNames: account_id
         baseTableName: transaction_details
         constraintName: fkn2no9t5javg524aaih7jdehnp
@@ -533,6 +555,7 @@ databaseChangeLog:
     author: root (generated)
     changes:
     - addForeignKeyConstraint:
+        ifNotExists: true
         baseColumnNames: user_id
         baseTableName: accounts
         constraintName: fknjuop33mo69pd79ctplkck40n
@@ -548,6 +571,7 @@ databaseChangeLog:
     author: root (generated)
     changes:
     - addForeignKeyConstraint:
+        ifNotExists: true
         baseColumnNames: user_token_id
         baseTableName: refresh_token
         constraintName: fkoyms15idvn7lycr08dgfh48jj
