@@ -17,8 +17,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-#    volumes:
-#      - pgdata:/var/lib/postgresql/data
+    volumes:
+      - pgdata:/var/lib/postgresql/data
     mem_limit: 1024m   # ограничение памяти
     cpus: 1.0          # CPU
 
@@ -32,6 +32,8 @@ services:
         condition: service_healthy
     networks:
       - MaslyakBankNetwork
+    volumes:
+      - ./liquibase-docker:/liquibase-docker
     stdin_open: true
     tty: true
 
@@ -56,5 +58,5 @@ networks:
   MaslyakBankNetwork:
     external: true
 
-#volumes:
-#  pgdata:
+volumes:
+  pgdata:
