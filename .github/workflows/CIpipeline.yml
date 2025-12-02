@@ -6,9 +6,6 @@ on:
       - main
 
 jobs:
-  # =======================
-  # 1. Build & Dockerize
-  # =======================
   build-and-docker:
     runs-on: macOS
     strategy:
@@ -40,30 +37,9 @@ jobs:
           name: ${{ matrix.service.docker }}-jar
           path: MaslyakBank_${{ matrix.service.name }}/target/*.jar
 
-  # =======================
-  # 2. Dump Database on Mac
-  # =======================
-  dump-database:
-    runs-on: macOS
-    needs: build-and-docker
-
-    steps:
-      - name: Dump PostgreSQL database
-        run: |
-          docker exec maslyakbank-database pg_dump -U Maslyak -Fc postgres > dump.backup
-
-      - name: Upload DB dump
-        uses: actions/upload-artifact@v4
-        with:
-          name: db-dump
-          path: dump.backup
-
-  # =======================
-  # 3. Run all tests
-  # =======================
   test:
     runs-on: macOS
-    needs: dump-database
+    needs: build-and-docker
 
     steps:
       - name: Checkout repository
@@ -72,9 +48,7 @@ jobs:
       - name: Run tests
         run: mvn -B test
 
-  # =======================
-  # 4. Deploy Infrastructure (Windows)
-  # =======================
+
   deploy-infrastructure:
     runs-on: PCMaslyak
     needs: test
@@ -99,17 +73,9 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_NAME: ${{ secrets.DB_NAME }}
 
-      - name: Download DB dump
-        uses: actions/download-artifact@v4
-        with:
-          name: db-dump
-          path: .
-
-
-
-  # =======================
-  # 5. Deploy Services
-  # =======================
+      - name: Run Liquibase migrations
+        shell: cmd
+        run:
   deploy:
     runs-on: PCMaslyak
     needs: deploy-infrastructure

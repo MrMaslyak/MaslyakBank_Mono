@@ -1,7 +1,7 @@
 databaseChangeLog:
 
   - include:
-      file: changelog/binding-ProfileUser-changelog.xml
+      file: changelog/binding-ProfileUser.xml
       relativeToChangelogFile: true
 
   - include:
