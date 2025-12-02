@@ -76,9 +76,7 @@ jobs:
       - name: Deploy Database Structure (Liquibase)
         shell: cmd
         run: |
-          docker exec maslyakbank-liquibase liquibase \
-            --defaultsFile=/liquibase-docker/db.changelog-migration.yaml \
-            update
+          docker exec maslyakbank-liquibase liquibase --defaultsFile=/liquibase-docker/db.changelog-migration.yaml update
   deploy:
     runs-on: PCMaslyak
     needs: deploy-infrastructure
