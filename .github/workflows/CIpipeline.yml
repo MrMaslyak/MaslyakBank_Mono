@@ -76,7 +76,7 @@ jobs:
       - name: Init liquibase
         shell: cmd
         run: |
-          docker exec maslyakbank-liquibase liquibase liquibase init project
+          docker exec maslyakbank-liquibase liquibase init project
 
       - name: Deploy Database Structure (Liquibase)
         shell: cmd
