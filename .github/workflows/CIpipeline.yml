@@ -73,14 +73,15 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_NAME: ${{ secrets.DB_NAME }}
 
-      - name: Init liquibase
+#      - name: Init liquibase
+#        shell: cmd
+#        run: |
+#
+
+      - name: Init && Deploy Database Structure (Liquibase)
         shell: cmd
         run: |
           docker exec maslyakbank-liquibase liquibase init project
-
-      - name: Deploy Database Structure (Liquibase)
-        shell: cmd
-        run: |
           docker exec maslyakbank-liquibase liquibase --defaultsFile=/liquibase-docker/db.changelog-migration.yaml update
   deploy:
     runs-on: PCMaslyak
