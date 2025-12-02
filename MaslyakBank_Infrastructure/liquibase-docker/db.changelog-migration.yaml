@@ -3,7 +3,3 @@ databaseChangeLog:
   - include:
       file: database-structure-versions/db.V1.yaml
       relativeToChangelogFile: true
-
-  - include:
-     file: changelog/create-table-refreshToken.yaml
-     relativeToChangelogFile: true
