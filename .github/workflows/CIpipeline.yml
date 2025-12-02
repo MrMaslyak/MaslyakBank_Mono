@@ -65,7 +65,7 @@ jobs:
 #        shell: bash
 #        run: docker network inspect MaslyakBankNetwork >/dev/null 2>&1 || docker network create MaslyakBankNetwork
 
-      - name: Start Postgres & Redis
+      - name: Start Postgres & Redis & Liquibase
         shell: cmd
         run: docker compose -f MaslyakBank_Infrastructure/compose-infrastructure.yaml up -d
         env:
@@ -73,9 +73,12 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_NAME: ${{ secrets.DB_NAME }}
 
-      - name: Run Liquibase migrations
+      - name: Deploy Database Structure (Liquibase)
         shell: cmd
-        run:
+        run: |
+          docker exec maslyakbank-liquibase liquibase \
+            --defaultsFile=/liquibase-docker/db.changelog-migration.yaml \
+            update
   deploy:
     runs-on: PCMaslyak
     needs: deploy-infrastructure
