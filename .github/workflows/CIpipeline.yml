@@ -74,6 +74,7 @@ jobs:
 
 
 
+
       - name: Init && Deploy Database Structure (Liquibase)
         shell: cmd
         run: |
