@@ -82,7 +82,11 @@ jobs:
         shell: cmd
         run: |
           docker exec maslyakbank-liquibase liquibase init project
-          docker exec maslyakbank-liquibase liquibase  update
+          docker exec maslyakbank-liquibase liquibase --url=jdbc:postgresql://db:5432/%DB_NAME%  --username=%DB_USER% --password=%DB_PASSWORD% update
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
 #          --defaultsFile=/MaslyakBank_Infrastructure/liquibase-docker/db.changelog-migration.yaml
   deploy:
     runs-on: PCMaslyak
