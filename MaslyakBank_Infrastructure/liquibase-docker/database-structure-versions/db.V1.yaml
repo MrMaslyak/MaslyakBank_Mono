@@ -558,4 +558,3 @@ databaseChangeLog:
         referencedColumnNames: id
         referencedTableName: user_token
         validate: true
-

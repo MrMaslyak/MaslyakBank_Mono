@@ -5,5 +5,5 @@ databaseChangeLog:
       relativeToChangelogFile: true
 
   - include:
-      file: changelog/create-table-refreshToken.xml
+      file: changelog/create-table-refreshToken.yaml
       relativeToChangelogFile: true
