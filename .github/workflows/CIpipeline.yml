@@ -51,7 +51,6 @@ jobs:
 
   deploy-infrastructure:
     runs-on: PCMaslyak
-    needs: test
 
     steps:
       - name: Checkout repository
@@ -86,7 +85,7 @@ jobs:
 #          --defaultsFile=/MaslyakBank_Infrastructure/liquibase-docker/db.changelog-migration.yaml
   deploy:
     runs-on: PCMaslyak
-    needs: deploy-infrastructure
+    needs: test
     strategy:
       matrix:
         service:
